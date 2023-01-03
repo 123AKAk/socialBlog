@@ -1,6 +1,8 @@
 <?php
     require "classes/components/db.php";
     require 'classes/components/shareComponents.php';
+    $components = new SharedComponents();
+    
     require "includes/varnames.php";
 ?>
 

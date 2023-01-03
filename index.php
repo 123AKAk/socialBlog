@@ -1,6 +1,8 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    
 ?>
         <main class="main">
             <!--slider-style-2-->
