@@ -4,7 +4,7 @@
     $servername  = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "blogblog";
+    $dbname = "macaeblog";
 
     // // Create connection
     // try {

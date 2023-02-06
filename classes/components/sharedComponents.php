@@ -30,21 +30,21 @@
         }
 
         //encrypt the datastring
-        function protect($routeValue){
-            
+        function protect($routeValue)
+        {
             // Store a string into the variable which
             // need to be Encrypted
             $data = $routeValue."";
 
             // Store the cipher method
-            $ciphering = "AES128CTR";
+            $ciphering = "AES-128-CTR";
 
             // Use OpenSSl Encryption method
             $iv_length = openssl_cipher_iv_length($ciphering);
             $options = 0;
 
             // Non-NULL Initialization Vector for encryption
-            $encryption_iv = '255823419803228567';
+            $encryption_iv = '1234567891011121';
 
             // Store the encryption key
             $encryption_key = "eyo123";
@@ -57,24 +57,24 @@
         }
 
         //decrypt the datastring
-        function unprotect($encryptedValue){
-
+        function unprotect($encryptedValue)
+        {
             $ciphering = "AES-128-CTR";
 
             // Use OpenSSl Encryption method
             $iv_length = openssl_cipher_iv_length($ciphering);
             $options = 0;
-
+    
             // Non-NULL Initialization Vector for decryption
-            $decryption_iv = '255823419803228567';
-
+            $decryption_iv = '1234567891011121';
+    
             // Store the decryption key
             $decryption_key = "eyo123";
-
+    
             // Use openssl_decrypt() function to decrypt the data
             $decryption = openssl_decrypt ($encryptedValue, $ciphering, 
             $decryption_key, $options, $decryption_iv);
-
+    
             return $decryption;
         }
 

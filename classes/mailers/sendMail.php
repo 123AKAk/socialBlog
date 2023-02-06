@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class send_Mail
 {
-	function sendMail($useremail, $userpassword, $username, $code, $userid, $mailSubject, $message, $urltxt)
+	function sendMail($useremail, $username, $code, $userid, $mailSubject, $message, $urltxt)
 	{
         include "../includes/varnames.php";
 
