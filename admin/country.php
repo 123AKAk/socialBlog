@@ -3,10 +3,10 @@
     include 'includes/navbar.php';
     include 'includes/sidebar.php';
 
-    // Get all category Data
-    $stmt = $conn->prepare("SELECT * FROM category");
+    // Get all country Data
+    $stmt = $conn->prepare("SELECT * FROM country");
     $stmt->execute();
-    $categories = $stmt->fetchAll();
+    $countries = $stmt->fetchAll();
 
 ?>
         <!-- Container Start -->
@@ -17,14 +17,14 @@
                     <div class="colxl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-title-wrapper">
                             <div class="page-title-box">
-                                <h2 class="page-title bold">Post Categories</h2>
+                                <h2 class="page-title bold">Countries</h2>
                             </div>
                             <div class="breadcrumb-list">
                                 <ul>
                                     <li class="breadcrumb-link">
                                         <a href="./"><i class="fas fa-home mr-2"></i>Home</a>
                                     </li>
-                                    <li class="breadcrumb-link active">Post Categories</li>
+                                    <li class="breadcrumb-link active">Countries</li>
                                 </ul>
                             </div>
                         </div>
@@ -36,10 +36,35 @@
                     <!-- Advance Table Card-->
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card table-card">
-                           
                             <div class="card-body">
+                                <form class="separate-form" action="php/insert.php?type=post" method="POST" enctype="multipart/form-data">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="row">
+
+                                            <div class="col-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="country_name" class="col-form-label">Country Name</label>
+                                                    <input class="form-control" type="text" placeholder="Enter Country Name" name="country_name" id="country_name" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="ip_address" class="col-form-label">Ip Address</label>
+                                                    <input class="form-control" type="text" placeholder="Enter Ip Address" name="ip_address" id="ip_address" >
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <div class="form-group">
+                                                    <input class="btn btn-primary" type="submit" name="submit" value="Add" style="float:right;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                                 <div class="chart-holder">
-                                <div class="table-responsive" >
+                                <div class="table-responsive mt-3">
                                         <table class="table table-styled mb-0">
                                             <thead>
                                                 <tr>
@@ -51,36 +76,30 @@
 													</th>
                                                     <th>S/N</th>
                                                     <th scope='col'>Name</th>
-                                                    <th scope='col'>Description</th>
-                                                    <th scope='col'>Created On</th>
-                                                    <th scope='col'>Updated On</th>
+                                                    <th scope='col'>Ip Address</th>
                                                     <th scope='col' colspan="2">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                     $countnum = 0;
-                                                    foreach ($categories as $category) :
-                                                    echo $category['status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
-                                                    $date1 = date_create($category['category_creation_date']);
-                                                    $date2 = date_create($category['category_update_date']);
+                                                    foreach ($countries as $country) :
+                                                    echo $country['status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
                                                     $countnum++
                                                 ?>
                                                     <td>
 														<div class="checkbox">
-															<input id="checkbox<?= $countnum ?>" type="checkbox" name="<?= $category['category_id'] ?>">
+															<input id="checkbox<?= $countnum ?>" type="checkbox" name="<?= $country['country_id'] ?>">
 															<label for="checkbox<?= $countnum ?>"></label>
 														</div>
 													</td>
                                                     <td><?= $countnum ?></td>
                                                     <td>
-                                                        <input type="text" style="border:0px;" value="<?= $category['category_name'] ?>" />
+                                                        <input type="text" style="border:0px;" value="<?= $country['country_name'] ?>" />
                                                     </td>
                                                     <td>
-                                                        <input type="text" style="border:0px;" value="<?= $category['category_desc'] ?>" />
+                                                        <input type="text" style="border:0px;" value="<?= $country['ip_address'] ?>" />
                                                     </td>
-                                                    <td><?php echo date_format($date1, "D, M Y H:i:s") ?></td>
-                                                    <td><?php echo date_format($date2, "D, M Y H:i:s") ?></td>
                                                     <td class="relative">
                                                         <a class="action-btn " href="javascript:void(0); ">
                                                             <svg class="default-size "  viewBox="0 0 341.333 341.333 ">
@@ -99,22 +118,22 @@
                                                             
                                                             <ul>
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="editCategory(<?= $category['category_id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="editCountry(<?= $country['country_id'] ?>)">
                                                                         <i class="far fa-edit mr-2" aria-hidden="true"></i> Save
                                                                     </a>
                                                                 </li>
                                                                 
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="deleteCategory(<?= $category['category_id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="deleteCountry(<?= $country['country_id'] ?>)">
                                                                         <i class="far fa-trash-alt mr-2" aria-hidden="true"></i> Delete
                                                                     </a>
                                                                 </li>
 
                                                                 <li>
-                                                                    <?php if($category['status'] == 0)
+                                                                    <?php if($country['status'] == 0)
                                                                     {
                                                                     ?>
-                                                                    <a href="javascript:void(0);" onclick="activateCategory(<?= $category['category_id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="activateCountry(<?= $country['country_id'] ?>)">
                                                                         <i class="" aria-hidden="true"></i> Activate
                                                                     </a>
                                                                     <?php
@@ -122,7 +141,7 @@
                                                                     else
                                                                     {
                                                                     ?>
-                                                                    <a href="javascript:void(0);" onclick="deactivateCategory(<?= $category['category_id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="deactivateCategory(<?= $country['country_id'] ?>)">
                                                                         <i class="" aria-hidden="true"></i> Deactivate
                                                                     </a>
                                                                     <?php

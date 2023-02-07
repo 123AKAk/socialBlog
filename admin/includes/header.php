@@ -1,33 +1,41 @@
 <?php
+
     session_start();
-    $loggedin = false;
     require "../includes/varnames.php";
     require "../classes/components/db.php";
     require '../classes/components/sharedComponents.php';
 
     $components = new SharedComponents();
 
-    if (isset($_SESSION["admin_blunt_blog_user_loggedin_"])){
-        $_SESSION["admin_blunt_blog_user_loggedin_"] = $components->unprotect($_SESSION["admin_blunt_blog_user_loggedin_"]);
-        if ($_SESSION["admin_blunt_blog_user_loggedin_"] == true && isset($_SESSION["blunt_blog_user_status_"])){
-            $_SESSION["admin_blunt_blog_user_loggedin_"] = $components->protect($_SESSION["admin_blunt_blog_user_loggedin_"]);
-            $adid = $components->unprotect($_SESSION["blunt_blog_user_status_"]);
-            $type = $components->checkuser($adid, $pdo);
-            if($type >= 1)
+
+    if(!isset($pagename))
+    {
+        if (isset($_SESSION["is_admin_user_loggedin_"]))
+        {
+            $_SESSION["is_admin_user_loggedin_"] = $components->unprotect($_SESSION["is_admin_user_loggedin_"]);
+
+            if ($_SESSION["is_admin_user_loggedin_"] == true && isset($_SESSION["is_admin_user_loggedin_id"]))
             {
-                $loggedin = true;
+                $_SESSION["is_admin_user_loggedin_"] = $components->protect($_SESSION["is_admin_user_loggedin_"]);
+
+                $details = $components->getAdminDetails($components->unprotect($_SESSION["is_admin_user_loggedin_id"]), $pdo);
+
+                $loggedInAdminID = $adminName = $adminEmail = $adminRole = "";
+
+                if(isset($details))
+                {
+                    $loggedInAdminID = $components->protect($details[0]);
+                    $adminName = $details[1];
+                    $adminEmail = $details[2];
+                    $adminRole =  $details[8];
+
+                }
             }
-            else{
-                //header("location: ../logout.php");
-                exit;
-            }
+            else
+                header("location: login.php");
         }
-        else{
-            //header("location: ../adminlogin.php");
-        }
-    }
-    else{
-        //header("location: ../adminlogin.php");
+        else
+            header("location: login.php");
     }
 ?>
 
@@ -40,7 +48,7 @@
 <!-- Begin Head -->
 
 <head>
-    <title>BLUNT | Blog Admin</title>
+    <title><?= $sitename ?> | Admin</title>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="description" content="">

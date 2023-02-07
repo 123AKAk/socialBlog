@@ -78,21 +78,20 @@
             return $decryption;
         }
 
-        function checkuser($id, $pdo){
-            // $sql = "SELECT * FROM author WHERE author_id = :author_id";
-            // if ($stmt = $pdo->prepare($sql)) {
-            //     $stmt->bindParam(":author_id", $id, PDO::PARAM_STR);
-            //     if ($stmt->execute()) {
-            //         // Check if email exists, if yes then verify password
-            //         if ($stmt->rowCount() == 1){
-            //             if ($row = $stmt->fetch()) {
-            //                 $type = $row["type"];
-            //                 return $type;
-            //             }
-            //             return true;
-            //         }
-            //     }
-            // }
+        function getAdminDetails($adminid, $pdo){
+            $sql = "SELECT * FROM admin WHERE admin_id = :admin_id";
+            if ($stmt = $pdo->prepare($sql)) {
+                $stmt->bindParam(":admin_id", $adminid, PDO::PARAM_STR);
+                if ($stmt->execute()) 
+                {
+                    if ($stmt->rowCount() == 1)
+                    {
+                        if ($row = $stmt->fetch()){
+                            return $row;
+                        }
+                    }
+                }
+            }
         }
 
         function test_input($data){

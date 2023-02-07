@@ -53,18 +53,18 @@
                             </a>
                             <div class="user-info-box">
                                 <div class="drop-down-header">
-                                    <h4><?= $username ?></h4>
+                                    <h4><?= $adminName ?></h4>
                                     <p></p>
                                 </div>
                                 <ul>
                                     <li>
-                                        <a href="profile.php?type=banauthor&id=<?= $adid?>">
+                                        <a href="profile.php?&id=<?= $loggedInAdminID?>">
                                             <i class="far fa-edit"></i> Edit Profile
                                         </a>
                                     </li>
                                     
                                     <li>
-                                        <a href="../logout.php">
+                                        <a href="logout.php">
                                             <i class="fas fa-sign-out-alt"></i> logout
                                         </a>
                                     </li>

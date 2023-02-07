@@ -73,6 +73,7 @@
                                                 
                                                 <div class="col-md-12">
                                                     <div class="">
+                                                        <label for="adDesc">Ad Thumbnail</label>
                                                         <div class="">
                                                         <div id="actions" class="col-12">
                                                             <div class="col-md-6">

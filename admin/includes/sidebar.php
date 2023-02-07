@@ -32,6 +32,17 @@
                     </li>
 
                     <li>
+                        <a href="country.php">
+                            <span class="icon-menu feather-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid nav-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            </span>
+                            <span class="menu-text">
+                                Countries
+                            </span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="javascript:void(0);">
                             <span class="icon-menu feather-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tablet"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
@@ -169,7 +180,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="create_ad.php">
+                                <a href="addAdmin.php">
                                     <span class="icon-dash">
                                     </span>
                                     <span class="menu-text">
@@ -178,7 +189,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="ads.php">
+                                <a href="admins.php">
                                     <span class="icon-dash">
                                     </span>
                                     <span class="menu-text">
