@@ -64,10 +64,10 @@
                                                     <th>S/N</th>
                                                     <th>Thumbnail</th>
                                                     <th>Title</th>
-                                                    <th>Content</th>
-                                                    <th>Date Created</th>
                                                     <th>Category</th>
                                                     <th>Author</th>
+                                                    <th>Created On</th>
+                                                    <th>Updated On</th>
                                                     <th>Actions</th>
                                                 </tr>  
                                                 </thead>  
@@ -76,7 +76,8 @@
                                                 $countnum = 0;
                                                 foreach ($posts as $row) :                                                    
                                                 echo $row['post_status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
-                                                $date=date_create($row['post_creation_time']);
+                                                $date1 = date_create($row['post_creation_time']);
+                                                $date2 = date_create($row['post_update_date']);
                                                 $countnum++
                                                 ?>
                                                     <td>
@@ -94,10 +95,6 @@
                                                     <td style="font-weight: bold;">
                                                         <?php echo strip_tags(substr($row['post_title'], 0, 15)) . "..." ?>
                                                     </td>
-                                                    <td>
-                                                        <?php echo strip_tags(substr($row['post_contents'], 0, 25)) . "..." ?>
-                                                    </td>
-                                                    <td><?php echo date_format($date, "D, M Y H:i:s") ?></td>
                                                     <td>
                                                         <?php 
                                                             foreach ($categories as $category) : 
@@ -135,6 +132,8 @@
 
                                                         ?>
                                                     </td>
+                                                    <td><?php echo date_format($date1, "D, M Y H:i:s") ?></td>
+                                                    <td><?php echo date_format($date2, "D, M Y H:i:s") ?></td>
                                                     <td class="relative">
                                                         <a class="action-btn " href="javascript:void(0); ">
                                                             <svg class="default-size "  viewBox="0 0 341.333 341.333 ">

@@ -3,10 +3,10 @@
     include 'includes/navbar.php';
     include 'includes/sidebar.php';
 
-    // Get all users Data
-    $stmt = $conn->prepare("SELECT * FROM newsletters ORDER BY id DESC");
+    // Get all subscribed emails
+    $stmt = $conn->prepare("SELECT * FROM subscribed_emails ORDER BY id DESC");
     $stmt->execute();
-    $data = $stmt->fetchAll();
+    $emails = $stmt->fetchAll();
     $number_of_rows = $stmt->rowCount();
 
 ?>
@@ -59,6 +59,7 @@
                                                         </div>
                                                     </th>
                                                     <th>S/N</th>
+                                                    <th>Name</th>
                                                     <th>Email</th>
                                                     <th>Actions</th>
                                                 </tr>  
@@ -66,7 +67,7 @@
                                                 <tbody>  
                                                 <?php
                                                 $countnum = 0;
-                                                foreach ($data as $row) :                                                    
+                                                foreach ($emails as $row) :                                                    
                                                 echo $row['verified_status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
                                                 $countnum++
                                                 ?>
@@ -82,7 +83,10 @@
 														</p>
                                                     </td>
                                                     <td>
-                                                        <a id="checkemailbox<?= $countnum ?>" href="mailto:<?= $row['emails'] ?>"><?= $row['emails'] ?></a>
+                                                        <input type="text" style="border:0px;" value="<?= $row['name'] ?>" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" style="border:0px;" value="<?= $row['email'] ?>" />
                                                     </td>
                                                     <td class="relative">
                                                         <a class="action-btn " href="javascript:void(0); ">
@@ -101,14 +105,18 @@
                                                         <div class="action-option ">
                                                             <ul>
                                                                 <li>
-                                                                    <a href="../assets/delete.php?type=newsletters&id=<?= $row['id'] ?> ">
+                                                                    <a href="javascript:void(0);" onclick="edituser(<?= $row['id'] ?>)" >
+                                                                        <i class="far fa-edit mr-2" aria-hidden="true"></i> Save
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" onclick="deleteuser(<?= $row['id'] ?>)" >
                                                                         <i class="far fa-trash-alt mr-2" aria-hidden="true"></i> Delete
                                                                     </a>
                                                                 </li>
-
                                                                 <li>
                                                                     <a href="mailto:<?= $row['email'] ?>">
-                                                                    <i class="far fa-envelope mr-1" aria-hidden="true"></i> Email
+                                                                        <i class="far fa-envelope mr-1" aria-hidden="true"></i> Email
                                                                     </a>
                                                                 </li>
                                                             </ul>

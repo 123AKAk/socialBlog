@@ -4,9 +4,9 @@
     include 'includes/sidebar.php';
 
     // Get all users Data
-    $stmt = $conn->prepare("SELECT * FROM users ORDER BY id DESC");
+    $stmt = $conn->prepare("SELECT * FROM user ORDER BY user_id DESC");
     $stmt->execute();
-    $data = $stmt->fetchAll();
+    $users = $stmt->fetchAll();
     $number_of_rows = $stmt->rowCount();
 
 ?>
@@ -61,22 +61,23 @@
                                                     <th>S/N</th>
                                                     <th>Username</th>
                                                     <th>Email</th>
-                                                    <th>Time Created</th>
-                                                    <!-- <th>User Type</th> -->
+                                                    <th>Created On</th>
+                                                    <th>Updated On</th>
                                                     <th>Actions</th>
                                                 </tr>  
                                                 </thead>  
                                                 <tbody>  
                                                 <?php
                                                 $countnum = 0;
-                                                foreach ($data as $row) :                                                    
-                                                echo $row['userstatus'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
-                                                $date=date_create($row['created_at']);
+                                                foreach ($users as $row) :                                                    
+                                                echo $row['status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
+                                                $date1 = date_create($row['date_created']);
+                                                $date2 = date_create($row['date_updated']);
                                                 $countnum++
                                                 ?>
                                                     <td>
 														<div class="checkbox">
-															<input value="<?= $row['id'] ?>" id="checkbox<?= $countnum ?>" type="checkbox" name="<?= $row['id'] ?>" onclick="onSelect('<?= $countnum ?>')">
+															<input value="<?= $row['user_id'] ?>" id="checkbox<?= $countnum ?>" type="checkbox" name="<?= $row['user_id'] ?>" onclick="onSelect('<?= $countnum ?>')">
 															<label for="checkbox<?= $countnum ?>"></label>
 														</div>
 													</td>
@@ -84,17 +85,17 @@
                                                         <?= $countnum ?>
                                                     </td>
                                                     <td style="font-weight: bold;">
-                                                        <p id="checknamebox<?= $countnum ?>"> <?= $row['username'] ?></p>
+                                                        <input type="text" style="border:0px;" value="<?= $row['username'] ?>" />
                                                     </td>
                                                     <td>
-                                                        <a id="checkemailbox<?= $countnum ?>" href="mailto:<?= $row['email'] ?>"><?= $row['email'] ?></a>
+                                                        <input type="text" style="border:0px;" value="<?= $row['email'] ?>" />
                                                     </td>
                                                     <td>
-                                                        <?= date_format($date, "D, M Y H:i:s") ?>
+                                                        <?= date_format($date1, "D, M Y H:i:s") ?>
                                                     </td>
-                                                    <!-- <td>
-                                                        <?php //echo $row['type'] == 1 ? "<p style='font-weight: bold; color:dodgerblue;'>Admin</p>" : "<p>User</p>"; ?>
-                                                    </td> -->
+                                                    <td>
+                                                        <?= date_format($date2, "D, M Y H:i:s") ?>
+                                                    </td>
                                                     <td class="relative">
                                                         <a class="action-btn " href="javascript:void(0); ">
                                                             <svg class="default-size "  viewBox="0 0 341.333 341.333 ">
@@ -112,14 +113,18 @@
                                                         <div class="action-option ">
                                                             <ul>
                                                                 <li>
-                                                                    <a href="../assets/delete.php?type=user&id=<?= $row['id'] ?> ">
+                                                                    <a href="javascript:void(0);" onclick="edituser(<?= $row['user_id'] ?>)" >
+                                                                        <i class="far fa-edit mr-2" aria-hidden="true"></i> Save
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" onclick="deleteuser(<?= $row['user_id'] ?>)" >
                                                                         <i class="far fa-trash-alt mr-2" aria-hidden="true"></i> Delete
                                                                     </a>
                                                                 </li>
-
                                                                 <li>
                                                                     <a href="mailto:<?= $row['email'] ?>">
-                                                                    <i class="far fa-envelope mr-1" aria-hidden="true"></i> Email
+                                                                        <i class="far fa-envelope mr-1" aria-hidden="true"></i> Email
                                                                     </a>
                                                                 </li>
                                                             </ul>

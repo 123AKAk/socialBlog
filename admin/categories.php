@@ -31,10 +31,6 @@
                     </div>
                 </div>
 
-                <div class="mb-2">
-                    <p>The Category Name and Description can be edited by clicking on it's text to make changes</p>
-                </div>
-
                 <!-- Table Start -->
                 <div class="row">
                     <!-- Advance Table Card-->
@@ -43,7 +39,7 @@
                            
                             <div class="card-body">
                                 <div class="chart-holder">
-                                <div class="table-responsive" style="height:500px">
+                                <div class="table-responsive" >
                                         <table class="table table-styled mb-0">
                                             <thead>
                                                 <tr>
@@ -56,7 +52,8 @@
                                                     <th>S/N</th>
                                                     <th scope='col'>Name</th>
                                                     <th scope='col'>Description</th>
-                                                    <th scope='col'>Date Created</th>
+                                                    <th scope='col'>Created On</th>
+                                                    <th scope='col'>Updated On</th>
                                                     <th scope='col' colspan="2">Actions</th>
                                                 </tr>
                                             </thead>
@@ -64,12 +61,13 @@
                                                 <?php
                                                     $countnum = 0;
                                                     foreach ($categories as $category) :
-                                                    echo "<tr>";
+                                                    echo $category['status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
+                                               
                                                     $countnum++
                                                 ?>
                                                     <td>
 														<div class="checkbox">
-															<input id="checkbox<?= $countnum ?>" type="checkbox" name="<?= $category['id'] ?>">
+															<input id="checkbox<?= $countnum ?>" type="checkbox" name="<?= $category['category_id'] ?>">
 															<label for="checkbox<?= $countnum ?>"></label>
 														</div>
 													</td>
@@ -109,13 +107,13 @@
                                                             
                                                             <ul>
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="editCategory(<?= $category['id'] ?>)">
-                                                                        <i class="far fa-edit mr-2" aria-hidden="true"></i> Edit
+                                                                    <a href="javascript:void(0);" onclick="editCategory(<?= $category['category_id'] ?>)">
+                                                                        <i class="far fa-edit mr-2" aria-hidden="true"></i> Save
                                                                     </a>
                                                                 </li>
                                                                 
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="deleteCategory(<?= $category['id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="deleteCategory(<?= $category['category_id'] ?>)">
                                                                         <i class="far fa-trash-alt mr-2" aria-hidden="true"></i> Delete
                                                                     </a>
                                                                 </li>
@@ -124,7 +122,7 @@
                                                                     <?php if($category['status'] == 0)
                                                                     {
                                                                     ?>
-                                                                    <a href="javascript:void(0);" onclick="activateCategory(<?= $category['id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="activateCategory(<?= $category['category_id'] ?>)">
                                                                         <i class="" aria-hidden="true"></i> Activate
                                                                     </a>
                                                                     <?php
@@ -132,7 +130,7 @@
                                                                     else
                                                                     {
                                                                     ?>
-                                                                    <a href="javascript:void(0);" onclick="deactivateCategory(<?= $category['id'] ?>)">
+                                                                    <a href="javascript:void(0);" onclick="deactivateCategory(<?= $category['category_id'] ?>)">
                                                                         <i class="" aria-hidden="true"></i> Deactivate
                                                                     </a>
                                                                     <?php

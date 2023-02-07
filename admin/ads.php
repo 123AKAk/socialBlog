@@ -3,10 +3,10 @@
     include 'includes/navbar.php';
     include 'includes/sidebar.php';
 
-    // Get rssfeed Data
-    $stmt = $conn->prepare("SELECT * FROM rssfeed ORDER BY rss_id DESC");
+    // Get ads
+    $stmt = $conn->prepare("SELECT * FROM ads ORDER BY ad_id DESC");
     $stmt->execute();
-    $rssfeed = $stmt->fetchAll();
+    $ads = $stmt->fetchAll();
 
 
 ?>
@@ -18,14 +18,14 @@
                     <div class="colxl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-title-wrapper">
                             <div class="page-title-box">
-                                <h2 class="page-title bold">Rss Feed</h2>
+                                <h2 class="page-title bold">Ads</h2>
                             </div>
                             <div class="breadcrumb-list">
                                 <ul>
                                     <li class="breadcrumb-link">
                                         <a href="./"><i class="fas fa-home mr-2"></i>Home</a>
                                     </li>
-                                    <li class="breadcrumb-link active">Rss Feed</li>
+                                    <li class="breadcrumb-link active">Ads</li>
                                 </ul>
                             </div>
                         </div>
@@ -39,9 +39,6 @@
                         <div class="card table-card">
                             
                             <div class="card-body">
-                                <button class="btn btn-secondary btn-sm-btn mb-3" style="border-radius:5px">
-                                    Add Rss Feed
-                                </button>
                                 <div class="chart-holder">
                                     <div class="table-responsive">
                                         <table id="myTable" class="table table-styled" style="padding-bottom: 20px;  border:none">
@@ -54,32 +51,35 @@
                                                         </div>
                                                     </th>
                                                     <th>S/N</th>
-                                                    <th>Name</th>
-                                                    <th>Rss URL</th>
+                                                    <th>Ad Name</th>
+                                                    <th>Ad URL</th>
+                                                    <th>Ad Description</th>
                                                     <th>Actions</th>
                                                 </tr>  
                                                 </thead>  
                                                 <tbody>  
                                                 <?php
                                                 $countnum = 0;
-                                                foreach ($rssfeed as $row) :                                                    
+                                                foreach ($ads as $row) :                                                    
                                                 echo $row['status'] == 0 ? "<tr style='background:#f1f2f6; '>" : "<tr>";
                                                
                                                 $countnum++
                                                 ?>
                                                     <td>
 														<div class="checkbox">
-															<input id="checkbox<?= $countnum ?>" type="checkbox" name="<?php echo $row['rss_id'] ?>">
+															<input id="checkbox<?= $countnum ?>" type="checkbox" name="<?php echo $row['ad_id'] ?>">
 															<label for="checkbox<?= $countnum ?>"></label>
 														</div>
 													</td>
                                                     <td><?php echo $countnum ?></td>
-                                                  
                                                     <td style="font-weight: bold;">
-                                                        <input type="text" style="border:0px;" value="<?= $row['rss_name'] ?>" />
+                                                        <input type="text" style="border:0px;" value="<?= $row['ad_name'] ?>" />
                                                     </td>
                                                     <td>
-                                                        <input type="text" style="border:0px;" value="<?= $row['rss_url'] ?>" />
+                                                        <input type="text" style="border:0px;" value="<?= $row['ad_url'] ?>" />
+                                                    </td>
+                                                    <td style="font-weight: bold;">
+                                                        <input type="text" style="border:0px;" value="<?= $row['ad_desc'] ?>" />
                                                     </td>
                                                     <td class="relative">
                                                         <a class="action-btn " href="javascript:void(0); ">
@@ -98,26 +98,26 @@
                                                         <div class="action-option ">
                                                             <ul>
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="editrss(<?= $row['rss_id'] ?>)" >
+                                                                    <a href="javascript:void(0);" onclick="editad(<?= $row['ad_id'] ?>)" >
                                                                         <i class="far fa-edit mr-2" aria-hidden="true"></i> Save
                                                                     </a>
                                                                 </li>
                                                                
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="deleterss(<?= $row['rss_id'] ?>)" >
+                                                                    <a href="javascript:void(0);" onclick="deletead(<?= $row['ad_id'] ?>)" >
                                                                         <i class="far fa-trash-alt mr-2" aria-hidden="true"></i> Delete
                                                                     </a>
                                                                 </li>
 
                                                                 <?php if($row['status'] == 0){ ?>
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="publishrss(<?= $row['rss_id'] ?>)" >
+                                                                    <a href="javascript:void(0);" onclick="publishad(<?= $row['ad_id'] ?>)" >
                                                                         <i class="far fa-check-square mr-1" aria-hidden="true"></i> Publish
                                                                     </a>
                                                                 </li>
                                                                 <?php } else { ?>
                                                                 <li>
-                                                                    <a href="javascript:void(0);" onclick="unpublishrss(<?= $row['rss_id'] ?>)" >
+                                                                    <a href="javascript:void(0);" onclick="unpublishad(<?= $row['ad_id'] ?>)" >
                                                                         Unpublish
                                                                     </a>
                                                                 </li>

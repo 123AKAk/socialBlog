@@ -4,25 +4,25 @@
     include 'includes/sidebar.php';
 
     // Get all ACTIVE users 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE userstatus = 1 ORDER BY id DESC");
+    $stmt = $conn->prepare("SELECT * FROM user WHERE status = 1 ORDER BY user_id DESC");
     $stmt->execute();
     $data = $stmt->fetchAll();
     $userscount = $stmt->rowCount();
 
     // Get all POST
-    $stmt = $conn->prepare("SELECT * FROM article");
+    $stmt = $conn->prepare("SELECT * FROM posts");
     $stmt->execute();
     $data = $stmt->fetchAll();
     $postcount = $stmt->rowCount();
 
     // Get all AUTHOR Data
-    $stmt = $conn->prepare("SELECT * FROM author");
+    $stmt = $conn->prepare("SELECT * FROM admin");
     $stmt->execute();
     $authors = $stmt->fetchAll();
-    $authorcount = $stmt->rowCount();
+    $admincount = $stmt->rowCount();
 
     // Get all NEWSLETTER Data
-    $stmt = $conn->prepare("SELECT * FROM newsletters");
+    $stmt = $conn->prepare("SELECT * FROM subscribed_emails");
     $stmt->execute();
     $authors = $stmt->fetchAll();
     $emailcount = $stmt->rowCount();
@@ -67,7 +67,7 @@
                     <div class="col-xl-3 col-lg-4 col-md-6">
                         <div class="card ad-info-card">
                             <div class="card-body dd-flex align-items-center">
-                                <h3>Blog Post(s)</h3>
+                                <h3>Post(s)</h3>
                                 <div class="icon-info-text">
                                     <h5 class="ad-title"></h5>
                                     <h4 class="ad-card-title"><?= $postcount ?></h4>
@@ -79,9 +79,9 @@
                     <div class="col-xl-3 col-lg-4 col-md-6">
                         <div class="card ad-info-card">
                             <div class="card-body dd-flex align-items-center">
-                                <h3>Author(s)</h3>
+                                <h3>Admin(s)</h3>
                                 <div class="icon-info-text">
-                                    <h4 class="ad-card-title"><?= $authorcount ?></h4>
+                                    <h4 class="ad-card-title"><?= $admincount ?></h4>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="card chart-card">
                             <div class="card-header">
-                                <h4 class="has-btn">Site Analystics <span><button type="button" class="btn btn-primary squer-btn sm-btn">View</button></span></h4>
+                                <h4 class="has-btn">Site Analystics <span><button type="button" class="btn btn-secondary btn sm-btn">View</button></span></h4>
                             </div>
                             <div class="card-body">
                                 

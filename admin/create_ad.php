@@ -3,7 +3,7 @@
     include 'includes/navbar.php';
     include 'includes/sidebar.php';
 
-    $stmt = $conn->prepare("SELECT category_id, category_name FROM category WHERE status = 1");
+    $stmt = $conn->prepare("SELECT * FROM category");
     $stmt->execute();
     $categories = $stmt->fetchAll();
 
@@ -52,28 +52,22 @@
 
                                                 <div class="col-6 col-md-6">
                                                     <div class="form-group">
-                                                        <label for="postTitle" class="col-form-label">Post Title</label>
-                                                        <input class="form-control" type="text" placeholder="Enter Post Title" name="postTitle" id="postTitle" >
+                                                        <label for="adName" class="col-form-label">Ad Name</label>
+                                                        <input class="form-control" type="text" placeholder="Enter Ad Name" name="adName" id="adName" >
                                                     </div>
                                                 </div>
 
                                                 <div class="col-6 col-md-6">
                                                     <div class="form-group">
-                                                    <label for="category" class="col-form-label">Post Category</label>
-                                                    <input class="form-control" type="text" name="category" list="category" value="" placeholder="Select Category">
-                                                        <datalist id="category">
-                                                            <?php foreach ($categories as $category) : ?>
-                                                                <option value="<?= $category['category_name'] ?>"><?= $category['category_id'] ?>
-                                                                </option>
-                                                            <?php endforeach; ?>
-                                                        </datalist>
+                                                        <label for="adUrl" class="col-form-label">Ad URL</label>
+                                                        <input class="form-control" type="text" placeholder="Enter Ad URL" name="adUrl" id="adUrl" >
                                                     </div>
                                                 </div>
 
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label for="postContents">Post Content</label>
-                                                        <textarea class="form-control" name="postContents"  required id="postContents" rows="3" required></textarea>
+                                                        <label for="adDesc">Ad Description</label>
+                                                        <textarea class="form-control" name="adDesc" id="adDesc" rows="2" required></textarea>
                                                     </div>
                                                 </div>
                                                 
@@ -164,14 +158,10 @@
 <?php
     include 'includes/footer.php';
 ?>
-    <!-- Text Editor Script -->
-    <script src="//cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
     <!-- dropzonejs -->
     <script src="assets/css/dropzone/min/dropzone.min.js"></script>
 
     <script>
-        CKEDITOR.replace('postContents');
-
         // Dropzone has been added as a global variable.
         //const dropzone = new Dropzone("div.my-dropzone", { url: "http://localhost:81/socialblog/admin/fileUploads/images" });
 
