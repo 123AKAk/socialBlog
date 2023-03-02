@@ -1413,7 +1413,14 @@ input:checked + .slider:before {
 .widget-comments .comment-item img {
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+  border-radius: 10%;
+  margin-left: 2px;
+  margin-right: 15px;
+}
+
+.widget-comments .comment-item .comimg {
+  width: 80px;
+  height: 80px;
   margin-right: 15px;
 }
 
