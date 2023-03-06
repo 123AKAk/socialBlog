@@ -7,30 +7,41 @@
             <section class="mt-60  mb-30 h-39">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="card card-primary card-outline">
+                        <div class=" card-primary card-outline">
                         
                             <div class="">
                                 <h3 class="text-center">User Dashboard</h3>
                                 <p class="text-center">Good Evening, Eyo!</p>
                                 <nav class="">
                                     <div class="nav nav-tabs mb-3" id="nav-tab" role="tablist">
-                                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Manage Blog Posts</button>
-                                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile & Setttings</button>
-                                        <a class="nav-link" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Ads Managements</a>
+                                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true" style="color:gray"> 
+                                            Manage Blog Posts
+                                        </button>
+
+                                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false" style="color:gray">
+                                            Profile & Setttings
+                                        </button>
+
+                                        <button class="nav-link" id="nav-savedposts-tab" data-bs-toggle="tab" data-bs-target="#nav-savedposts" type="button" role="tab" aria-controls="nav-savedposts" aria-selected="false" style="color:gray">
+                                            Saved Posts
+                                        </button>
+
+                                        <a class="nav-link" data-bs-toggle="modal" href="#exampleModalToggle" role="button" style="color:gray">Ads Managements</a>
                                     </div>
                                 </nav>
+                                
                                 <div class="tab-content p-3" id="nav-tabContent">
                                     <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                         <div class="accordion accordion-flush" id="accordionFlushExample">
-                                            <div class="accordion-item">
+                                            <div class="">
                                                 <h2 class="accordion-header" id="flush-headingOne">
-                                                <a href="javascript:void(0); " class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                                <a href="javascript:void(0); " class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color: whitesmoke; color:black;">
                                                     Create a Post
                                                 </a>
                                                 </h2>
                                                 <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                                     <div class="accordion-body">
-                                                        <form action="https://demo-noonpost.assiagroupe.net/html/assets/php/mail.php" class="widget-form contact_form row" method="POST" id="main_contact_form" autocomplete="off">
+                                                        <form action="" class="widget-form contact_form row" method="POST" id="main_contact_form" autocomplete="off">
                                                             <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
                                                             <div class="alert alert-success contact_msg" style="display: none" role="alert">
                                                                 Your message was sent successfully.
@@ -123,14 +134,14 @@
                                                             </div>
                                                         
                                                             <div class="text-center justify-content-center">
-                                                                <button type="submit" name="submit" class="btn btn-outline-primary text-center">Submit Post</button>
+                                                                <button type="submit" class="btn-custom">Submit Post</button>
                                                             </div>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card p-3">
+                                        <div class=" p-3">
                                             <div class="widget-comments">
                                                 <div class="title">
                                                     
@@ -207,9 +218,9 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                     <div class="card p-3">
+                                
+                                <div class="tab-pane fade p-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                     <div class="">
                                         <form action="" class="widget-form contact_form row" method="POST" id="main_contact_form" autocomplete="off">
                                             <h6>Profile & Settings</h6>
                                             <div class="col-6 col-md-6">
@@ -244,10 +255,53 @@
                                                 
                                             <div class="col">
                                                 <div class="form-group">
-                                                    <button type="submit" name="submit" class="btn btn-primary">Submit Post</button>
+                                                    <button type="submit" class="btn-custom">Save</button>
                                                 </div>
                                             </div>
                                         </form>
+                                     </div>
+                                </div>
+                                
+                                <div class="tab-pane fade p-3" id="nav-savedposts" role="tabpanel" aria-labelledby="nav-savedposts-tab">
+                                     <div class="">
+                                        <div class="widget-comments">
+                                            <div class="title">
+                                                <p>Saved Posts</p>    
+                                            </div>
+                                            <div class="dyn-height">
+                                                <!--Post-1-->
+                                                <div class="col-xl-4 col-lg-6 col-md-6">
+                                                    <div class="post-card">
+                                                        <div class="post-card-imagea">
+                                                            <a href="post.php">
+                                                                <img src="assets/img/blog/25.jpg" alt="">
+                                                            </a>
+                                                        </div>
+                                                        <div class="post-card-content">
+                                                            <div class="entry-cat">
+                                                                <a href="blog-grid.php" class="categorie"> fashion</a>
+                                                            </div>
+
+                                                            <h5 class="entry-title">
+                                                                <a href="post.php">5 Effective Ways I’m Finding Focus in a Busy Season of Life</a>
+                                                            </h5>
+
+                                                            <div class="post-exerpt">
+                                                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit quam atque ipsa laborum sunt distinctio... </p>
+                                                            </div>
+
+                                                            <ul class="entry-meta list-inline">
+                                                                <li class="post-author-img"><a href="author.php"> <img src="assets/img/author/1.jpg" alt=""></a></li>
+                                                                <li class="post-author"><a href="author.php">David Smith</a> </li>
+                                                                <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <!--/-->
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
                                      </div>   
                                     </div>
                                     
@@ -268,9 +322,9 @@
                     <h5 class="modal-title" id="exampleModalToggleLabel">Ads Management</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body row text-center justify-content-center">
+                <div class=" row text-center justify-content-center">
                     <div class="col-md-6">
-                        <a href="adsmanagement.php" class="btn btn-outline-default">
+                        <a href="adsmanagements.php" class="btn btn-outline-default">
                             View Exsiting Ad(s) stats 
                         </a>
                     </div>
@@ -294,10 +348,62 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Information about ads here
+                    <div>
+                        <form  class="sign-form widget-form contact_form " method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Ad Name" name="adname" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="duration" class="pl-2">Duration of Ad</label>
+                                <input type="text" class="form-control" id="duration">
+                            </div>
+                            <div class="form-group">
+                                <label for="addescription" class="pl-2">Ad Description</label>
+                                <textarea class="form-control" placeholder="" name="addescription" id="addescription" value=""></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="category" class="pl-2">Ad Category</label>
+                                <select name="category" id="category" class="form-control">
+                                    <option value=""></option>
+                                    <option value="">Bussiness</option>
+                                    <option value="">Health</option>
+                                    <option value="">Food</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="country" class="pl-2">Ad Target Country</label>
+                                <select name="country" id="country" class="form-control">
+                                    <option value=""></option>
+                                    <option value="Nigeria">Nigeria</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="Ghana">Ghana</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender" class="pl-2">Ad Target Gender</label>
+                                <select name="gender" id="gender" class="form-control">
+                                    <option value=""></option>
+                                    <option value="Male">Males</option>
+                                    <option value="Female">Females</option>
+                                    <option value="All">All</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="duration" class="pl-2">Ad Thumbnail</label>
+                                <input type="file" class="form-control" name="adthumbnail">
+                            </div>
+                            <div class="sign-controls form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="rememberMe">
+                                    <label class="custom-control-label" for="rememberMe">Agree to the <a href="adstermandconditions.php" class="btn-link">terms of our Ad Service</a> </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                    <button type="submit" class="btn-custom">Next</button>
                 </div>
                 </div>
             </div>
@@ -310,8 +416,36 @@
     <script src="//cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
     <!-- dropzonejs -->
     <script src="admin/assets/css/dropzone/min/dropzone.min.js"></script>
-
+    <!-- date-range-picker -->
+    <script src="admin/assets/moment/moment.min.js"></script>
+    <script src="admin/assets/daterangepicker/daterangepicker.js"></script>
     <script>
+
+        
+        //Date range picker
+        $('#duration').daterangepicker()
+           
+        //Date range as a button
+        $('#daterange-btn').daterangepicker(
+            {
+                ranges   : {
+                'Today'       : [moment(), moment()],
+                'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+                'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: moment().subtract(29, 'days'),
+                endDate  : moment()
+            },
+            function (start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+            }
+        )
+
+
+
         CKEDITOR.replace('postContents');
 
         // Dropzone has been added as a global variable.
@@ -488,7 +622,6 @@
         window.onload = autocomplete;
         
     </script>
-
 <?php
     include 'includes/scripts.php';
 ?>

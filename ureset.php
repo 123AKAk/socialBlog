@@ -39,7 +39,7 @@
                         </div>
                         <form  action="#" class="sign-form widget-form " method="post">
                             <div class="form-group" style="text-align: center;">
-                                <input type="text" class="form" placeholder=" Enter Code from Email" name="code" value="">
+                                <input type="number" class="form" placeholder=" Enter Code from Email" name="code" value="">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Password *" name="password" value="">

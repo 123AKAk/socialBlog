@@ -31,8 +31,8 @@
                         <div class="col-xl-9 mt-30 side-content">
                             <div class="theiaStickySidebar">
                                 
-                                 <!--Post-1-->
-                                 <div class="post-list">
+                                <!--Post-1-->
+                                <div class="post-list">
                                     <div class="post-list-image">
                                         <a href="post.php">
                                             <img src="assets/img/blog/16.jpg" alt="">

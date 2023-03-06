@@ -31,4 +31,10 @@
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="assets/css/custom.css">
   <link rel="stylesheet" type="text/css" href="assets/css/edits.css">
+
+  <!-- daterange picker -->
+  <link rel="stylesheet" type="text/css" href="admin/assets/daterangepicker/daterangepicker.css">
+
+  <!-- ajax -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
