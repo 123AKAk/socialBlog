@@ -41,7 +41,22 @@ $( "#signup-form" ).submit(function( event )
             .then(data => 
             {
                 var result = JSON.parse(data);
-                $( "#bmsgspan" ).text( result.message ).show().fadeOut( 5000 );
+                if(result.response == true)
+                {
+                    alertify.success(result.message);
+                    alertify.message('Redirecting...');
+                    setTimeout(function(){
+                        window.location.replace("login.php");
+                    }, 1000);
+
+                    // alertify.alert(result.message, function(){
+                    //     alertify.message('OK');
+                    // });
+                }
+                else
+                {
+                    alertify.error(result.message);
+                }
             });
         }
         else
