@@ -30,12 +30,12 @@ $( "#signup-form" ).submit(function( event )
             let formdata = new FormData();
             formdata.append("username", username);
             formdata.append("email", username);
-            formdata.append("user_country", country);
             formdata.append("gender", gender);
             formdata.append("password", password);
             formdata.append("user_ipaddress", ipaddress);
+            formdata.append("user_country", country);
 
-            let loca = "assets/subnewsletter.php";
+            let loca = "classes/components/userComponents.php?dataPurpose=signup";
             fetch(loca, { method: "POST", body: formdata })
             .then(res => res.text())
             .then(data => 

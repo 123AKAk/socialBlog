@@ -1,8 +1,37 @@
 <?php
     class sharedComponents
     {
+        function insertToDB($conn, $table, $data)
+        {
+            // Get keys string from data array
+            $columns = $this->implodeArray(array_keys($data));
+
+            // Get values string from data array with prefix (:) added
+            $prefixed_array = preg_filter('/^/', ':', array_keys($data));
+            $values = $this->implodeArray($prefixed_array);
+
+            try {
+                // prepare sql and bind parameters
+                $sql = "INSERT INTO $table ($columns) VALUES ($values); SELECT LAST_INSERT_ID();";
+                $stmt = $conn->prepare($sql);
+
+                // insert row
+                $stmt->execute($data);
+                
+                //echo "New records created successfully";
+                $resultData = $conn->lastInsertId();
+
+                return "['response' => true, 'message' => 'Successfull', 'code' => '1', 'data', ". $resultData ."]";
+            } catch (PDOException $error) {
+                
+                return "['response' => false, 'message' => 'Error! " .$error."', 'code' => '0', 'data', '']";
+            }
+        }
+
+
         //checks images and upload to server
-        function processImage($email, $image){
+        function processUploadImage($email, $image)
+        {
 
             $filename = htmlspecialchars(basename($_FILES[$image]["name"])).$email.date('d-m-y h:i:s');
             $target_dir = "../fileUploads/";
