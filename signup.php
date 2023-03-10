@@ -11,12 +11,12 @@
                             <h5>Sign up</h5>
                         </div>
                         
-                        <form  class="sign-form widget-form contact_form " method="post">
+                        <form  class="sign-form widget-form contact_form " id="signup-form">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Username*" name="username" value="">
+                                <input type="text" class="form-control" placeholder="User Name*" id="username" name="username" value="">
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Email Address*" name="email" value="">
+                                <input type="email" class="form-control" placeholder="Email Address*" id="email" name="email" value="">
                             </div>
                             <div class="form-group">
                                 <select name="country" id="country" class="form-control">
@@ -35,14 +35,14 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password*" name="password" value="">
+                                <input type="password" class="form-control" placeholder="Password*" id="password" name="password" value="">
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Confrim Password*" name="confrimpassword" value="">
+                                <input type="password" class="form-control" placeholder="Confrim Password*" id="confrimpassword" name="confrimpassword" value="">
                             </div>
                             <div class="sign-controls form-group">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="rememberMe">
+                                    <input type="checkbox" class="custom-control-input" id="agreed">
                                     <label class="custom-control-label" for="rememberMe">Agree to our <a href="termandconditions.php" class="btn-link">terms & conditions</a> </label>
                                 </div>
                             </div>

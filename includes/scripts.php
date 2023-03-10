@@ -10,6 +10,7 @@
 
     <!-- JS main  -->
     <script src="assets/js/main.js"></script>
+    <script src="scripts/code.js"></script>
 
     </body>
 
