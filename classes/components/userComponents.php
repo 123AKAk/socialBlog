@@ -13,7 +13,7 @@
                 $email = $_POST["email"];
 
                 // Prepare a select statement
-                $sql = "SELECT * FROM users WHERE email = :email";
+                $sql = "SELECT * FROM user WHERE email = :email";
 
                 if ($stmt = $pdo->prepare($sql)) {
                     // Bind variables to the prepared statement as parameters
@@ -41,8 +41,9 @@
                                 "user_country" => $sharedComponents->test_input($_POST["user_country"])
                             );
 
+
                             // Call insert function
-                            $resultmsg = $sharedComponents->insertToDB($conn, $tableName, $data);
+                            $resultmsg = $sharedComponents->insertToDB($conn, "user", $data);
 
                             echo json_encode($resultmsg);
                         }
