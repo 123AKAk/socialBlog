@@ -12,42 +12,45 @@
             case "signup":
                 $email = $_POST["email"];
 
-                // check if the email used is in the database already
-                $sql = "SELECT * FROM `user` WHERE `email` = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([$email]);
-                $users = $stmt->fetchAll();
+                // Prepare a select statement
+                $sql = "SELECT * FROM users WHERE email = :email";
 
-                $error_handling = 1;// used to collect data about a certain error in the app
-                
-        foreach ($users as $i) {
-            if ($i["email"] == $email) {
-                $error_handling = 2;
-                break;
-            }
-        }
+                if ($stmt = $pdo->prepare($sql)) {
+                    // Bind variables to the prepared statement as parameters
+                    $stmt->bindParam(":email", $param_email, PDO::PARAM_STR);
+                    // Set parameters
+                    $param_email = trim($_POST["email"]);
 
-        if ($error_handling == 1) {
-                $tableName = "user";
+                    // Attempt to execute the prepared statement
+                    if ($stmt->execute()) 
+                    {
+                        // Check if username exists, if yes then verify password
+                        if ($stmt->rowCount() == 1) {
+                            // Display an error message if email exist
+                            echo json_encode( ['response' => false, 'message' => 'User Already Exist', 'code' => '2', 'data', '']);
+                        }
+                        else 
+                        {
+                            // PREPARE DATA TO INSERT INTO DB
+                            $data = array(
+                                "username" => $sharedComponents->test_input($_POST["username"]),
+                                "email" => $sharedComponents->test_input($_POST["email"]),
+                                "gender" => $sharedComponents->test_input($_POST["gender"]),
+                                "password" => $sharedComponents->test_input($_POST["password"]),
+                                "user_ip_address" => $sharedComponents->test_input($_POST["user_ip_address"]),
+                                "user_country" => $sharedComponents->test_input($_POST["user_country"])
+                            );
 
-                // PREPARE DATA TO INSERT INTO DB
-                $data = array(
-                    "username" => $sharedComponents->test_input($_POST["username"]),
-                    "email" => $sharedComponents->test_input($_POST["email"]),
-                    "gender" => $sharedComponents->test_input($_POST["gender"]),
-                    "password" => $sharedComponents->test_input($_POST["password"]),
-                    "user_ip_address" => $sharedComponents->test_input($_POST["user_ip_address"]),
-                    "user_country" => $sharedComponents->test_input($_POST["user_country"])
-                );
+                            // Call insert function
+                            $resultmsg = $sharedComponents->insertToDB($conn, $tableName, $data);
 
-                // Call insert function
-                $resultmsg = $sharedComponents->insertToDB($conn, $tableName, $data);
-
-                echo json_encode($resultmsg);
-            }
-            elseif ($error_handling == 2) {
-                echo json_encode( ['response' => false, 'message' => 'User Already Exist', 'code' => '2', 'data', '']);
-            }
+                            echo json_encode($resultmsg);
+                        }
+                    }
+                    else {
+                        echo json_encode( ['response' => false, 'message' => 'Error executing Query', 'code' => '0', 'data', '']);
+                    }
+                }
                 break;
             case "login":
                 echo "2";
