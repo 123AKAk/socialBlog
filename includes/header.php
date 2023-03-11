@@ -37,4 +37,17 @@
 
   <!-- ajax -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+  <!-- old alertify -->
+	<!-- <link href="assets/js/alertify/themes/alertify.core.css" rel="stylesheet">
+	<link href="assets/js/alertify/themes/alertify.default.css" rel="stylesheet"> -->
+
+	<link href="assets/alertify/css/alertify.css" rel="stylesheet">
+	<link href="assets/alertify/css/alertify.min.css" rel="stylesheet">
+
+	<link href="assets/alertify/css/themes/bootstrap.css" rel="stylesheet">
+	<link href="assets/alertify/css/themes/bootstrap.min.css" rel="stylesheet">
+
+	<link href="assets/alertify/css/themes/default.css" rel="stylesheet">
+
 </head>

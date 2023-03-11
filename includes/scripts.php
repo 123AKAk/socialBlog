@@ -8,6 +8,11 @@
     <script src="assets/js/ajax-contact.js"></script>
     <script src="assets/js/switch.js"></script>
 
+    <!-- alertify -->
+    <!-- <script src="assets/js/alertify/src/alertify.js"></script> -->
+    <script src="assets/alertify/alertify.js"></script>
+    <script src="assets/alertify/alertify.min.js"></script>
+    
     <!-- JS main  -->
     <script src="assets/js/main.js"></script>
     <script src="scripts/code.js"></script>
