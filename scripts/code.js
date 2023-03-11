@@ -39,7 +39,7 @@ $("#signup-form").submit(function (event) {
           fetch(loca, { method: "POST", body: formdata })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
+              console.log(data);
               var result = (data);
               if (result.response == true) {
                 alertify.success(result.message);

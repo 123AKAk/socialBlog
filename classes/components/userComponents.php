@@ -1,17 +1,28 @@
 <?php
-    require "db.php"; 
+    require "db.php";
     require 'sharedComponents.php';
     $sharedComponents = new SharedComponents();
 
     $dataPurpose = $_GET['dataPurpose'];
+
+
+    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+    {
+        $url = "https://";
+    }
+    else
+    {
+        $url = "http://";
+    }
+    // Append the requested resource location to the URL
+    //$url.= $_SERVER['REQUEST_URI'];
+                
 
     if ($conn)
     {
         switch ($dataPurpose) 
         {
             case "signup":
-                $email = $_POST["email"];
-
                 // Prepare a select statement
                 $sql = "SELECT * FROM user WHERE email = :email";
 
@@ -43,9 +54,43 @@
 
 
                             // Call insert function
-                            $resultmsg = $sharedComponents->insertToDB($conn, "user", $data);
+                            $resultmsg = json_encode($sharedComponents->insertToDB($conn, "user", $data));
 
-                            echo json_encode($resultmsg);
+                            //check if data entered the table 
+                            $resultmsg2 = json_decode($resultmsg, 1);
+                            if (isset($resultmsg2["response"])) 
+                            {
+                                if ($resultmsg2["response"] == true) 
+                                {
+                                    $resultmsg2["message"];
+                                    
+                                    // Append the host(domain name, ip) to the URL.
+                                    $url.= $_SERVER['HTTP_HOST']."/uctivate.php?code=".$code."&userid=".$userid."";
+
+                                    $emailSubject = "Macae Blog Signup Successful";
+                                    $emailMessage = "
+                                        <h3>Thank you for Registering on Macae .</h3>
+                                        <p>Your Account Information:</p>
+                                        <p>Username: ".$_POST["username"]."</p>
+                                        <p>Email: ".$_POST["email"]."</p>
+                                        <p>Password: ".$_POST["password"]."</p>
+                                        <p>Please click the link below to activate your account.</p>
+                                        <a href='".$url."'>Activate your Account</a>
+                                    ";
+
+                                    $mailResultMsg = $sharedComponents->sendUsersMail($_POST["username"], $subject, $emailMessage, $_POST["email"], $altBody);
+
+                                    echo json_encode($mailResultMsg);
+                                }
+                                else
+                                {
+                                    echo $resultmsg;
+                                }
+                            }
+                            else
+                            {
+                                echo $resultmsg;
+                            }
                         }
                     }
                     else {

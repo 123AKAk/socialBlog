@@ -1,4 +1,12 @@
 <?php
+
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+
     class sharedComponents
     {
         function insertToDB($conn, $table, $data)
@@ -24,10 +32,51 @@
                 return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data', ". $resultData ."];
             } catch (PDOException $error) {
                 
-                return ['response' => false, 'message' => 'Error! " .$error."', 'code' => '0', 'data', ''];
+                return ['response' => false, 'message' => 'Error! '.$error, 'code' => '0', 'data', ''];
             }
         }
 
+        function sendUsersMail($username, $subject, $message, $toEmail, $altBody)
+        {
+            require "../includes/varnames.php"; 
+            require 'mailers/vendor/autoload.php';
+
+            $mail = new PHPMailer(true);
+            try
+            {
+                //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+                //$mail->IsSMTP();
+                $mail->Host = $siteEmailHost;
+                $mail->SMTPAuth = true;
+                $mail->Username = $siteEmail;
+                $mail->Password = $siteEmailPassword;
+                $mail->SMTPSecure = 'SSL';
+                $mail->Port = $siteEmailPort;
+
+                $mail->setFrom($toEmail, $siteEmail);
+                $mail->addAddress($email, $username);
+                $mail->addReplyTo($siteEmail, 'For any Information');
+                $mail->isHTML(true);
+                $mail->Subject = $subject;
+                $mail->Body    = $message;
+                $mail->AltBody = $altBody;
+
+                $mail->send();
+
+                if ($mail->send())
+                {
+                    return ['response' => true, 'message' => 'Account created Successfully, access your email to activate your account'];
+                }
+                else 
+                {
+                    return ['response' => false, 'message' => 'System Failed Sending Email', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
+                }
+            }
+            catch (Exception $eax) 
+            {
+                return ['response' => false, 'message' => 'System Failed Sending Email', 'code' => '0', 'data', "Error Info: ".$eax];
+            }
+        }
 
         //checks images and upload to server
         function processUploadImage($email, $image)
