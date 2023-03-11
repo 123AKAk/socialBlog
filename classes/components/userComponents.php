@@ -10,7 +10,24 @@
         switch ($dataPurpose) 
         {
             case "signup":
+                $email = $_POST["email"];
 
+                // check if the email used is in the database already
+                $sql = "SELECT * FROM `user` WHERE `email` = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$email]);
+                $users = $stmt->fetchAll();
+
+                $error_handling = 1;// used to collect data about a certain error in the app
+                
+        foreach ($users as $i) {
+            if ($i["email"] == $email) {
+                $error_handling = 2;
+                break;
+            }
+        }
+
+        if ($error_handling == 1) {
                 $tableName = "user";
 
                 // PREPARE DATA TO INSERT INTO DB
@@ -19,15 +36,18 @@
                     "email" => $sharedComponents->test_input($_POST["email"]),
                     "gender" => $sharedComponents->test_input($_POST["gender"]),
                     "password" => $sharedComponents->test_input($_POST["password"]),
-                    "user_ipaddress" => $sharedComponents->test_input($_POST["user_ipaddress"]),
+                    "user_ip_address" => $sharedComponents->test_input($_POST["user_ip_address"]),
                     "user_country" => $sharedComponents->test_input($_POST["user_country"])
                 );
 
                 // Call insert function
                 $resultmsg = $sharedComponents->insertToDB($conn, $tableName, $data);
 
-                echo $resultmsg;
-
+                echo json_encode($resultmsg);
+            }
+            elseif ($error_handling == 2) {
+                echo json_encode( ['response' => false, 'message' => 'User Already Exist', 'code' => '2', 'data', '']);
+            }
                 break;
             case "login":
                 echo "2";

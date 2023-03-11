@@ -21,10 +21,10 @@
                 //echo "New records created successfully";
                 $resultData = $conn->lastInsertId();
 
-                return "['response' => true, 'message' => 'Successfull', 'code' => '1', 'data', ". $resultData ."]";
+                return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data', ". $resultData ."];
             } catch (PDOException $error) {
                 
-                return "['response' => false, 'message' => 'Error! " .$error."', 'code' => '0', 'data', '']";
+                return ['response' => false, 'message' => 'Error! " .$error."', 'code' => '0', 'data', ''];
             }
         }
 
