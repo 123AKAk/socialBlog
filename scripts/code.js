@@ -1,72 +1,78 @@
 window.onload = getLocation;
 
-// signup form
-$( "#signup-form" ).submit(function( event ) 
-{
-    var username = $( "#username" ).val();
-    var email = $( "#email" ).val();
-    var country = $( "#country" ).val();
-    var gender = $( "#gender" ).val();
-    var password = $( "#password" ).val();
-    var confrimpassword = $( "#confrimpassword" ).val();
-    var agreed = $( "#agreed" ).val();
+    // signup form
+    $( "#signup-form" ).submit(function( event ) 
+    {
+        var username = $( "#username" ).val();
+        var email = $( "#email" ).val();
+        var country = $( "#country" ).val();
+        var gender = $( "#gender" ).val();
+        var password = $( "#password" ).val();
+        var confrimpassword = $( "#confrimpassword" ).val();
+        var agreed = $( "#agreed" ).val();
 
-    if(username == "" || email == "" || country == "" || gender == "" || password == "" || confrimpassword == "")
-    {
-        alertify.error("Fill all Input Feilds");
-    }
-    if(ValidateEmail(email) == false)
-    {
-        alertify.error("Invalid Email, use a Valid Email");
-    }
-    if(password != confrimpassword)
-    {
-        alertify.error("Passwords are not the same");
-    }
-    else
-    {
-        if($("#agreed").is(':checked'))
+        if(username == "" || email == "" || country == "" || gender == "" || password == "" || confrimpassword == "")
         {
-            let formdata = new FormData();
-            formdata.append("username", username);
-            formdata.append("email", username);
-            formdata.append("gender", gender);
-            formdata.append("password", password);
-            formdata.append("user_ipaddress", ipaddress);
-            formdata.append("user_country", country);
-
-            let loca = "classes/components/userComponents.php?dataPurpose=signup";
-            fetch(loca, { method: "POST", body: formdata })
-            .then(res => res.text())
-            .then(data => 
-            {
-                var result = JSON.parse(data);
-                if(result.response == true)
-                {
-                    alertify.success(result.message);
-                    alertify.message('Redirecting...');
-                    setTimeout(function(){
-                        window.location.replace("login.php");
-                    }, 1000);
-
-                    // alertify.alert(result.message, function(){
-                    //     alertify.message('OK');
-                    // });
-                }
-                else
-                {
-                    alertify.error(result.message);
-                }
-            });
+            alertify.error("Fill all Input Feilds");
         }
         else
         {
-            alertify.error("Accpet Terms and Agreement to continue");   
+            if(ValidateEmail(email) == false)
+            {
+                alertify.error("Invalid Email, use a Valid Email");
+            }
+            else
+            {
+                if(password != confrimpassword && password == "")
+                {
+                    alertify.error("Passwords are not the same");
+                }
+                else
+                {
+                    if($("#agreed").is(':checked'))
+                    {
+                        let formdata = new FormData();
+                        formdata.append("username", username);
+                        formdata.append("email", username);
+                        formdata.append("gender", gender);
+                        formdata.append("password", password);
+                        formdata.append("user_ipaddress", ipaddress);
+                        formdata.append("user_country", country);
+        
+                        let loca = "classes/components/userComponents.php?dataPurpose=signup";
+                        fetch(loca, { method: "POST", body: formdata })
+                        .then(res => res.text())
+                        .then(data => 
+                        {
+                            var result = JSON.parse(data);
+                            if(result.response == true)
+                            {
+                                alertify.success(result.message);
+                                alertify.message('Redirecting...');
+                                setTimeout(function(){
+                                    window.location.replace("login.php");
+                                }, 1000);
+        
+                                // alertify.alert(result.message, function(){
+                                //     alertify.message('OK');
+                                // });
+                            }
+                            else
+                            {
+                                alertify.error(result.message);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        alertify.error("Accpet Terms and Agreement to continue");   
+                    }
+                }
+            }
         }
-    }
 
-    event.preventDefault();
-});
+        event.preventDefault();
+    });
 
 
     function ValidateEmail(email)
