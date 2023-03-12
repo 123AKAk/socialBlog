@@ -1,6 +1,11 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    // Check if the user is already logged in, if yes then redirect him to dasboard page
+    if ($loggedin == true) {
+        echo "<script>window.location.replace('dashboard.php');</script>";
+    }
 ?>
         <main class="main">
             <!--Login-->
@@ -10,16 +15,16 @@
                         <div class="section-title">
                             <h5>Login</h5>
                         </div>
-                        <form  action="#" class="sign-form widget-form " method="post">
-                                <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Email*" name="email" value="">
+                        <form class="sign-form widget-form" id="login-form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Email*" name="email" id="email" value="">
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password*" name="password" value="">
+                                <input type="password" class="form-control" placeholder="Password*" name="password" id="password" value="">
                             </div>
                             <div class="sign-controls form-group">
                                 <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="rememberMe" name="rememberMe">
+                                    <input type="checkbox" class="custom-control-input" id="rememberMe" name="rememberMe">
                                     <label class="custom-control-label" for="rememberMe">Remember Me</label>
                                 </div>
                                 <a href="uforgotpassword.php" class="btn-link  ml-auto">Forgot Password?</a>

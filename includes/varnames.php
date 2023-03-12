@@ -1,9 +1,9 @@
 <?php 
-    $sitename = "Macae Blog";
+    $siteName = "Macae Blog";
     $globalName = "Macae";
-    $siteEmail = "admin@bluntechnology.com";
+    $siteEmail = "admin@donnapoodles.com";
     $siteEmailPassword = "5a51EZbK9jKj";
-    $siteEmailHost = "mail.bluntechnology.com";
+    $siteEmailHost = "mail.donnapoodles.com";
     $siteEmailPort = 465;
     $siteMsg = "Check out this Post on ";
     $siteHashTag = "BLUNT BLOGGING NIGERIA";

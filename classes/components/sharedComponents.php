@@ -29,23 +29,26 @@ use PHPMailer\PHPMailer\Exception;
                 //echo "New records created successfully";
                 $resultData = $conn->lastInsertId();
 
-                return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data', ". $resultData ."];
-            } catch (PDOException $error) {
+                return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data' => $resultData];
+            }
+            catch (PDOException $error) {
                 
-                return ['response' => false, 'message' => 'Error! '.$error, 'code' => '0', 'data', ''];
+                return ['response' => false, 'message' => 'Error! '.$error, 'code' => '0', 'data' => ''];
             }
         }
 
         function sendUsersMail($username, $subject, $message, $toEmail, $altBody)
         {
-            require "../includes/varnames.php"; 
-            require 'mailers/vendor/autoload.php';
+            require "../../includes/varnames.php"; 
+            require 'mailers/autoload.php';
 
             $mail = new PHPMailer(true);
             try
             {
                 //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                //$mail->IsSMTP();
+                //only to be used on Localhost
+                $mail->IsSMTP();
+                
                 $mail->Host = $siteEmailHost;
                 $mail->SMTPAuth = true;
                 $mail->Username = $siteEmail;
@@ -53,8 +56,8 @@ use PHPMailer\PHPMailer\Exception;
                 $mail->SMTPSecure = 'SSL';
                 $mail->Port = $siteEmailPort;
 
-                $mail->setFrom($toEmail, $siteEmail);
-                $mail->addAddress($email, $username);
+                $mail->setFrom($siteEmail, $siteName, 0);
+                $mail->addAddress($toEmail);
                 $mail->addReplyTo($siteEmail, 'For any Information');
                 $mail->isHTML(true);
                 $mail->Subject = $subject;
@@ -63,18 +66,18 @@ use PHPMailer\PHPMailer\Exception;
 
                 $mail->send();
 
-                if ($mail->send())
+                if (!$mail->send())
                 {
-                    return ['response' => true, 'message' => 'Account created Successfully, access your email to activate your account'];
+                    return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
                 }
                 else 
                 {
-                    return ['response' => false, 'message' => 'System Failed Sending Email', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
+                    return ['response' => true, 'message' => 'Account created Successfully, access your email to activate your account', 'code' => '1', 'data' => ''];
                 }
             }
             catch (Exception $eax) 
             {
-                return ['response' => false, 'message' => 'System Failed Sending Email', 'code' => '0', 'data', "Error Info: ".$eax];
+                return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Error Info: ".$eax];
             }
         }
 
