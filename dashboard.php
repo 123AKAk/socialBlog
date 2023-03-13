@@ -1,4 +1,10 @@
 <?php
+    //page required css
+
+    $style_refrences = '
+        <link rel="stylesheet" href="assets/summernote/summernote-lite.css">
+    ';
+
     include 'includes/header.php';
     include 'includes/navbar.php';
 
@@ -58,30 +64,32 @@
                                                 </h2>
                                                 <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                                     <div class="accordion-body">
-                                                        <form action="" class="widget-form contact_form row" method="POST" id="main_contact_form" autocomplete="off">
+                                                        <form  class="widget-form contact_form row" id="savePost-form" autocomplete="off">
                                                             <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
-                                                            <div class="alert alert-success contact_msg" style="display: none" role="alert">
-                                                                Your message was sent successfully.
-                                                            </div>
 
                                                             <div class="col-6 col-md-6">
                                                                 <div class="form-group">
-                                                                    <label for="postTitle" class="col-form-label">Post Title</label>
-                                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="postTitle" id="postTitle" />
+                                                                    <label for="post_title" class="col-form-label">Post Title</label>
+                                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="post_title" id="post_title" />
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-6 col-md-6">
                                                                 <div class="form-group">
-                                                                <label for="category" class="col-form-label">Post Category</label>
-                                                                <input class="form-control" type="text" name="category" list="category" value="" placeholder="Select Category" id="postCategory" autocomplete="off"/>
+                                                                <label for="post_category" class="col-form-label">Post Category</label>
+                                                                <input class="form-control" type="text" name="post_category" list="category" value="" placeholder="Select Category" id="post_category" autocomplete="off"/>
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-12">
                                                                 <div class="form-group">
-                                                                    <label for="postContents">Post Content</label>
-                                                                    <textarea class="form-control" name="postContents"  required id="postContents" rows="3" required></textarea>
+                                                                    <label for="post_contents">Post Content</label>
+                                                                    <!-- <textarea class="form-control" name="post_contents"  required id="post_contents" rows="3" required></textarea> -->
+                                                                    <textarea id="post_contents" name="post_contents">
+                                                                         <p>
+                                                                             Enter Post Contents here
+                                                                         </p>
+                                                                    </textarea>
                                                                 </div>
                                                             </div>
                                                             
@@ -428,14 +436,19 @@
 
 <?php
     include 'includes/footer.php';
+    include 'includes/scripts.php';
 ?>
+    <!-- Summernote -->
+    <script src="assets/summernote/summernote-lite.js"></script>
     <!-- Text Editor Script -->
-    <script src="//cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
+    <!-- <script src="//cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script> -->
     <!-- dropzonejs -->
     <script src="admin/assets/css/dropzone/min/dropzone.min.js"></script>
     <!-- date-range-picker -->
     <script src="admin/assets/moment/moment.min.js"></script>
     <script src="admin/assets/daterangepicker/daterangepicker.js"></script>
+
+    <!-- Page specific script -->
     <script>
 
         
@@ -463,7 +476,8 @@
 
 
 
-        CKEDITOR.replace('postContents');
+        //CK EDITOR
+        //CKEDITOR.replace('post_contents');
 
         // Dropzone has been added as a global variable.
         //const dropzone = new Dropzone("div.my-dropzone", { url: "http://localhost:81/socialblog/admin/fileUploads/images" });
@@ -530,7 +544,7 @@
         // DropzoneJS Demo Code End
     </script>
 
-<script>
+    <script>
         function autocomplete(inp, arr) 
         {
           /*the autocomplete function takes two arguments,
@@ -630,17 +644,15 @@
         }
         
         /*An array containing all the country names in the world:*/
-        var postcategories = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua & Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central Arfrican Republic","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cuba","Curacao","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauro","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre & Miquelon","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","St Kitts & Nevis","St Lucia","St Vincent","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Turks & Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
+        var postCategories = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua & Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central Arfrican Republic","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cuba","Curacao","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauro","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre & Miquelon","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","St Kitts & Nevis","St Lucia","St Vincent","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Turks & Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
         
         /*initiate the autocomplete function on the "myInput" element, and pass along the postcategories array as possible autocomplete values:*/
 
-        autocomplete(document.getElementById("postCategory"), postcategories);
+        
+        function loadFunctions()
+        {
+            autocomplete(document.getElementById("post_category"), postCategories);
 
-        window.onload = autocomplete;
-   
-
-        //prevent modal from closing from outside click
-        $(document).ready(function () {
             $('#exampleModalToggle').modal({
                 backdrop: 'static',
                 keyboard: false
@@ -649,9 +661,17 @@
                 backdrop: 'static',
                 keyboard: false
             })
+        }
+
+        window.onload = loadFunctions;
+
+        // Summernote
+        $('#post_contents').summernote({
+            height: 200,                 // set editor height
+            //minHeight: null,             // set minimum height of editor
+            //maxHeight: null,             // set maximum height of editor
+            focus: true                  // set focus to editable area after initializing summernote
         });
+
     </script>
-<?php
-    include 'includes/scripts.php';
-?>
     

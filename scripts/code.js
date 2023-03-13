@@ -155,6 +155,54 @@ $('#profile-form').submit(function (event) {
 
 });
 
+//savePost form
+$('#savePost-form').submit(function (event) {
+  reset();
+
+  var post_title = $("#post_title").val();
+  var post_category = $("#post_category").val();
+  var post_contents = $('#post_contents').summernote('code');
+
+  if (post_title == "" || post_category == "" || post_contents == "")
+  {
+    alertify.set('notifier','position', 'top-right');
+    alertify.error("Fill all Feilds");
+  }
+  else 
+  {
+    return;
+    let formdata = new FormData();
+    formdata.append("post_title", post_title);
+    formdata.append("post_category", post_category);
+    formdata.append("post_contents", post_contents);
+
+    let loca = "classes/components/userComponents.php?dataPurpose=savePost";
+    fetch(loca, { method: "POST", body: formdata })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        var result = (data);
+        if (result.response == true) 
+        {
+          alertify.success(result.message);
+        } else {
+          alertify.set({ delay: 15000 });
+          alertify.error(result.message);
+        }
+    });
+  }
+
+  //Destroy Summernote
+  $('#post_contents').summernote('destroy');
+
+  var post_contentsVal = 'Enter Post Contents here';
+  $('#post_contents').summernote('code', post_contentsVal);
+
+  event.preventDefault();
+
+});
+
+
 function ValidateEmail(email) {
   let emailtest = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
 
