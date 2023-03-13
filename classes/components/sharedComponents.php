@@ -1,4 +1,12 @@
 <?php
+
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+
     class sharedComponents
     {
         function insertToDB($conn, $table, $data)
@@ -21,13 +29,85 @@
                 //echo "New records created successfully";
                 $resultData = $conn->lastInsertId();
 
-                return "['response' => true, 'message' => 'Successfull', 'code' => '1', 'data', ". $resultData ."]";
-            } catch (PDOException $error) {
+                return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data' => $resultData];
+            }
+            catch (PDOException $error) {
                 
-                return "['response' => false, 'message' => 'Error! " .$error."', 'code' => '0', 'data', '']";
+                return ['response' => false, 'message' => 'Error! '.$error, 'code' => '0', 'data' => ''];
             }
         }
 
+        function sendUsersMail($username, $subject, $message, $toEmail, $altBody)
+        {
+            require "../../includes/varnames.php"; 
+            require 'mailers/autoload.php';
+
+            $mail = new PHPMailer(true);
+            try
+            {
+                //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+                //only to be used on Localhost
+                $mail->IsSMTP();
+                
+                $mail->Host = $siteEmailHost;
+                $mail->SMTPAuth = true;
+                $mail->Username = $siteEmail;
+                $mail->Password = $siteEmailPassword;
+                $mail->SMTPSecure = 'SSL';
+                $mail->Port = $siteEmailPort;
+
+                $mail->setFrom($siteEmail, $siteName, 0);
+                $mail->addAddress($toEmail);
+                $mail->addReplyTo($siteEmail, 'For any Information');
+                $mail->isHTML(true);
+                $mail->Subject = $subject;
+                $mail->Body    = $message;
+                $mail->AltBody = $altBody;
+
+                $mail->send();
+
+                if (!$mail->send())
+                {
+                    return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
+                }
+                else 
+                {
+                    return ['response' => true, 'message' => 'Account created Successfully, access your email to activate your account', 'code' => '1', 'data' => ''];
+                }
+            }
+            catch (Exception $eax) 
+            {
+                return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Error Info: ".$eax];
+            }
+        }
+
+        //get all details about user
+        function getUserDetails($pdo, $userId)
+        {
+            $sql = "SELECT * FROM user WHERE user_id = :user_id";
+            if ($stmt = $pdo->prepare($sql)) 
+            {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) {
+                    // Check if id exists
+                    if ($stmt->rowCount() == 1) 
+                    {
+                        if ($row = $stmt->fetch()) 
+                        {
+                            return json_encode( ['response' => true, 'message' => '', 'code' => '1', 'data' => $row]);
+                        }
+                    }
+                    else {
+                        return json_encode( ['response' => false, 'message' => '', 'code' => '0', 'data' => '']);
+                    }
+                }
+                else {
+                    return json_encode( ['response' => false, 'message' => '', 'code' => '0', 'data' => '']);
+                }
+            }
+        }
 
         //checks images and upload to server
         function processUploadImage($email, $image)

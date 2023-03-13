@@ -43,7 +43,7 @@
                             <div class="sign-controls form-group">
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="agreed">
-                                    <label class="custom-control-label" for="rememberMe">Agree to our <a href="termandconditions.php" class="btn-link">terms & conditions</a> </label>
+                                    <label class="custom-control-label" for="agreed">Agree to our <a href="termandconditions.php" class="btn-link">terms & conditions</a> </label>
                                 </div>
                             </div>
                             <div class="form-group">

@@ -2,9 +2,9 @@
     <!-- wrapper -->
     <div id="wrapper" class="wrapper">
       <!--loading -->
-      <div class="loading">
+      <!-- <div class="loading">
           <div class="circle"></div>
-      </div>
+      </div> -->
       <!--/-->
 
         <!-- Header -->
@@ -46,7 +46,9 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a class="nav-link" href="login.php"> Login </a>
+                                        <a class="nav-link" href="<?= ($loggedin) ? 'logout.php' : 'login.php'; ?>">
+                                            <?= ($loggedin) ? 'Logout' : 'Login'; ?>
+                                        </a>
                                     </li>
 
                                     <li class="nav-item">
