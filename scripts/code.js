@@ -106,6 +106,55 @@ $("#login-form").submit(function (event)
   event.preventDefault();
 });
 
+//profile form
+$('#profile-form').submit(function (event) {
+  reset();
+  var username = $("#username").val();
+  var email = $("#email").val();
+  var password = $("#password").val();
+  var confrimpassword = $("#confrimpassword").val();
+
+  if (username == "" || email == "") 
+  {
+    alertify.set('notifier','position', 'top-right');
+    alertify.error("Email and Username Feilds cannot be Empty");
+  }
+  else 
+  {
+    if(confrimpassword != "" || password != "")
+    {
+      if(confrimpassword != password)
+      {
+          alertify.error("Passwords are not the same");
+      }
+    }
+    else
+    {
+      let formdata = new FormData();
+      formdata.append("username", username);
+      formdata.append("email", email);
+      formdata.append("password", password);
+  
+      let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
+      fetch(loca, { method: "POST", body: formdata })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          var result = (data);
+          if (result.response == true) 
+          {
+            alertify.success(result.message);
+          } else {
+            alertify.set({ delay: 11000 });
+            alertify.error(result.message);
+          }
+      });
+    }
+  }
+  event.preventDefault();
+
+});
+
 function ValidateEmail(email) {
   let emailtest = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
 

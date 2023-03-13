@@ -38,7 +38,7 @@
                         // Check if username exists, if yes then verify password
                         if ($stmt->rowCount() == 1) {
                             // Display an error message if email exist
-                            echo json_encode( ['response' => false, 'message' => 'User with that Email Address Already Exist', 'code' => '2', 'data', '']);
+                            echo json_encode( ['response' => false, 'message' => 'User with that Email Address Already Exist', 'code' => '2', 'data' => '']);
                         }
                         else 
                         {
@@ -102,7 +102,7 @@
                         }
                     }
                     else {
-                        echo json_encode( ['response' => false, 'message' => 'Authorisation Failed', 'code' => '0', 'data', '']);
+                        echo json_encode( ['response' => false, 'message' => 'Authorisation Failed', 'code' => '0', 'data' => '']);
                     }
                 }
                 break;
@@ -125,10 +125,10 @@
                                 $hashed_password = $row["password"];
                                 if(password_verify($password, $hashed_password)) {
                                     if($userstatus == 0){
-                                        echo json_encode( ['response' => false, 'message' => 'Account has not been Verified, check your email for Verification link', 'code' => '2', 'data', '']);
+                                        echo json_encode( ['response' => false, 'message' => 'Account has not been Verified, check your email for Verification link', 'code' => '2', 'data' => '']);
                                     }
                                     else if($userstatus == 2){
-                                        echo json_encode( ['response' => false, 'message' => 'Account has been Banned, Contact the Adminstrator for more details', 'code' => '2', 'data', '']);
+                                        echo json_encode( ['response' => false, 'message' => 'Account has been Banned, Contact the Adminstrator for more details', 'code' => '2', 'data' => '']);
                                     }
                                     else{
                                         // Store userID in session variables protected
@@ -138,14 +138,14 @@
                                     }
                                 }
                                 else {
-                                    echo json_encode( ['response' => false, 'message' => 'The password you entered is Invalid', 'code' => '0', 'data', '']);
+                                    echo json_encode( ['response' => false, 'message' => 'The password you entered is Invalid', 'code' => '0', 'data' => '']);
                                 }
                             }
                         } else {
-                            echo json_encode( ['response' => false, 'message' => 'No Account found with that Email', 'code' => '0', 'data', '']);
+                            echo json_encode( ['response' => false, 'message' => 'No Account found with that Email', 'code' => '0', 'data' => '']);
                         }
                     } else {
-                        echo json_encode( ['response' => false, 'message' => 'Authorisation Failed', 'code' => '0', 'data', '']);
+                        echo json_encode( ['response' => false, 'message' => 'Authorisation Failed', 'code' => '0', 'data' => '']);
                     }
     
                     // Close statement
@@ -194,7 +194,40 @@
                 echo "13";
                 break;
             case "updateProfile":
-                echo "14";
+                //update user profile
+                    // Upload Image
+                    if ($_FILES["arImage"]['error'] === 0) {
+                        $picuploadmsg = uploadImage2("arImage", "../img/article/");
+                        if($picuploadmsg != 11)
+                        {
+                            //$_SESSION["adminerra"] = $picuploadmsg;
+                            //echo $picuploadmsg;
+                            //header("Location: ../admin/update_post.php?id=$urlId");
+                        }
+                    } else {
+                        $imageName = $urlImage;
+                    }
+
+                    try {
+                        $sql = "UPDATE `article`
+                            SET `article_title`= ?, `article_content`= ?,`article_image`=?, `id_categorie`=?, `id_author`= ?
+                            WHERE `article_id` = ?";
+
+                        $stmt = $conn->prepare($sql);
+
+                        $stmt->execute([$title, $content, $imageName, $categorie, $author, $urlId]);
+
+                        // echo a message to say the UPDATE succeeded
+                        //echo "Article UPDATED successfully";
+                        $_SESSION["adminsuc"] = "Post UPDATED successfully";
+                        header("Location: ../admin/posts.php", true, 301);
+                        exit;
+                    } catch (PDOException $e) {
+                        //echo $e->getMessage();
+                        $_SESSION["adminerra"] = $e->getMessage();
+                        header("Location: ../admin/update_post.php?id=$urlId");
+                    }
+                
                 break;
             default:
             echo "['response' => false, 'message' => 'System Processing Error!', 'code' => '1']";

@@ -81,6 +81,34 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        //get all details about user
+        function getUserDetails($pdo, $userId)
+        {
+            $sql = "SELECT * FROM user WHERE user_id = :user_id";
+            if ($stmt = $pdo->prepare($sql)) 
+            {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) {
+                    // Check if id exists
+                    if ($stmt->rowCount() == 1) 
+                    {
+                        if ($row = $stmt->fetch()) 
+                        {
+                            return json_encode( ['response' => true, 'message' => '', 'code' => '1', 'data' => $row]);
+                        }
+                    }
+                    else {
+                        return json_encode( ['response' => false, 'message' => '', 'code' => '0', 'data' => '']);
+                    }
+                }
+                else {
+                    return json_encode( ['response' => false, 'message' => '', 'code' => '0', 'data' => '']);
+                }
+            }
+        }
+
         //checks images and upload to server
         function processUploadImage($email, $image)
         {

@@ -1,6 +1,21 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    // Check if the user is already logged in, if yes then redirect him to dasboard page
+    if ($loggedin == false) {
+        echo "<script>window.location.replace('dashboard.php');</script>";
+    }
+
+     $data = json_decode($sharedComponents->getUserDetails($conn, $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"])), 1);
+
+    if (isset($data["response"])) 
+    {
+        if ($data["response"] == true) 
+        {
+            $details = $data["data"];
+        }
+    }
 ?>
         <main class="main">
             <!--post-default-->
@@ -11,7 +26,7 @@
                         
                             <div class="">
                                 <h3 class="text-center">User Dashboard</h3>
-                                <p class="text-center">Good Evening, Eyo!</p>
+                                <p class="text-center">Good Evening, <?= $details["username"]; ?>!</p>
                                 <nav class="">
                                     <div class="nav nav-tabs mb-3" id="nav-tab" role="tablist">
                                         <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true" style="color:gray"> 
@@ -27,6 +42,8 @@
                                         </button>
 
                                         <a class="nav-link" data-bs-toggle="modal" href="#exampleModalToggle" role="button" style="color:gray">Ads Managements</a>
+
+                                        <a class="nav-link" href="logout.php" style="color:gray">Logout</a>
                                     </div>
                                 </nav>
                                 
@@ -221,7 +238,7 @@
                                 
                                 <div class="tab-pane fade p-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                      <div class="">
-                                        <form action="" class="widget-form contact_form row" method="POST" id="main_contact_form" autocomplete="off">
+                                        <form class="widget-form contact_form row" method="POST" id="profile-form" autocomplete="off">
                                             <h6>Profile & Settings</h6>
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
@@ -620,13 +637,8 @@
         autocomplete(document.getElementById("postCategory"), postcategories);
 
         window.onload = autocomplete;
-        
-    </script>
-<?php
-    include 'includes/scripts.php';
-?>
-    
-    <script>
+   
+
         //prevent modal from closing from outside click
         $(document).ready(function () {
             $('#exampleModalToggle').modal({
@@ -639,3 +651,7 @@
             })
         });
     </script>
+<?php
+    include 'includes/scripts.php';
+?>
+    
