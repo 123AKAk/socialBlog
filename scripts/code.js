@@ -208,7 +208,7 @@
     //Destroy Summernote
     $('#post_contents').summernote('destroy');
 
-    var post_contentsVal = 'Enter Post Contents here';
+    var post_contentsVal = 'Type here...';
     $('#post_contents').summernote('code', post_contentsVal);
 
     event.preventDefault();

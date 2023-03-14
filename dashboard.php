@@ -4,6 +4,14 @@
     $style_refrences = '
         <link rel="stylesheet" href="assets/summernote/summernote-lite.css">
         <link rel="stylesheet" type="text/css" href="assets/dropzone/dropzone.css">
+        <style>
+            .note-editable {
+                background-color: #fff;
+            }
+            #post_contents{
+                background-color: #ffffff;
+            }
+        </style>
     ';
 
     include 'includes/header.php';
@@ -93,9 +101,9 @@
                                                                     <label for="post_contents">Post Content</label>
                                                                     <!-- <textarea class="form-control" name="post_contents"  required id="post_contents" rows="3" required></textarea> -->
                                                                     <div style="background-color: white;">
-                                                                        <textarea id="post_contents" name="post_contents">
+                                                                        <textarea id="post_contents" name="post_contents" style="padding: 10px;">
                                                                             <p>
-                                                                                Enter Post Contents here
+                                                                                 Type here...
                                                                             </p>
                                                                         </textarea>
                                                                     </div>
@@ -576,10 +584,23 @@
 
         // Summernote
         $('#post_contents').summernote({
+            airMode: false,              // removes the tool bar, but when text is highlited it shows
             height: 200,                 // set editor height
             //minHeight: null,             // set minimum height of editor
             //maxHeight: null,             // set maximum height of editor
-            focus: true                  // set focus to editable area after initializing summernote
+            focus: true,                  // set focus to editable area after initializing summernote
+            codemirror: { // codemirror options
+                theme: 'monokai'
+            },
+            hint: {
+                words: ['Macae', 'Blog', 'Blunt Technology', 'Science'],
+                match: /\b(\w{1,})$/,
+                search: function (keyword, callback) {
+                callback($.grep(this.words, function (item) {
+                    return item.indexOf(keyword) === 0;
+                }));
+                }
+            }
         });
 
     </script>
