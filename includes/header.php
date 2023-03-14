@@ -62,7 +62,7 @@
   <link rel="stylesheet" type="text/css" href="admin/assets/daterangepicker/daterangepicker.css">
 
   <!-- ajax -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script> -->
 
   <!-- old alertify -->
 	<!-- <link href="assets/js/alertify/themes/alertify.core.css" rel="stylesheet">
@@ -78,6 +78,13 @@
 
   <link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.core.css" />
 	<link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.default.css" id="toggleCSS" />
+
+  <?php
+    if(isset($style_refrences))
+    {
+      echo $style_refrences;
+    }
+  ?>  
 
   <style>
 		.alertify-log-custom {

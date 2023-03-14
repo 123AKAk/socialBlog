@@ -1,6 +1,4 @@
 <?php
-
-    session_start();
     require "../includes/varnames.php";
     require "../classes/components/db.php";
     require '../classes/components/sharedComponents.php';
