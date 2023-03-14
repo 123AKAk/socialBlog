@@ -5,6 +5,7 @@
 
     $dataPurpose = $_GET['dataPurpose'];
 
+    $folder_name = '../../admin/fileUploads/images/';
 
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     {
@@ -180,7 +181,6 @@
                 break;
             case "createPost":
                     //uploading files into the server
-                    $folder_name = '../../admin/fileUploads/images/';
                     if(!empty($_FILES))
                     {
                         $temp_file = $_FILES['file']['tmp_name'];
@@ -211,6 +211,7 @@
                                     "post_title" => $sharedComponents->test_input($_POST["post_title"]),
                                     "post_category" => $sharedComponents->test_input($resultmsg2["data"]),
                                     "post_contents" => $sharedComponents->test_input($_POST["post_contents"]),
+                                    "post_country" => $sharedComponents->test_input($_POST["post_country"]),
                                     "post_thumbnail" => $sharedComponents->test_input($_POST["post_thumbnail"]),
                                     "id_user" => $code
                                 );
@@ -272,43 +273,63 @@
                 echo "13";
                 break;
             case "updateProfile":
-                //update user profile
-                    // Upload Image
-                    if ($_FILES["arImage"]['error'] === 0) {
-                        $picuploadmsg = uploadImage2("arImage", "../img/article/");
-                        if($picuploadmsg != 11)
+                    //update user profile
+
+                    //uploading files into the server
+                    if(!empty($_FILES))
+                    {
+                        $temp_file = $_FILES['file']['tmp_name'];
+                        $location = $folder_name . $_FILES['file']['name'];
+                        if(move_uploaded_file($temp_file, $location))
                         {
-                            //$_SESSION["adminerra"] = $picuploadmsg;
-                            //echo $picuploadmsg;
-                            //header("Location: ../admin/update_post.php?id=$urlId");
+                            echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $_FILES['file']['name']]);
                         }
-                    } else {
-                        $imageName = $urlImage;
+                        else
+                        {
+                            echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
+                        }                        
                     }
 
-                    try {
-                        $sql = "UPDATE `article`
-                            SET `article_title`= ?, `article_content`= ?,`article_image`=?, `id_categorie`=?, `id_author`= ?
-                            WHERE `article_id` = ?";
+                    if (isset($_SESSION["macae_blog_user_loggedin_"]))
+                    {
+                        // validate session value
+                        $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                        
+                        // $sql = "SELECT * FROM user WHERE user_id = :user_id";
+                        // if ($stmt = $pdo->prepare($sql)) 
+                        // {
+                        //     // Bind variables to the prepared statement as parameters
+                        //     $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                        //     // Attempt to execute the prepared statement
+                        //     if ($stmt->execute()) {
+                        //         // Check if id exists, if yes then verify password
+                        //         if ($stmt->rowCount() == 1) {
+                        //             if ($row = $stmt->fetch()) {
+                                        
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                        
+                        try {
+                            $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
 
-                        $stmt = $conn->prepare($sql);
+                            $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
 
-                        $stmt->execute([$title, $content, $imageName, $categorie, $author, $urlId]);
+                            $stmt = $conn->prepare($sql);
 
-                        // echo a message to say the UPDATE succeeded
-                        //echo "Article UPDATED successfully";
-                        $_SESSION["adminsuc"] = "Post UPDATED successfully";
-                        header("Location: ../admin/posts.php", true, 301);
-                        exit;
-                    } catch (PDOException $e) {
-                        //echo $e->getMessage();
-                        $_SESSION["adminerra"] = $e->getMessage();
-                        header("Location: ../admin/update_post.php?id=$urlId");
+                            if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $_POST["profile_pic"], $_POST["user_country"], $userId]))
+                            {
+                                echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                            }
+                        } catch (PDOException $e) {
+                            echo json_encode( ['response' => false, 'message' => 'Unable to update Profile'.$e->getMessage(), 'code' => '0', 'data' => '']);
+                        }
                     }
                 
                 break;
             default:
-            echo "['response' => false, 'message' => 'System Processing Error!', 'code' => '1']";
+            echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
         }
     }
 

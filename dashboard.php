@@ -71,7 +71,7 @@
                                                 </h2>
                                                 <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                                     <div class="accordion-body">
-                                                        <form  class="widget-form contact_form row" id="savePost-form" autocomplete="off">
+                                                        <form  class="widget-form contact_form row" id="createPost-form" autocomplete="off">
                                                             <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
 
                                                             <div class="col-6 col-md-6">
@@ -104,9 +104,10 @@
                                                             
                                                                 
                                                             <div class="">
-                                                                <div action="classes/components/userComponents.php?dataPurpose=createPost" class="dropzone" id="dropzoneFrom">
+                                                                <p>Upload Post Thumbnail ↓</p>
+                                                                <div action="classes/components/userComponents.php?dataPurpose=createPost" class="dropzone" id="dropzoneForm1">
                                                                 </div>
-                                                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll">Cancel</button>
+                                                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll1">Clear</button>
                                                             </div>
                                                         
                                                             <div class="text-center justify-content-center">
@@ -199,11 +200,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                
                                 
                                 <div class="tab-pane fade p-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                      <div class="">
-                                        <form class="widget-form contact_form row" method="POST" id="profile-form" autocomplete="off">
+                                        <form class="widget-form contact_form row" id="profile-form" autocomplete="off">
                                             <h6>Profile & Settings</h6>
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
@@ -216,6 +217,20 @@
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Email</label>
                                                     <input class="form-control" type="text" placeholder="Enter Email " name="email" id="email" />
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="gender" class="col-form-label">Gender</label>
+                                                    <input class="form-control" type="text" placeholder="Enter Gender" name="gender" id="gender" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="country" class="col-form-label">Country</label>
+                                                    <input class="form-control" type="text" placeholder="Enter Country " name="country" id="country" />
                                                 </div>
                                             </div>
 
@@ -234,10 +249,17 @@
                                                     <input class="form-control" type="text" placeholder="Confirm Password " name="confrimPassword" id="confrimPassword" />
                                                 </div>
                                             </div>
-                                                
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn-custom">Save</button>
+                                            
+                                            <div>
+                                                <p>Upload Profile Picture ↓</p>
+                                                <div action="classes/components/userComponents.php?dataPurpose=updateProfile" class="dropzone" id="dropzoneForm2">
+                                                </div>
+                                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll2">Clear</button>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class=" text-center justify-content-center">
+                                                    <button type="submit" class="btn-custom">Save Changes</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -260,23 +282,23 @@
                                                             </a>
                                                         </div>
                                                         <div class="post-card-content">
-                                                            <div class="entry-cat">
+                                                            <div class="entry-cat mt-2">
                                                                 <a href="blog-grid.php" class="categorie"> fashion</a>
                                                             </div>
-
+                                                            
                                                             <h5 class="entry-title">
                                                                 <a href="post.php">5 Effective Ways I’m Finding Focus in a Busy Season of Life</a>
                                                             </h5>
 
-                                                            <div class="post-exerpt">
-                                                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit quam atque ipsa laborum sunt distinctio... </p>
-                                                            </div>
-
+                                                            
                                                             <ul class="entry-meta list-inline">
+                                                                
                                                                 <li class="post-author-img"><a href="author.php"> <img src="assets/img/author/1.jpg" alt=""></a></li>
                                                                 <li class="post-author"><a href="author.php">David Smith</a> </li>
-                                                                <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
+                                                                <li class="post-date"> <span class="dot"></span>  <a href="avascript:void(0);" onclick="" title=" Remove from Saved Posts"> Remove</a></li>
+                                                                
                                                             </ul>
+                                                            <li class="post-date p-2" style="font-size:14px">  February 10, 2022</li>
                                                         </div>
                                                     </div>
                                                     <!--/-->
