@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2023 at 05:50 PM
+-- Generation Time: Mar 14, 2023 at 05:21 PM
 -- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- PHP Version: 8.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -92,6 +92,28 @@ CREATE TABLE `category` (
 INSERT INTO `category` (`category_id`, `category_name`, `category_desc`, `category_creation_date`, `category_update_date`, `status`) VALUES
 (1, 'Tech', 'All about Tech news', '2023-02-05 00:00:00', '2023-02-05 00:00:00', 0),
 (2, 'Tech', 'All about Tech news', '2023-02-05 00:00:00', '2023-02-05 00:00:00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `code`
+--
+
+CREATE TABLE `code` (
+  `id` int(11) NOT NULL,
+  `email` text NOT NULL,
+  `code` text NOT NULL,
+  `time` text NOT NULL,
+  `date` text NOT NULL,
+  `expire` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `code`
+--
+
+INSERT INTO `code` (`id`, `email`, `code`, `time`, `date`, `expire`) VALUES
+(1, 'curtiscrentsil0@gmail.com', '834375', '17:14:14', '03/14/2023', 0);
 
 -- --------------------------------------------------------
 
@@ -251,7 +273,17 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `username`, `email`, `gender`, `password`, `date_created`, `date_updated`, `status`, `saved_posts`, `user_ip_address`, `user_country`, `authors_followed`) VALUES
-(1, 'Favour', 'favour@gmail.com', '', '123', '2023-02-06 16:14:00', '2023-02-06 17:10:54', 0, '', '', '', '');
+(1, 'Favour', 'favour@gmail.com', '', '$2y$10$2rFsLT2hswerAoVMi1xR3u3JWtRL8h//iZ4BPm8twAL3ZnITxXC8i', '2023-02-06 16:14:00', '2023-02-06 17:10:54', 0, '', '', '', ''),
+(2, 'curtis', 'curtis', 'Male', '123', '2023-03-11 11:14:03', '2023-03-11 11:14:03', 0, '', '', 'UK', ''),
+(3, 'curtis', 'curtis', 'Female', '123', '2023-03-11 11:14:43', '2023-03-11 11:14:43', 0, '', 'ipaddress', 'Nigeria', ''),
+(4, 'curtis', 'curtis', 'Female', '123', '2023-03-11 11:16:41', '2023-03-11 11:16:41', 0, '', 'ipaddress', 'UK', ''),
+(5, 'curtis', 'curtis', 'Female', '123', '2023-03-11 11:19:00', '2023-03-11 11:19:00', 0, '', 'ipaddress', 'UK', ''),
+(6, 'curtis', 'curtis', 'Male', '123', '2023-03-11 11:19:31', '2023-03-11 11:19:31', 0, '', 'ipaddress', 'Nigeria', ''),
+(7, 'curtis', 'curtis', 'Male', '123', '2023-03-11 11:20:45', '2023-03-11 11:20:45', 0, '', 'ipaddress', 'Nigeria', ''),
+(8, 'curtis', 'curtis', 'Male', '123', '2023-03-11 11:22:11', '2023-03-11 11:22:11', 0, '', 'ipaddress', 'Nigeria', ''),
+(9, 'curtis', 'curtis', 'Female', '123', '2023-03-11 11:23:33', '2023-03-11 11:23:33', 0, '', 'ipaddress', 'Nigeria', ''),
+(10, 'curtiqsass', 'curtiqsass', 'Male', '123', '2023-03-11 14:14:42', '2023-03-11 14:14:42', 0, '', 'ipaddress', 'Nigeria', ''),
+(11, 'curtiswww', 'curtiscrentsil0@gmail.com', 'Other', '123', '2023-03-11 14:15:20', '2023-03-11 14:15:20', 0, '', 'ipaddress', 'Nigeria', '');
 
 --
 -- Indexes for dumped tables
@@ -274,6 +306,12 @@ ALTER TABLE `ads`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`);
+
+--
+-- Indexes for table `code`
+--
+ALTER TABLE `code`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `comments`
@@ -346,6 +384,12 @@ ALTER TABLE `category`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `code`
+--
+ALTER TABLE `code`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
@@ -391,7 +435,7 @@ ALTER TABLE `subscribed_emails`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
