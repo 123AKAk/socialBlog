@@ -39,7 +39,9 @@
                         </div>
                         <form  action="#" class="sign-form widget-form " method="post">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Email" id="email" value="">
+                                <input type="text" class="form-control" placeholder="Code" id="code" value=""><br/><br/>
+                                <input type="password" class="form-control" placeholder="Password" id="password" value=""><br/><br/>
+                                <input type="password" class="form-control" placeholder="Password" id="confirmPassword" value=""><br/><br/>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn-custom" id="click">Send Mail</button>
@@ -56,7 +58,7 @@
         <?php include 'includes/newsletter.php'; ?>
     </main>
 
-    <script src="./assets/js/forgotpass.js"></script>
+    <script src="./assets/js/reset.js"></script>
 
 <?php
     include 'includes/footer.php';
