@@ -179,13 +179,91 @@
                 echo "8";
                 break;
             case "createPost":
-                echo "9";
+                    //uploading files into the server
+                    $folder_name = '../../admin/fileUploads/images/';
+                    if(!empty($_FILES))
+                    {
+                        $temp_file = $_FILES['file']['tmp_name'];
+                        $location = $folder_name . $_FILES['file']['name'];
+                        if(move_uploaded_file($temp_file, $location))
+                        {
+                            echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $_FILES['file']['name']]);
+                        }
+                        else
+                        {
+                            echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
+                        }                        
+                    }
+                    
+                    if(isset($_POST["post_title"]))
+                    {
+                        // Call check - Insert Category function
+                        $resultmsg = json_encode($sharedComponents->checkInsertCategory($conn, $_POST["post_category"]));
+
+                        //check if data entered the table 
+                        $resultmsg2 = json_decode($resultmsg, 1);
+                        if (isset($resultmsg2["response"])) 
+                        {
+                            if ($resultmsg2["response"] == true) 
+                            {
+                                // PREPARE DATA TO INSERT INTO DB
+                                $data = array(
+                                    "post_title" => $sharedComponents->test_input($_POST["post_title"]),
+                                    "post_category" => $sharedComponents->test_input($resultmsg2["data"]),
+                                    "post_contents" => $sharedComponents->test_input($_POST["post_contents"]),
+                                    "post_thumbnail" => $sharedComponents->test_input($_POST["post_thumbnail"]),
+                                    "id_user" => $code
+                                );
+        
+                                // Call insert function
+                                $finalresultmsg = json_encode($sharedComponents->insertToDB($conn, "posts", $data));
+                                echo $finalresultmsg;
+                            }
+                            else
+                            {
+                                echo $resultmsg;
+                            }
+                        }
+                        else
+                        {
+                            echo $resultmsg;
+                        }
+                    }
                 break;
             case "savePost":
                 echo "10";
                 break;
             case "editPost":
-                echo "11";
+                    //deleting file from server
+                    if(isset($_POST["name"]))
+                    {
+                        $filename = $folder_name.$_POST["name"];
+                        unlink($filename);
+                    }
+                    
+                    // $result = array();
+                    
+                    // $files = scandir('upload');
+                    
+                    // $output = '<div class="row">';
+                    
+                    // if(false !== $files)
+                    // {
+                    //     foreach($files as $file)
+                    //     {
+                    //         if('.' !=  $file && '..' != $file)
+                    //         {
+                    //             $output .= '
+                    //             <div class="col-md-2">
+                    //                 <img src="'.$folder_name.$file.'" class="img-thumbnail" width="175" height="175" style="height:175px;" />
+                    //                 <button type="button" class="btn btn-link remove_image" id="'.$file.'">Remove</button>
+                    //             </div>
+                    //             ';
+                    //         }
+                    //     }
+                    // }
+                    // $output .= '</div>';
+                    // echo $output;
                 break;
             case "publishPost":
                 echo "12";

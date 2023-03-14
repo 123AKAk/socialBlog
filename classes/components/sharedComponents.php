@@ -109,6 +109,35 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        function checkInsertCategory($pdo, $category_name)
+        {
+            if ($stmt = $pdo->prepare("SELECT * FROM category WHERE category_name = :category_name")) {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":category_name", $category_name, PDO::PARAM_STR);
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) 
+                {
+                    // Check if username exists, if yes then verify password
+                    if ($stmt->rowCount() == 1) 
+                    {
+                        if ($row = $stmt->fetch()) 
+                        {
+                            return json_encode( ['response' => true, 'message' => '', 'code' => '1', 'data' => $row["category_id"]]);
+                        }
+                    }
+                    else
+                    {
+                        $data = array(
+                            "category_name" => $category_name
+                        );
+                        require "db.php";
+                        //inserts category if not found
+                        return $this->insertToDB($pdo, "category", $data);
+                    }
+                }
+            }
+        }
+
         //checks images and upload to server
         function processUploadImage($email, $image)
         {
