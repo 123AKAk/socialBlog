@@ -56,6 +56,7 @@
                                 "password" => $sharedComponents->test_input($hashpassword),
                                 "user_ip_address" => $sharedComponents->test_input($_POST["user_ip_address"]),
                                 "user_country" => $sharedComponents->test_input($_POST["user_country"]),
+                                "date_created" => date('Y-m-d H:i:s'),
                                 "code" => $code
                             );
 
@@ -183,11 +184,14 @@
                     //uploading files into the server
                     if(!empty($_FILES))
                     {
+                        $file_name = $_FILES["file"]["name"];
+                        $new_file_name = "user-".date('Y-m-d H-i-s') . "." . pathinfo($file_name, PATHINFO_EXTENSION); // Set the new file name
+
                         $temp_file = $_FILES['file']['tmp_name'];
-                        $location = $folder_name . $_FILES['file']['name'];
+                        $location = $folder_name . $new_file_name;
                         if(move_uploaded_file($temp_file, $location))
                         {
-                            echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $_FILES['file']['name']]);
+                            echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $new_file_name]);
                         }
                         else
                         {
@@ -209,11 +213,12 @@
                                 // PREPARE DATA TO INSERT INTO DB
                                 $data = array(
                                     "post_title" => $sharedComponents->test_input($_POST["post_title"]),
-                                    "post_category" => $sharedComponents->test_input($resultmsg2["data"]),
+                                    "id_category" => $sharedComponents->test_input($resultmsg2["data"]),
                                     "post_contents" => $sharedComponents->test_input($_POST["post_contents"]),
                                     "post_country" => $sharedComponents->test_input($_POST["post_country"]),
                                     "post_thumbnail" => $sharedComponents->test_input($_POST["post_thumbnail"]),
-                                    "id_user" => $code
+                                    "post_creation_time" => date('Y-m-d H:i:s'),
+                                    "id_user" => $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"])
                                 );
         
                                 // Call insert function
@@ -272,6 +277,46 @@
             case "deletePost":
                 echo "13";
                 break;
+            case "createAd":
+                //uploading files into the server
+                if(!empty($_FILES))
+                {
+                    $file_name = $_FILES["file"]["name"];
+                    $new_file_name = "user-".date('Y-m-d H-i-s') . "." . pathinfo($file_name, PATHINFO_EXTENSION); // Set the new file name
+
+                    $temp_file = $_FILES['file']['tmp_name'];
+                    $location = $folder_name . $new_file_name;
+                    if(move_uploaded_file($temp_file, $location))
+                    {
+                        echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $new_file_name]);
+                    }
+                    else
+                    {
+                        echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
+                    }                        
+                }
+                
+                if(isset($_POST["adName"]))
+                {
+                    
+                    // PREPARE DATA TO INSERT INTO DB
+                    $data = array(
+                        "ad_name" => $sharedComponents->test_input($_POST["ad_name"]),
+                        "ad_description" => $sharedComponents->test_input($_POST["ad_description"]),
+                        "ad_url" => $sharedComponents->test_input($_POST["ad_url"]),
+                        "ad_thumbnail" => $sharedComponents->test_input($_POST["ad_thumbnail"]),
+                        "ad_target_Country" => $sharedComponents->test_input($_POST["ad_target_Country"]),
+                        "ad_duration" => $sharedComponents->test_input($_POST["ad_duration"]),
+                        "ad_category" => $sharedComponents->test_input($_POST["ad_category"]),
+                        "ad_target_gender" => $sharedComponents->test_input($_POST["ad_target_gender"]),
+                        "date_created" => date('Y-m-d H:i:s'),
+                    );
+
+                    // Call insert function
+                    $resultmsg = json_encode($sharedComponents->insertToDB($conn, "posts", $data));
+                    echo $resultmsg;
+                }
+                break;
             case "updateProfile":
                     //update user profile
 
@@ -328,7 +373,8 @@
                     }
                 
                 break;
-            default:
+            
+                default:
             echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
         }
     }

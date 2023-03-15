@@ -29,7 +29,7 @@ use PHPMailer\PHPMailer\Exception;
                 //echo "New records created successfully";
                 $resultData = $conn->lastInsertId();
 
-                return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data' => $resultData];
+                return ['response' => true, 'message' => 'Data Inserted Successfully', 'code' => '1', 'data' => $resultData];
             }
             catch (PDOException $error) {
                 
@@ -122,15 +122,16 @@ use PHPMailer\PHPMailer\Exception;
                     {
                         if ($row = $stmt->fetch()) 
                         {
-                            return json_encode( ['response' => true, 'message' => '', 'code' => '1', 'data' => $row["category_id"]]);
+                            return ['response' => true, 'message' => 'Category is available', 'code' => '1', 'data' => $row["category_id"]];
                         }
                     }
                     else
                     {
                         $data = array(
-                            "category_name" => $category_name
+                            "category_name" => $category_name,
+                            "category_creation_date" => date('Y-m-d H:i:s')
                         );
-                        require "db.php";
+
                         //inserts category if not found
                         return $this->insertToDB($pdo, "category", $data);
                     }

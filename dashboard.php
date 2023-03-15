@@ -22,7 +22,9 @@
         echo "<script>window.location.replace('dashboard.php');</script>";
     }
 
-     $data = json_decode($sharedComponents->getUserDetails($conn, $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"])), 1);
+    $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+
+    $data = json_decode($sharedComponents->getUserDetails($conn, $userId), 1);
 
     if (isset($data["response"])) 
     {
@@ -31,6 +33,11 @@
             $details = $data["data"];
         }
     }
+
+    // Gets user created post
+    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_user = $userId  ORDER BY `post_id` DESC");
+    $stmt->execute();
+    $userCreatedPost = $stmt->fetchAll();
 ?>
         <main class="main">
             <!--post-default-->
@@ -82,10 +89,10 @@
                                                         <form  class="widget-form contact_form row" id="createPost-form" autocomplete="off">
                                                             <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
 
-                                                            <div class="col-6 col-md-6">
+                                                            <div class="col-12 col-md-12">
                                                                 <div class="form-group">
                                                                     <label for="post_title" class="col-form-label">Post Title</label>
-                                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="post_title" id="post_title" />
+                                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="post_title" id="post_title" autocomplete="off"/>
                                                                 </div>
                                                             </div>
 
@@ -93,6 +100,13 @@
                                                                 <div class="form-group">
                                                                 <label for="post_category" class="col-form-label">Post Category</label>
                                                                 <input class="form-control" type="text" name="post_category" list="category" value="" placeholder="Select Category" id="post_category" autocomplete="off"/>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-6 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="post_title" class="col-form-label">Post Country</label>
+                                                                    <input class="form-control" type="text" placeholder="Enter Post Country" name="post_country" id="post_country" />
                                                                 </div>
                                                             </div>
 
@@ -125,11 +139,6 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="container">
-                                                    <h4>Gallery</h4>
-                                                    <div id="preview"></div>
-                                                </div>
-
                                             </div>
                                         </div>
                                         <div class=" p-3">
@@ -141,69 +150,46 @@
                                                 </div>
 
                                                 <div class="dyn-height" style="max-height:600px;overflow-y:auto;">
+
+                                                <?php 
+                                                    $countnum = 0;
+                                                    foreach ($userCreatedPost as $post) : 
+                                                    $postId = $sharedComponents->protect($post['post_id']);
+                                                    $countnum++;
+                                                ?>
                                                     <ul class="widget-comments-items">
+                                                    <a href="post.php?dt=<?=$post['post_title']?>&id=<?= $postId ?>" target="_blank">
                                                         <li class="comment-item">
-                                                            <label for="" > <b>1</b></label>
-                                                            <img src="assets/img/user/2.jpg" alt="">
+                                                            <label for="" > <?= $countnum ?></label>
+                                                                <img src="admin/fileUploads/images/<?= $post['post_thumbnail'] ?>" alt="">
                                                             <div class="content">
                                                         
                                                                 <ul class="info list-inline">
-                                                                    <li>Technology</li>
+                                                                    <li><?= $post['category_name'] ?></li>
                                                                     <li class="dot"></li>
-                                                                    <li> January 15, 2021</li>
+                                                                    <li>
+                                                                        <?= date_format(date_create($post['post_creation_time']), "F d, Y - h:ia") ?>
+                                                                    </li>
                                                                 </ul>
-                                                
-                                                                <b><p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus at doloremque adipisci eum placeat
-                                                                    quod non fugiat aliquid sit similique!
-                                                                </p></b>
-                                                                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus at doloremque adipisci eum placeat
-                                                                </p>
-                    
+                                                                <b>
+                                                                    <?= strlen($post['post_title']) > 57 ? substr($post['post_title'],0,57)."..." : $post['post_title']; ?>
+                                                                </b>
                                                                 <div>
-                                                                    <a href="#" class="btn btn-outline-primary">
+                                                                    <a href="javascript:void(0);" onclick="editPost(<?= $postId ?>)" class="btn btn-outline-primary">
                                                                         Edit
                                                                     </a>
-                                                                    
-                                                                    <a href="#" class="btn btn-outline-danger">
+                                                                    <a href="javascript:void(0);" onclick="deletePost(<?= $postId ?>)" class="btn btn-outline-danger">
                                                                         Delete
                                                                     </a>
-                                                                    <a href="#" class="btn btn-outline-secondary">
-                                                                    Publish
+                                                                    <a href="javascript:void(0);" onclick="publishPost(<?= $postId ?>)" class="btn btn-outline-secondary">
+                                                                        Publish
                                                                     </a>
                                                                 </div>
                                                             </div>
                                                         </li>
                                                     </ul>
-                                                    <ul class="widget-comments-items">
-                                                        <li class="comment-item">
-                                                            <label for="" > <b>2</b></label>
-                                                            <img class="comimg" src="assets/img/user/2.jpg" alt="">
-                                                            <div class="content">
-                                                        
-                                                                <ul class="info list-inline">
-                                                                    <li>Technology</li>
-                                                                    <li class="dot"></li>
-                                                                    <li> January 15, 2021</li>
-                                                                </ul>
-                                                
-                                                                <b><p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus at doloremque adipisci eum placeat
-                                                                    quod non fugiat aliquid sit similique!
-                                                                </p></b>
-                                                                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus at doloremque adipisci eum placeat
-                                                                </p>
-                    
-                                                                <div>
-                                                                    <a href="#" class="btn btn-outline-primary">
-                                                                        Edit
-                                                                    </a>
-                                                                    
-                                                                    <a href="#" class="btn btn-outline-danger">
-                                                                        Delete
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
+                                                <?php endforeach;  ?>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -217,28 +203,28 @@
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Username</label>
-                                                    <input class="form-control" type="text" placeholder="Enter Username" name="username" id="username" />
+                                                    <input class="form-control" type="text" placeholder="" name="username" id="username" />
                                                 </div>
                                             </div>
 
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Email</label>
-                                                    <input class="form-control" type="text" placeholder="Enter Email " name="email" id="email" />
+                                                    <input class="form-control" type="text" placeholder="" name="email" id="email" />
                                                 </div>
                                             </div>
                                             
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="gender" class="col-form-label">Gender</label>
-                                                    <input class="form-control" type="text" placeholder="Enter Gender" name="gender" id="gender" />
+                                                    <input class="form-control" type="text" placeholder="" name="gender" id="gender" />
                                                 </div>
                                             </div>
 
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="country" class="col-form-label">Country</label>
-                                                    <input class="form-control" type="text" placeholder="Enter Country " name="country" id="country" />
+                                                    <input class="form-control" type="text" placeholder="" name="country" id="country" />
                                                 </div>
                                             </div>
 
@@ -277,9 +263,7 @@
                                 <div class="tab-pane fade p-3" id="nav-savedposts" role="tabpanel" aria-labelledby="nav-savedposts-tab">
                                      <div class="">
                                         <div class="widget-comments">
-                                            <div class="title">
-                                                <p>Saved Posts</p>    
-                                            </div>
+                                            <h6 class="mb-3">Saved Posts</h6>
                                             <div class="dyn-height">
                                                 <!--Post-1-->
                                                 <div class="col-xl-4 col-lg-6 col-md-6">
@@ -303,7 +287,7 @@
                                                                 
                                                                 <li class="post-author-img"><a href="author.php"> <img src="assets/img/author/1.jpg" alt=""></a></li>
                                                                 <li class="post-author"><a href="author.php">David Smith</a> </li>
-                                                                <li class="post-date"> <span class="dot"></span>  <a href="avascript:void(0);" onclick="" title=" Remove from Saved Posts"> Remove</a></li>
+                                                                <li class="post-date"> <span class="dot"></span>  <a href="javascript:void(0);" onclick="" title=" Remove from Saved Posts"> Remove</a></li>
                                                                 
                                                             </ul>
                                                             <li class="post-date p-2" style="font-size:14px">  February 10, 2022</li>
@@ -361,21 +345,26 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <form  class="sign-form widget-form contact_form " method="post">
+                        <form class="sign-form widget-form contact_form " id="createAd-form">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Ad Name" name="adname" value="">
+                                <label for="ad_name" class="pl-2">Ad Name</label>
+                                <input type="text" class="form-control" placeholder="" name="ad_name" value="" id="ad_name">
                             </div>
                             <div class="form-group">
-                                <label for="duration" class="pl-2">Duration of Ad</label>
-                                <input type="text" class="form-control" id="duration">
+                                <label for="ad_description" class="pl-2">Ad Description</label>
+                                <textarea class="form-control" placeholder="" name="ad_description" id="ad_description" value=""></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="addescription" class="pl-2">Ad Description</label>
-                                <textarea class="form-control" placeholder="" name="addescription" id="addescription" value=""></textarea>
+                                <label for="ad_url" class="pl-2">Ad URL</label>
+                                <input type="text" class="form-control" placeholder="" name="ad_url" value="" id="ad_url">
                             </div>
                             <div class="form-group">
-                                <label for="category" class="pl-2">Ad Category</label>
-                                <select name="category" id="category" class="form-control">
+                                <label for="ad_duration" class="pl-2">Duration of Ad</label>
+                                <input type="text" class="form-control" name="ad_duration" id="ad_duration">
+                            </div>
+                            <div class="form-group">
+                                <label for="ad_category" class="pl-2">Ad Category</label>
+                                <select name="ad_category" id="ad_category" class="form-control">
                                     <option value=""></option>
                                     <option value="">Bussiness</option>
                                     <option value="">Health</option>
@@ -383,8 +372,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="country" class="pl-2">Ad Target Country</label>
-                                <select name="country" id="country" class="form-control">
+                                <label for="ad_target_Country" class="pl-2">Ad Target Country</label>
+                                <select name="ad_target_Country" id="ad_target_Country" class="form-control">
                                     <option value=""></option>
                                     <option value="Nigeria">Nigeria</option>
                                     <option value="UK">United Kingdom</option>
@@ -392,8 +381,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="gender" class="pl-2">Ad Target Gender</label>
-                                <select name="gender" id="gender" class="form-control">
+                                <label for="ad_target_gender" class="pl-2">Ad Target Gender</label>
+                                <select name="ad_target_gender" id="ad_target_gender" class="form-control">
                                     <option value=""></option>
                                     <option value="Male">Males</option>
                                     <option value="Female">Females</option>
@@ -401,20 +390,22 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="duration" class="pl-2">Ad Thumbnail</label>
-                                <input type="file" class="form-control" name="adthumbnail">
+                                <label for="ad_thumbnail" class="pl-2">Upload Ad Thumbnail ↓</label>
+                                <div action="classes/components/userComponents.php?dataPurpose=createAd" class="dropzone" id="dropzoneForm3">
+                                </div>
+                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll3">Clear</button>
                             </div>
                             <div class="sign-controls form-group">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="rememberMe">
-                                    <label class="custom-control-label" for="rememberMe">Agree to the <a href="adstermandconditions.php" class="btn-link">terms of our Ad Service</a> </label>
+                                    <input type="checkbox" class="custom-control-input" id="agreed">
+                                    <label class="custom-control-label" for="agreed">Agree to the<a href="adstermandconditions.php" class="btn-link">terms of our Ad Service</a> </label>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
                     <button type="submit" class="btn-custom">Next</button>
                 </div>
                 </div>
@@ -438,7 +429,7 @@
     <!-- Page specific script -->
     <script>
         //Date range picker
-        $('#duration').daterangepicker()
+        $('#ad_duration').daterangepicker()
            
         //Date range as a button
         $('#daterange-btn').daterangepicker(

@@ -1,4 +1,4 @@
-  //window.onload = getLocation;
+  window.onload = getLocation;
 
   // signup form
   $("#signup-form").submit(function (event) {
@@ -106,55 +106,6 @@
     event.preventDefault();
   });
 
-  //profile form
-  $('#profile-form').submit(function (event) {
-    reset();
-    var username = $("#username").val();
-    var email = $("#email").val();
-    var password = $("#password").val();
-    var confrimpassword = $("#confrimpassword").val();
-
-    if (username == "" || email == "") 
-    {
-      alertify.set('notifier','position', 'top-right');
-      alertify.error("Email and Username Feilds cannot be Empty");
-    }
-    else 
-    {
-      if(confrimpassword != "" || password != "")
-      {
-        if(confrimpassword != password)
-        {
-            alertify.error("Passwords are not the same");
-        }
-      }
-      else
-      {
-        let formdata = new FormData();
-        formdata.append("username", username);
-        formdata.append("email", email);
-        formdata.append("password", password);
-    
-        let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
-        fetch(loca, { method: "POST", body: formdata })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            var result = (data);
-            if (result.response == true) 
-            {
-              alertify.success(result.message);
-            } else {
-              alertify.set({ delay: 11000 });
-              alertify.error(result.message);
-            }
-        });
-      }
-    }
-    event.preventDefault();
-
-  });
-
   //file name to be uploaded
   let fileNameUploaded1 = "";
   //createPost form
@@ -171,42 +122,38 @@
       alertify.set('notifier','position', 'top-right');
       alertify.error("Fill all Feilds");
     }
-    else if(fileNameUploaded1 == "")
-    {
-      alertify.error("Upload post Thumbnail");
-    }
     else 
     {
-      let formdata = new FormData();
-      formdata.append("post_title", post_title);
-      formdata.append("post_category", post_category);
-      formdata.append("post_contents", post_contents);
-      formdata.append("post_country", post_country);
-      formdata.append("post_thumbnail", fileNameUploaded);
-    
-      let loca = "classes/components/userComponents.php?dataPurpose=createPost";
-      fetch(loca, { method: "POST", body: formdata })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          var result = (data);
-          if (result.response == true) 
-          {
-            alertify.success(result.message);
-            alertify.log("Thumbnail upload started");
+      //uploads file to server
+      alertify.log("Thumbnail upload started");
+      
+      console.log(myDropzone1.processQueue());
 
-            //uploads file to server
-            myDropzone1.processQueue();
-          } else {
-            alertify.set({ delay: 15000 });
-            alertify.error(result.message);
-          }
-      });
+      // let formdata = new FormData();
+      //   formdata.append("post_title", post_title);
+      //   formdata.append("post_category", post_category);
+      //   formdata.append("post_contents", post_contents);
+      //   formdata.append("post_country", post_country);
+      //   formdata.append("post_thumbnail", fileNameUploaded1);
+      
+      //   let loca = "classes/components/userComponents.php?dataPurpose=createPost";
+      //   fetch(loca, { method: "POST", body: formdata })
+      //     .then((res) => res.json())
+      //     .then((data) => {
+      //       console.log(data);
+      //       var result = (data);
+      //       if (result.response == true) 
+      //       {
+      //         alertify.success(result.message);
+      //       } else {
+      //         alertify.set({ delay: 15000 });
+      //         alertify.error(result.message);
+      //       }
+      //   });
     }
 
-    fileNameUploaded1 = "";
     //Destroy Summernote
-    $('#post_contents').summernote('destroy');
+    //$('#post_contents').summernote('destroy');
 
     var post_contentsVal = 'Type here...';
     $('#post_contents').summernote('code', post_contentsVal);
@@ -214,7 +161,6 @@
     event.preventDefault();
 
   });
-
 
   //file name to be uploaded
   let fileNameUploaded2 = "";
@@ -234,47 +180,105 @@
       alertify.set('notifier','position', 'top-right');
       alertify.error("Fill all Feilds");
     }
-    else if(fileNameUploaded2 == "")
-    {
-      alertify.error("Upload profile picture");
-    }
     else 
     {
       if (password != confrimpassword) {
         alertify.error("Passwords are not the same");
       } else {
-        let formdata = new FormData();
-        formdata.append("username", username);
-        formdata.append("email", email);
-        formdata.append("gender", gender);
-        formdata.append("country", country);
-        formdata.append("password", password);
-        formdata.append("profile_pic", fileNameUploaded2);
-      
-        let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
-        fetch(loca, { method: "POST", body: formdata })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            var result = (data);
-            if (result.response == true) 
-            {
-              alertify.success(result.message);
-              alertify.log("Profile picture upload started");
-
-              //uploads file to server
-              myDropzone2.processQueue();
-            } else {
-              alertify.set({ delay: 15000 });
-              alertify.error(result.message);
-            }
-        });
+        //uploads file to server
+        alertify.log("Profile picture upload started");
+        myDropzone2.processQueue();
       }
     }
 
     fileNameUploaded2 = "";
     event.preventDefault();
   });
+
+  //file name to be uploaded
+  let fileNameUploaded3 = "";
+  //createAd-form
+  $('#createAd-form').submit(function (event) {
+    reset();
+
+    var ad_name = $('#ad_name').val();
+    var ad_description = $("#ad_description").val();
+    var ad_target_Country = $("#ad_target_Country").val();
+    var ad_duration = $("#ad_duration").val();
+    var ad_category = $("#ad_category").val();
+    var ad_target_gender = $("#ad_target_gender").val();
+    var agreed = $("#agreed").val();
+    
+    //compare date
+    const parts = ad_duration.split(" - ");
+    const date1 = new Date(parts[0]);
+    const date2 = new Date(parts[1]);
+
+    if (ad_name == "" || ad_description == "" || ad_target_Country == "" || ad_duration == "" || ad_category == "" || ad_target_gender  == "")
+    {
+      alertify.set('notifier','position', 'top-right');
+      alertify.error("Fill all Feilds");
+    }
+    else if(date1 == date2)
+    {
+      alertify.error("Duration cannot be the same Date");
+    }
+    else 
+    {
+      if ($("#agreed").is(":checked")) {
+        //uploads file to server
+        alertify.log("Ad thumbnail upload started");
+        myDropzone3.processQueue();
+      }
+      else
+      {
+        alertify.error("Accpet Terms of Ad Service to continue");
+      }
+    }
+
+    fileNameUploaded2 = "";
+    event.preventDefault();
+  });
+
+   // forgotPassword-form
+   $("#forgotPassword-form").submit(function (event) {
+    reset();
+    var email = $("#email").val();
+    if (email == "") 
+    {
+      alertify.error("Enter Registered Email to continue");
+    } 
+    else 
+    {  
+      let formdata = new FormData();
+      formdata.append("email", email);
+      
+      let loca = "classes/components/userComponents.php?dataPurpose=forgotPassword";
+      fetch(loca, { method: "POST", body: formdata })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          var result = (data);
+          if (result.response == true) 
+          {
+            alertify.success(result.message);
+            alertify.message("Redirecting...");
+            setTimeout(function () {
+              window.location.replace("ureset.php?"+email);
+            }, 3000);
+
+          } else {
+            alertify.set({ delay: 15000 });
+            alertify.error(result.message);
+          }
+        });
+        
+    }
+
+    event.preventDefault();
+  });
+
+
 
 
   //
@@ -288,7 +292,12 @@
   var cancelFileUpload2 = document.querySelector('#cancelFileUploadAll2');
   cancelFileUpload2.addEventListener("click", function() {myDropzone2.removeAllFiles();});
 
+  //clear dropzone for ads
+  var cancelFileUpload3 = document.querySelector('#cancelFileUploadAll3');
+  cancelFileUpload3.addEventListener("click", function() {myDropzone3.removeAllFiles();});
+
   $(document).ready(function(){
+    //
     // dropzone for user create post
     Dropzone.options.dropzoneForm1 = {
     autoProcessQueue: false,
@@ -304,14 +313,23 @@
         list_image();
       });
       this.on('addedfile', function(file) {
-        //file.myCustomName = file.name;
-        //put name to be used in db
-        fileNameUploaded = file.myCustomName;
-
+        //keeping the file extension.
+        // var ext = file.name.split('.').pop();
+        // fileNameUploaded1 = "user-" + getCombinedDateTime() + '.' + ext; //changing the name of the file
+        
         if (this.files.length > 1) {
           this.removeFile(this.files[0]);
           alertify.error("You cannot upload more than one file");
         }
+      });
+      this.on("sending", function(file) {
+        //file.myCustomName =  + file.name;
+        // this.options.renameFilename = function(file){
+        //     let filename = "user-" + getCombinedDateTime();
+        //     //keeping the file extension.
+        //     var ext = file.split('.').pop();
+        //     return file.name = filename + '.' + ext;
+        // };
       });
     },
     success: function(file, response ){
@@ -319,6 +337,10 @@
       if(obj.response == true)
       {
         alertify.success(obj.message);
+
+        fileNameUploaded1 = obj.data;
+
+        return fileNameUploaded1;
       }
       else
       {
@@ -326,6 +348,8 @@
       }
     },
     };
+
+    //
     // dropzone for user profile
     Dropzone.options.dropzoneForm2 = {
       autoProcessQueue: false,
@@ -341,10 +365,6 @@
           list_image();
         });
         this.on('addedfile', function(file) {
-          //file.myCustomName = file.name;
-          //put name to be used in db
-          fileNameUploaded = file.myCustomName;
-  
           if (this.files.length > 1) {
             this.removeFile(this.files[0]);
             alertify.error("You cannot upload more than one file");
@@ -356,13 +376,99 @@
         if(obj.response == true)
         {
           alertify.success(obj.message);
+
+          fileNameUploaded2 = obj.data;
+          let formdata = new FormData();
+          formdata.append("username", $('#username').val());
+          formdata.append("email", $("#email").val());
+          formdata.append("gender", $("#gender").val());
+          formdata.append("country", $("#country").val());
+          formdata.append("password", $("#password").val());
+          formdata.append("profile_pic", fileNameUploaded2);
+        
+          let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
+          fetch(loca, { method: "POST", body: formdata })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              var result = (data);
+              if (result.response == true) 
+              {
+                alertify.success(result.message);
+              } else {
+                alertify.set({ delay: 15000 });
+                alertify.error(result.message);
+              }
+          });
         }
         else
         {
           alertify.error(obj.message);
         }
       },
-      };
+    };
+
+    //
+    // dropzone for ads
+    Dropzone.options.dropzoneForm3 = {
+      autoProcessQueue: false,
+      acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
+      init: function(){
+        myDropzone3 = this;
+        this.on("complete", function(){
+          if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
+          {
+            var _this = this;
+            _this.removeAllFiles();
+          }
+          list_image();
+        });
+        this.on('addedfile', function(file) {
+          if (this.files.length > 3) {
+            this.removeFile(this.files[0]);
+            alertify.error("You cannot upload more than three files");
+          }
+        });
+      },
+      success: function(file, response ){
+        obj = JSON.parse(response);
+        if(obj.response == true)
+        {
+          alertify.success(obj.message);
+
+          fileNameUploaded3 = obj.data;
+          let formdata = new FormData();
+          formdata.append("ad_name", $('#ad_name').val());
+          formdata.append("ad_description", $("#ad_description").val());
+          formdata.append("ad_url", $("#ad_url").val());
+          formdata.append("ad_thumbnail", fileNameUploaded3);
+          formdata.append("ad_target_Country", $("#ad_target_Country").val());
+          formdata.append("ad_duration", $("#ad_duration").val());
+          formdata.append("ad_category", $("#ad_category").val());
+          formdata.append("ad_target_gender", $("#ad_target_Country").val());
+        
+          let loca = "classes/components/userComponents.php?dataPurpose=createAd";
+          fetch(loca, { method: "POST", body: formdata })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              var result = (data);
+              if (result.response == true) 
+              {
+                alertify.success(result.message);
+              } else {
+                alertify.set({ delay: 15000 });
+                alertify.error(result.message);
+              }
+          });
+        }
+        else
+        {
+          alertify.error(obj.message);
+        }
+      },
+    };
+
   });
 
   //list_image();
@@ -388,7 +494,7 @@
       list_image();
      }
     })
-   });
+  });
 //dropzone codes stop here
 //
 
@@ -441,9 +547,9 @@ function PingURL(URL) {
 }
 
 function getLocation() {
-  var ipadd;
-
   reset();
+  var ipadd;
+  return;
   alertify.set({ labels: { ok: "Accept", cancel: "Deny" } });
   alertify.confirm("This site uses Cookies. <br> <div class='container'> We are collection information about your location</div>", function (e) {
     if (e) {
@@ -481,6 +587,19 @@ function getLocation() {
   } else {
     return "Geolocation is not supported by this browser.";
   }
+}
+
+function getCombinedDateTime()
+{
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(today.getDate()).padStart(2, '0');
+  const hours = String(today.getHours()).padStart(2, '0');
+  const minutes = String(today.getMinutes()).padStart(2, '0');
+  const seconds = String(today.getSeconds()).padStart(2, '0');
+  const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return currentDateTime;
 }
 
 function showPosition(position) {
