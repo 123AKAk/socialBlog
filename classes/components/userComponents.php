@@ -382,7 +382,7 @@
                             echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
                         }                        
                     }
-                    else
+                    else If(isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["gender"]) && isset($_POST["user_country"]))
                     {
                         if (isset($_SESSION["macae_blog_user_loggedin_"]))
                         {
@@ -420,8 +420,7 @@
                             }
                         }
                     }
-
-                    if(isset($request))
+                    else if(isset($request))
                     {
                         $fileList = [];
                         $dir = $folder_name;
@@ -441,6 +440,10 @@
                         }  
                         echo json_encode($fileList);
                         exit;
+                    }
+                    else
+                    {
+                        echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
                     }
                 break;
             
