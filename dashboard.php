@@ -19,7 +19,7 @@
 
     // Check if the user is already logged in, if yes then redirect him to dasboard page
     if ($loggedin == false) {
-        echo "<script>window.location.replace('dashboard.php');</script>";
+        echo "<script>window.location.replace('login.php');</script>";
     }
 
     $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
@@ -145,43 +145,78 @@
                                             <div class="widget-comments">
                                                 <div class="title">
                                                     
-                                                    <p>All Posts</p>
+                                                    <p>Your Posts</p>
                                                     
                                                 </div>
 
-                                                <div class="dyn-height" style="max-height:600px;overflow-y:auto;">
+                                                <div class="dyn-height" style="max-height:600px;overflow-y:auto;" id="allPost">
 
                                                 <?php 
                                                     $countnum = 0;
                                                     foreach ($userCreatedPost as $post) : 
                                                     $postId = $sharedComponents->protect($post['post_id']);
                                                     $countnum++;
+
+                                                    //displays the contents as HTML
+                                                    $string = htmlspecialchars_decode($post['post_contents']);
+
+                                                    // Strip HTML tags and leave only texts
+                                                    $stripped_string = strip_tags($string);
+
+                                                    // Count words
+                                                    $num_words = str_word_count($stripped_string);
+
+                                                    $max_words = 50; // Maximum number of words
+                                                    $ellipsis = "...  <a style='font-weight:bold;' href='post.php?dt=".$post['post_title']."&id=".$postId."'> Read more</a>"; // Text to indicate truncated string
+
+                                                    if ($num_words > $max_words) {
+                                                        // Find position of the nth word boundary
+                                                        $pos = $max_words;
+                                                        for ($i = 0; $i < $max_words; $i++) {
+                                                            $pos = strpos($stripped_string, ' ', $pos + 1);
+                                                            if ($pos === false) {
+                                                            break;
+                                                            }
+                                                        }
+                                                        // Truncate string and add ellipsis
+                                                        $truncated_string = substr($stripped_string, 0, $pos) . $ellipsis;
+                                                    } 
+                                                    else {
+                                                        $truncated_string = strip_tags($string);
+                                                    }
+
                                                 ?>
                                                     <ul class="widget-comments-items">
-                                                    <a href="post.php?dt=<?=$post['post_title']?>&id=<?= $postId ?>" target="_blank">
                                                         <li class="comment-item">
                                                             <label for="" > <?= $countnum ?></label>
                                                                 <img src="admin/fileUploads/images/<?= $post['post_thumbnail'] ?>" alt="">
                                                             <div class="content">
                                                         
                                                                 <ul class="info list-inline">
-                                                                    <li><?= $post['category_name'] ?></li>
+                                                                    <li>
+                                                                        <a href="category.php?dt=<?=$post['category_name']?>&catid=<?= $post['category_id'] ?>">
+                                                                            <?= $post['category_name'] ?>
+                                                                        </a>
+                                                                    </li>
                                                                     <li class="dot"></li>
                                                                     <li>
                                                                         <?= date_format(date_create($post['post_creation_time']), "F d, Y - h:ia") ?>
                                                                     </li>
                                                                 </ul>
                                                                 <b>
-                                                                    <?= strlen($post['post_title']) > 57 ? substr($post['post_title'],0,57)."..." : $post['post_title']; ?>
+                                                                    <a href="post.php?dt=<?=$post['post_title']?>&id=<?= $postId ?>"><?= $post['post_title']; ?></a>
                                                                 </b>
+                                                                <p class="mt-2">
+                                                                    <?= $truncated_string; ?>
+                                                                </p>
                                                                 <div>
-                                                                    <a href="javascript:void(0);" onclick="editPost(<?= $postId ?>)" class="btn btn-outline-primary">
+                                                                    <a href="javascript:void(0);" onclick="editPost('<?= $postId ?>')" class="btn btn-outline-primary">
                                                                         Edit
                                                                     </a>
-                                                                    <a href="javascript:void(0);" onclick="deletePost(<?= $postId ?>)" class="btn btn-outline-danger">
+                                                                    <a href="javascript:void(0);" onclick="deletePost('<?= $postId ?>')" class="btn btn-outline-danger">
                                                                         Delete
                                                                     </a>
-                                                                    <a href="javascript:void(0);" onclick="publishPost(<?= $postId ?>)" class="btn btn-outline-secondary">
+                                                                    <a href="javascript:void(0);" onclick="publishPost('<?= $postId ?>')" class="btn btn-outline-secondary">
                                                                         Publish
                                                                     </a>
                                                                 </div>
@@ -198,33 +233,33 @@
                                 
                                 <div class="tab-pane fade p-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                      <div class="">
-                                        <form class="widget-form contact_form row" id="profile-form" autocomplete="off">
+                                        <form class="widget-form contact_form row" id="profile-form" autocomplete="off" onsubmit="return false">
                                             <h6>Profile & Settings</h6>
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Username</label>
-                                                    <input class="form-control" type="text" placeholder="" name="username" id="username" />
+                                                    <input class="form-control" type="text" placeholder="" name="username" id="username" value="<?= $details["username"] ?>"/>
                                                 </div>
                                             </div>
 
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Email</label>
-                                                    <input class="form-control" type="text" placeholder="" name="email" id="email" />
+                                                    <input class="form-control" type="text" placeholder="" name="email" id="email" value="<?= $details["email"] ?>"/>
                                                 </div>
                                             </div>
                                             
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="gender" class="col-form-label">Gender</label>
-                                                    <input class="form-control" type="text" placeholder="" name="gender" id="gender" />
+                                                    <input class="form-control" type="text" placeholder="" name="gender" id="gender" value="<?= $details["gender"] ?>"/>
                                                 </div>
                                             </div>
 
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="country" class="col-form-label">Country</label>
-                                                    <input class="form-control" type="text" placeholder="" name="country" id="country" />
+                                                    <input class="form-control" type="text" placeholder="" name="user_country" id="user_country" value="<?= $details["user_country"] ?>"/>
                                                 </div>
                                             </div>
 
@@ -233,14 +268,14 @@
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Password</label>
-                                                    <input class="form-control" type="text" placeholder="Enter Password " name="password" id="password" />
+                                                    <input class="form-control" type="password" placeholder="Enter Password " name="password" id="password" />
                                                 </div>
                                             </div>
 
                                             <div class="col-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="postTitle" class="col-form-label">Confrim Password</label>
-                                                    <input class="form-control" type="text" placeholder="Confirm Password " name="confrimPassword" id="confrimPassword" />
+                                                    <input class="form-control" type="password" placeholder="Confirm Password " name="confrimPassword" id="confrimPassword" />
                                                 </div>
                                             </div>
                                             
@@ -253,7 +288,7 @@
 
                                             <div class="form-group">
                                                 <div class=" text-center justify-content-center">
-                                                    <button type="submit" class="btn-custom">Save Changes</button>
+                                                    <button type="button" onclick="profileForm()" class="btn-custom">Save Changes</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -593,6 +628,6 @@
                 }
             }
         });
-
+        
     </script>
     

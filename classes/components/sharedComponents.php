@@ -29,7 +29,7 @@ use PHPMailer\PHPMailer\Exception;
                 //echo "New records created successfully";
                 $resultData = $conn->lastInsertId();
 
-                return ['response' => true, 'message' => 'Data Inserted Successfully', 'code' => '1', 'data' => $resultData];
+                return ['response' => true, 'message' => 'Data Submitted Successfully', 'code' => '1', 'data' => $resultData];
             }
             catch (PDOException $error) {
                 
@@ -139,34 +139,6 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
-        //checks images and upload to server
-        function processUploadImage($email, $image)
-        {
-
-            $filename = htmlspecialchars(basename($_FILES[$image]["name"])).$email.date('d-m-y h:i:s');
-            $target_dir = "../fileUploads/";
-            $target_file = $target_dir.basename($_FILES[$image]["name"]);
-            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-                            
-            // Check file size
-            if($_FILES[$image]["size"] > 500000)
-            {
-                $imageProcessingMsg = ['response' => false, 'message' => 'Sorry, your file is too large' ];
-                return $imageProcessingMsg;
-            }
-            // Allow certain file formats
-            else if($imageFileType != "jpg" && $imageFileType != "pdf" && $imageFileType != "doc"
-            && $imageFileType != "pdf" )
-            {
-                $imageProcessingMsg = ['response' => false, 'message' => 'Sorry, only JPG, JPEG, PNG & GIF files are allowed'];
-                return $imageProcessingMsg;
-            }
-            //upload file
-            move_uploaded_file($_FILES[$image]["tmp_name"], $target_file);
-
-            $imageProcessingMsg = ['response' => true, 'message' => $filename];
-            return $imageProcessingMsg;
-        }
 
         //encrypt the datastring
         function protect($routeValue)

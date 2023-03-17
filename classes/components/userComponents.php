@@ -182,7 +182,7 @@
                 break;
             case "createPost":
                     //uploading files into the server
-                    if(!empty($_FILES))
+                    if(!empty($_FILES) && isset($_POST["post_contents"]) && isset($_POST["post_title"]) && isset($_POST["post_category"]) && isset($_POST["post_country"]))
                     {
                         $file_name = $_FILES["file"]["name"];
                         $new_file_name = "user-".date('Y-m-d H-i-s') . "." . pathinfo($file_name, PATHINFO_EXTENSION); // Set the new file name
@@ -191,39 +191,34 @@
                         $location = $folder_name . $new_file_name;
                         if(move_uploaded_file($temp_file, $location))
                         {
-                            echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $new_file_name]);
-                        }
-                        else
-                        {
-                            echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
-                        }                        
-                    }
-                    
-                    if(isset($_POST["post_title"]))
-                    {
-                        // Call check - Insert Category function
-                        $resultmsg = json_encode($sharedComponents->checkInsertCategory($conn, $_POST["post_category"]));
+                            // Call check - Insert Category function
+                            $resultmsg = json_encode($sharedComponents->checkInsertCategory($conn, $_POST["post_category"]));
 
-                        //check if data entered the table 
-                        $resultmsg2 = json_decode($resultmsg, 1);
-                        if (isset($resultmsg2["response"])) 
-                        {
-                            if ($resultmsg2["response"] == true) 
+                            //check if data entered the table 
+                            $resultmsg2 = json_decode($resultmsg, 1);
+                            if (isset($resultmsg2["response"])) 
                             {
-                                // PREPARE DATA TO INSERT INTO DB
-                                $data = array(
-                                    "post_title" => $sharedComponents->test_input($_POST["post_title"]),
-                                    "id_category" => $sharedComponents->test_input($resultmsg2["data"]),
-                                    "post_contents" => $sharedComponents->test_input($_POST["post_contents"]),
-                                    "post_country" => $sharedComponents->test_input($_POST["post_country"]),
-                                    "post_thumbnail" => $sharedComponents->test_input($_POST["post_thumbnail"]),
-                                    "post_creation_time" => date('Y-m-d H:i:s'),
-                                    "id_user" => $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"])
-                                );
-        
-                                // Call insert function
-                                $finalresultmsg = json_encode($sharedComponents->insertToDB($conn, "posts", $data));
-                                echo $finalresultmsg;
+                                if ($resultmsg2["response"] == true) 
+                                {
+                                    // PREPARE DATA TO INSERT INTO DB
+                                    $data = array(
+                                        "post_title" => $sharedComponents->test_input($_POST["post_title"]),
+                                        "id_category" => $sharedComponents->test_input($resultmsg2["data"]),
+                                        "post_contents" => $sharedComponents->test_input($_POST["post_contents"]),
+                                        "post_country" => $sharedComponents->test_input($_POST["post_country"]),
+                                        "post_thumbnail" => $sharedComponents->test_input($new_file_name),
+                                        "post_creation_time" => date('Y-m-d H:i:s'),
+                                        "id_user" => $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"])
+                                    );
+            
+                                    // Call insert function
+                                    $finalresultmsg = json_encode($sharedComponents->insertToDB($conn, "posts", $data));
+                                    echo $finalresultmsg;
+                                }
+                                else
+                                {
+                                    echo $resultmsg;
+                                }
                             }
                             else
                             {
@@ -232,8 +227,8 @@
                         }
                         else
                         {
-                            echo $resultmsg;
-                        }
+                            echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
+                        }                        
                     }
                 break;
             case "savePost":
@@ -288,7 +283,22 @@
                     $location = $folder_name . $new_file_name;
                     if(move_uploaded_file($temp_file, $location))
                     {
-                        echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $new_file_name]);
+                        // PREPARE DATA TO INSERT INTO DB
+                        $data = array(
+                            "ad_name" => $sharedComponents->test_input($_POST["ad_name"]),
+                            "ad_description" => $sharedComponents->test_input($_POST["ad_description"]),
+                            "ad_url" => $sharedComponents->test_input($_POST["ad_url"]),
+                            "ad_thumbnail" => $sharedComponents->test_input($new_file_name),
+                            "ad_target_Country" => $sharedComponents->test_input($_POST["ad_target_Country"]),
+                            "ad_duration" => $sharedComponents->test_input($_POST["ad_duration"]),
+                            "ad_category" => $sharedComponents->test_input($_POST["ad_category"]),
+                            "ad_target_gender" => $sharedComponents->test_input($_POST["ad_target_gender"]),
+                            "date_created" => date('Y-m-d H:i:s'),
+                        );
+
+                        // Call insert function
+                        $resultmsg = json_encode($sharedComponents->insertToDB($conn, "posts", $data));
+                        echo $resultmsg;
                     }
                     else
                     {
@@ -299,22 +309,7 @@
                 if(isset($_POST["adName"]))
                 {
                     
-                    // PREPARE DATA TO INSERT INTO DB
-                    $data = array(
-                        "ad_name" => $sharedComponents->test_input($_POST["ad_name"]),
-                        "ad_description" => $sharedComponents->test_input($_POST["ad_description"]),
-                        "ad_url" => $sharedComponents->test_input($_POST["ad_url"]),
-                        "ad_thumbnail" => $sharedComponents->test_input($_POST["ad_thumbnail"]),
-                        "ad_target_Country" => $sharedComponents->test_input($_POST["ad_target_Country"]),
-                        "ad_duration" => $sharedComponents->test_input($_POST["ad_duration"]),
-                        "ad_category" => $sharedComponents->test_input($_POST["ad_category"]),
-                        "ad_target_gender" => $sharedComponents->test_input($_POST["ad_target_gender"]),
-                        "date_created" => date('Y-m-d H:i:s'),
-                    );
-
-                    // Call insert function
-                    $resultmsg = json_encode($sharedComponents->insertToDB($conn, "posts", $data));
-                    echo $resultmsg;
+                    
                 }
                 break;
             case "updateProfile":
@@ -323,55 +318,130 @@
                     //uploading files into the server
                     if(!empty($_FILES))
                     {
+                        $file_name = $_FILES["file"]["name"];
+                        $new_file_name = "user-".date('Y-m-d H-i-s') . "." . pathinfo($file_name, PATHINFO_EXTENSION); // Set the new file name
+    
                         $temp_file = $_FILES['file']['tmp_name'];
-                        $location = $folder_name . $_FILES['file']['name'];
+                        $location = $folder_name . $new_file_name;
                         if(move_uploaded_file($temp_file, $location))
                         {
-                            echo json_encode( ['response' => true, 'message' => 'Upload Successful', 'code' => '1', 'data' => $_FILES['file']['name']]);
+                            if (isset($_SESSION["macae_blog_user_loggedin_"]))
+                            {
+                                // validate session value
+                                $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                                
+                                // $sql = "SELECT * FROM user WHERE user_id = :user_id";
+                                // if ($stmt = $pdo->prepare($sql)) 
+                                // {
+                                //     // Bind variables to the prepared statement as parameters
+                                //     $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                                //     // Attempt to execute the prepared statement
+                                //     if ($stmt->execute()) {
+                                //         // Check if id exists, if yes then verify password
+                                //         if ($stmt->rowCount() == 1) {
+                                //             if ($row = $stmt->fetch()) {
+                                                
+                                //             }
+                                //         }
+                                //     }
+                                // }
+                                
+                                try {
+                                    if(isset($_POST["password"]))
+                                    {
+                                        $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
+
+                                        $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
+                                        
+                                        $stmt = $conn->prepare($sql);
+
+                                        if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $new_file_name, $_POST["user_country"], $userId]))
+                                        {
+                                            echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
+                                        
+                                        $stmt = $conn->prepare($sql);
+
+                                        if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $new_file_name, $_POST["user_country"], $userId]))
+                                        {
+                                            echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                        }
+                                    }
+
+                                } catch (PDOException $e) {
+                                    echo json_encode( ['response' => false, 'message' => 'Unable to update Profile', 'code' => '0', 'data' => $e->getMessage()]);
+                                }
+                            }
                         }
                         else
                         {
                             echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
                         }                        
                     }
-
-                    if (isset($_SESSION["macae_blog_user_loggedin_"]))
+                    else
                     {
-                        // validate session value
-                        $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
-                        
-                        // $sql = "SELECT * FROM user WHERE user_id = :user_id";
-                        // if ($stmt = $pdo->prepare($sql)) 
-                        // {
-                        //     // Bind variables to the prepared statement as parameters
-                        //     $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
-                        //     // Attempt to execute the prepared statement
-                        //     if ($stmt->execute()) {
-                        //         // Check if id exists, if yes then verify password
-                        //         if ($stmt->rowCount() == 1) {
-                        //             if ($row = $stmt->fetch()) {
-                                        
-                        //             }
-                        //         }
-                        //     }
-                        // }
-                        
-                        try {
-                            $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
-
-                            $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
-
-                            $stmt = $conn->prepare($sql);
-
-                            if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $_POST["profile_pic"], $_POST["user_country"], $userId]))
+                        if (isset($_SESSION["macae_blog_user_loggedin_"]))
+                        {
+                            // validate session value
+                            $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                            try 
                             {
-                                echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                if(isset($_POST["password"]) && !empty($_POST["password"]))
+                                {
+                                    $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
+
+                                    $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `user_country`= ? WHERE `user_id` = ?";
+                                    
+                                    $stmt = $conn->prepare($sql);
+
+                                    if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $_POST["user_country"], $userId]))
+                                    {
+                                        echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                    }
+                                }
+                                else
+                                {
+                                    $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `user_country`= ? WHERE `user_id` = ?";
+                                    
+                                    $stmt = $conn->prepare($sql);
+
+                                    if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $_POST["user_country"], $userId]))
+                                    {
+                                        echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                    }
+                                }
+
+                            } catch (PDOException $e) {
+                                echo json_encode( ['response' => false, 'message' => 'Unable to update Profile', 'code' => '0', 'data' => $e->getMessage()]);
                             }
-                        } catch (PDOException $e) {
-                            echo json_encode( ['response' => false, 'message' => 'Unable to update Profile'.$e->getMessage(), 'code' => '0', 'data' => '']);
                         }
                     }
-                
+
+                    if(isset($request))
+                    {
+                        $fileList = [];
+                        $dir = $folder_name;
+                        if (is_dir($dir)){
+                            if ($dh = opendir($dir)){
+                                while (($file = readdir($dh)) !== false){
+                                if($file != '' && $file != '.' && $file != '..'){
+                                    $file_path = $targetDir.$file;
+                                    if(!is_dir($file_path)){
+                                        $size = filesize($file_path);
+                                        $fileList[] = ['name'=>$file, 'size'=>$size, 'path'=>$file_path];
+                                    }
+                                }
+                                }
+                                closedir($dh);
+                            }
+                        }  
+                        echo json_encode($fileList);
+                        exit;
+                    }
                 break;
             
                 default:

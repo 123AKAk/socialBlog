@@ -25,8 +25,8 @@
                             <button type="button" class="close">
                                 <i class="fas fa-times"></i>
                             </button>
-                            <form class="search-form" action="#">
-                                <input type="search" value="" placeholder="What are you looking for?">
+                            <form class="search-form" action="search.php" method="get">
+                                <input type="search" name="keywrd" value="" placeholder="What are you looking for?">
                                 <button type="submit" class="search-btn">search</button>
                             </form>
                         </div>
