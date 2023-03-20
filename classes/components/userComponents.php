@@ -5,7 +5,7 @@
 
     $dataPurpose = $_GET['dataPurpose'];
 
-    $folder_name = '../../admin/fileUploads/images/';
+    $folder_name = "filesUpload/";
 
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     {
@@ -420,25 +420,74 @@
                             }
                         }
                     }
-                    else if(isset($request))
+                    else if(isset($_POST["deleteFile"]))
                     {
-                        $fileList = [];
+                        $filename = $folder_name.$_POST["deleteFile"];
+
+                        if (file_exists($filename))
+                        {
+                            $status=unlink($filename);
+                            if($status){
+                                echo json_encode( ['response' => true, 'message' => 'File Deleted', 'code' => '1', 'data' => '']);
+                            }
+                            else{  
+                                echo json_encode( ['response' => false, 'message' => 'System Processing Error', 'code' => '0', 'data' => '']);
+                            }  
+                        } else {
+                            echo json_encode( ['response' => false, 'message' => 'System Processing Error', 'code' => '0', 'data' => '']);
+                        }
+                    }
+
+                    // Read files from folder
+                    else if(isset($_POST['request']))
+                    {
+                        $file_list = array();
+                        // Target folder
                         $dir = $folder_name;
-                        if (is_dir($dir)){
-                            if ($dh = opendir($dir)){
-                                while (($file = readdir($dh)) !== false){
-                                if($file != '' && $file != '.' && $file != '..'){
-                                    $file_path = $targetDir.$file;
-                                    if(!is_dir($file_path)){
-                                        $size = filesize($file_path);
-                                        $fileList[] = ['name'=>$file, 'size'=>$size, 'path'=>$file_path];
+                        if (is_dir($dir))
+                        {
+                            if ($dh = opendir($dir))
+                            {
+                                $sql = "SELECT * FROM user WHERE user_id = :user_id";
+                                if ($stmt = $pdo->prepare($sql)) 
+                                {
+                                    $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                                    // Bind variables to the prepared statement as parameters
+                                    $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                                    // Attempt to execute the prepared statement
+                                    if ($stmt->execute()) {
+                                        if ($stmt->rowCount() == 1){
+                                            if ($row = $stmt->fetch()) {
+                                                // Read files and comparing with what is in the database column of a specific user
+                                                while (($file = readdir($dh)) !== false)
+                                                {
+                                                    if($file != '' && $file != '.' && $file != '..'){
+                                                        // File path
+                                                        $file_path = $folder_name.$file;
+
+                                                        //echo $file_path;
+
+                                                        if($file == $row["profile_pic"])
+                                                        {
+                                                            // Check its not folder
+                                                            if(!is_dir($file_path)){
+    
+                                                                $size = filesize($file_path);
+    
+                                                                $file_list[] = array('name'=>$file,'size'=>$size,'path'=>$file_path);
+    
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                closedir($dh);
+                                            }
+                                        }
                                     }
                                 }
-                                }
-                                closedir($dh);
                             }
-                        }  
-                        echo json_encode($fileList);
+                        }
+                        echo json_encode($file_list);
                         exit;
                     }
                     else
@@ -448,7 +497,7 @@
                 break;
             
                 default:
-            echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
+                    echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
         }
     }
 

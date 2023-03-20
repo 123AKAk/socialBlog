@@ -11,6 +11,17 @@
             #post_contents{
                 background-color: #ffffff;
             }
+            .dz-message{
+                text-align: center;
+                font-size: 28px;
+            }
+            
+            .dz-preview .dz-image img{
+                    
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover;
+            }
         </style>
     ';
 
@@ -33,6 +44,8 @@
             $details = $data["data"];
         }
     }
+
+    $folder_name = "filesUpload/";
 
     // Gets user created post
     $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_user = $userId  ORDER BY `post_id` DESC");
@@ -129,7 +142,6 @@
                                                                 <p>Upload Post Thumbnail ↓</p>
                                                                 <div action="classes/components/userComponents.php?dataPurpose=createPost" class="dropzone" id="dropzoneForm1">
                                                                 </div>
-                                                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll1">Clear</button>
                                                             </div>
                                                         
                                                             <div class="text-center justify-content-center">
@@ -189,7 +201,7 @@
                                                     <ul class="widget-comments-items">
                                                         <li class="comment-item">
                                                             <label for="" > <?= $countnum ?></label>
-                                                                <img src="admin/fileUploads/images/<?= $post['post_thumbnail'] ?>" alt="">
+                                                                <img src="<?= $folder_name.$post['post_thumbnail'] ?>" alt="">
                                                             <div class="content">
                                                         
                                                                 <ul class="info list-inline">
@@ -283,9 +295,7 @@
                                                 <p>Upload Profile Picture ↓</p>
                                                 <div action="classes/components/userComponents.php?dataPurpose=updateProfile" class="dropzone" id="dropzoneForm2">
                                                 </div>
-                                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll2">Clear</button>
                                             </div>
-
                                             <div class="form-group">
                                                 <div class=" text-center justify-content-center">
                                                     <button type="button" onclick="profileForm()" class="btn-custom">Save Changes</button>
@@ -428,7 +438,6 @@
                                 <label for="ad_thumbnail" class="pl-2">Upload Ad Thumbnail ↓</label>
                                 <div action="classes/components/userComponents.php?dataPurpose=createAd" class="dropzone" id="dropzoneForm3">
                                 </div>
-                                <button type="button" class="mt-3 btn btn-outline-danger" id="cancelFileUploadAll3">Clear</button>
                             </div>
                             <div class="sign-controls form-group">
                                 <div class="custom-control custom-checkbox">
@@ -462,7 +471,538 @@
     <script src="admin/assets/daterangepicker/daterangepicker.js"></script>
 
     <!-- Page specific script -->
-    <script>
+    <!-- Script -->
+    <script type='text/javascript'>
+
+        // signup form
+        $("#signup-form").submit(function (event)
+        {
+            reset();
+            var username = $("#username").val();
+            var email = $("#email").val();
+            var country = $("#country").val();
+            var gender = $("#gender").val();
+            var password = $("#password").val();
+            var confrimpassword = $("#confrimpassword").val();
+            var agreed = $("#agreed").val();
+
+            if (
+                username == "" ||
+                email == "" ||
+                country == "" ||
+                gender == "" ||
+                password == "" ||
+                confrimpassword == ""
+            ) {
+                alertify.error("Fill all Input Feilds");
+            } else {
+                if (ValidateEmail(email) == false) {
+                alertify.error("Invalid Email, use a Valid Email");
+                } else {
+                if (password != confrimpassword) {
+                    alertify.error("Passwords are not the same");
+                } else {
+                    if ($("#agreed").is(":checked")) {
+                    let formdata = new FormData();
+                    formdata.append("username", username);
+                    formdata.append("email", email);
+                    formdata.append("gender", gender);
+                    formdata.append("password", password);
+                    formdata.append("user_ip_address", "ipaddress");
+                    formdata.append("user_country", country);
+
+                    let loca = "classes/components/userComponents.php?dataPurpose=signup";
+                    fetch(loca, { method: "POST", body: formdata })
+                        .then((res) => res.json())
+                        .then((data) => {
+                        console.log(data);
+                        var result = (data);
+                        if (result.response == true) 
+                        {
+                            alertify.success(result.message);
+                            alertify.message("Redirecting...");
+                            setTimeout(function () {
+                            window.location.replace("login.php?loginMsg=1");
+                            }, 3000);
+
+                        } else {
+                            alertify.set({ delay: 15000 });
+                            alertify.error(result.message);
+                        }
+                        });
+                    } else {
+                    alertify.error("Accpet Terms and Agreement to continue");
+                    }
+                }
+                }
+            }
+
+            event.preventDefault();
+        });
+
+        //login form
+        $("#login-form").submit(function (event) 
+        {
+            reset();
+            var email = $("#email").val();
+            var password = $("#password").val();
+
+            if(email == "" || password == "") 
+            {
+                alertify.set('notifier','position', 'top-right');
+                alertify.error("Fill all Input Feilds");
+            }
+            else 
+            {
+                let formdata = new FormData();
+                formdata.append("email", email);
+                formdata.append("password", password);
+
+                let loca = "classes/components/userComponents.php?dataPurpose=login";
+                fetch(loca, { method: "POST", body: formdata })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    var result = (data);
+                    if (result.response == true) 
+                    {
+                    alertify.success(result.message);
+                    alertify.log("Redirecting...");
+                    setTimeout(function () {
+                        window.location.replace("dashboard.php");
+                    }, 2000);
+
+                    } else {
+                    alertify.set({ delay: 11000 });
+                    alertify.error(result.message);
+                    }
+                });
+            }
+            event.preventDefault();
+        });
+
+        //file name to be uploaded
+        let fileNameUploaded1 = "";
+        //createPost form
+        $('#createPost-form').submit(function (event)
+        {
+            reset();
+
+            var post_title = document.getElementById("post_title").value;
+            var post_category = document.getElementById("post_category").value;
+            var post_contents = $('#post_contents').summernote('code');
+            var post_country = document.getElementById("post_country").value;
+
+            if (post_title == "" || post_category == "" || post_contents == "" || post_country == "")
+            {
+                alertify.set('notifier','position', 'top-right');
+                alertify.error("Fill all Feilds");
+            }
+            else 
+            {
+                if(fileNameUploaded1 != "")
+                {
+                //uploads file to server
+                //alertify.log("Thumbnail upload started");
+                myDropzone1.processQueue();
+                }
+                else
+                {
+                alertify.error("Choose a thumbnail for the Post");
+                }
+            }
+
+            //Destroy Summernote
+            //$('#post_contents').summernote('destroy');
+
+            var post_contentsVal = 'Type here...';
+            $('#post_contents').summernote('code', post_contentsVal);
+
+            fileNameUploaded1 = "";
+            event.preventDefault();
+        });
+
+        //file name to be uploaded
+        let fileNameUploaded2 = "";
+        //profile-form
+        function profileForm()
+        {
+            reset();
+
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+            var gender = document.getElementById("gender").value;
+            var user_country = document.getElementById("user_country").value;
+            var password = document.getElementById("password").value;
+            var confrimPassword = document.getElementById("confrimPassword").value;
+
+            if(username == "" || email == "" || gender == "" || user_country == "")
+            {
+                alertify.set('notifier','position', 'top-right');
+                alertify.error("Fill all Feilds");
+            }
+            else  
+            {
+                if(password != "" && password != confrimPassword) 
+                {
+                alertify.error("The Passwords are not the same");
+                }
+                else if(fileNameUploaded2 == "")
+                {
+                let formdata = new FormData();
+                //send all the form data along with the files:
+                formdata.append("username", username);
+                formdata.append("email", email);
+                formdata.append("gender", gender);
+                formdata.append("user_country", user_country);
+                formdata.append("password", password);
+                
+                let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
+                fetch(loca, { method: "POST", body: formdata })
+                    .then((res) => res.json())
+                    .then((data) => {
+                    console.log(data);
+                    var result = data;
+                    if (result.response == true) 
+                    {
+                        alertify.success(result.message);
+                    } else {
+                        alertify.set({ delay: 15000 });
+                        alertify.error(result.message);
+                    }
+                    });
+                }
+                else
+                {
+                //uploads file to server
+                alertify.log("Profile picture upload started");
+                myDropzone2.processQueue();
+                }
+            }
+            fileNameUploaded2 = "";
+        }
+
+        //file name to be uploaded
+        let fileNameUploaded3 = "";
+        //createAd-form
+        $('#createAd-form').submit(function (event)
+        {
+            reset();
+
+            var ad_name = $('#ad_name').val();
+            var ad_description = $("#ad_description").val();
+            var ad_target_Country = $("#ad_target_Country").val();
+            var ad_duration = $("#ad_duration").val();
+            var ad_category = $("#ad_category").val();
+            var ad_target_gender = $("#ad_target_gender").val();
+            var agreed = $("#agreed").val();
+            
+            //compare date
+            const parts = ad_duration.split(" - ");
+            const date1 = new Date(parts[0]);
+            const date2 = new Date(parts[1]);
+
+            if (ad_name == "" || ad_description == "" || ad_target_Country == "" || ad_duration == "" || ad_category == "" || ad_target_gender  == "")
+            {
+                alertify.set('notifier','position', 'top-right');
+                alertify.error("Fill all Feilds");
+            }
+            else if(date1 == date2)
+            {
+                alertify.error("Duration cannot be the same Date");
+            }
+            else 
+            {
+                if ($("#agreed").is(":checked")) {
+                //uploads file to server
+                alertify.log("Ad thumbnail upload started");
+                myDropzone3.processQueue();
+                }
+                else
+                {
+                alertify.error("Accpet Terms of Ad Service to continue");
+                }
+            }
+
+            fileNameUploaded3 = "";
+            event.preventDefault();
+        });
+
+        // forgotPassword-form
+        $("#forgotPassword-form").submit(function (event)
+        {
+            reset();
+            var email = $("#email").val();
+            if (email == "") 
+            {
+                alertify.error("Enter Registered Email to continue");
+            } 
+            else 
+            {  
+                let formdata = new FormData();
+                formdata.append("email", email);
+                
+                let loca = "classes/components/userComponents.php?dataPurpose=forgotPassword";
+                fetch(loca, { method: "POST", body: formdata })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    var result = (data);
+                    if (result.response == true) 
+                    {
+                    alertify.success(result.message);
+                    alertify.message("Redirecting...");
+                    setTimeout(function () {
+                        window.location.replace("ureset.php?"+email);
+                    }, 3000);
+
+                    } else {
+                    alertify.set({ delay: 15000 });
+                    alertify.error(result.message);
+                    }
+                });
+                
+            }
+            event.preventDefault();
+        });
+
+
+        Dropzone.autoDiscover = false;
+        $("#dropzoneForm1").dropzone({
+            autoProcessQueue: false,
+            acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
+            dictDefaultMessage: 'Drop Here!',
+            paramName: "file",
+            maxFilesize: 2, // MB
+            addRemoveLinks: true,
+            init: function() {
+                myDropzone1 = this;
+                $.ajax({
+                    url: 'classes/components/userComponents.php?dataPurpose=createPost',
+                    type: 'post',
+                    data: {request: 2},
+                    dataType: 'json',
+                    success: function(response){
+                        
+                        $.each(response, function(key,value) {
+                            var mockFile = { name: value.name, size: value.size };
+
+                            myDropzone1.emit("addedfile", mockFile);
+                            myDropzone1.emit("thumbnail", mockFile, value.path);
+                            myDropzone1.emit("complete", mockFile);
+
+                        });
+
+                    }
+                });
+                this.on("complete", function(){
+                    if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
+                    {
+                        var _this = this;
+                        _this.removeAllFiles();
+                    }
+                });
+                this.on('addedfile', function(file) {
+                    //keeping the file extension.
+                    // var ext = file.name.split('.').pop();
+                    // fileNameUploaded1 = "user-" + getCombinedDateTime() + '.' + ext; //changing the name of the file
+                    fileNameUploaded1 = file.name;
+                    if (this.files.length > 1) {
+                        this.removeFile(this.files[0]);
+                        alertify.error("You cannot upload more than one file");
+                    }
+                });
+                this.on("sending", function(data, xhr, formData) {
+                    //send all the form data along with the files:
+                    formData.append("post_title", document.getElementById("post_title").value);
+                    formData.append("post_category", document.getElementById("post_category").value);
+                    formData.append("post_contents", $('#post_contents').summernote('code'));
+                    formData.append("post_country", document.getElementById("post_country").value);
+
+                    //file.myCustomName =  + file.name;
+                    // this.options.renameFilename = function(file){
+                    //     let filename = "user-" + getCombinedDateTime();
+                    //     //keeping the file extension.
+                    //     var ext = file.split('.').pop();
+                    //     return file.name = filename + '.' + ext;
+                    // };
+                });
+            },
+            success: function(file, response ){
+                reset();
+                result = JSON.parse(response);
+                if(result.response == true)
+                {
+                    console.log(result);
+                    alertify.success(result.message);
+                }
+                else
+                {
+                    alertify.set({ delay: 15000 });
+                    alertify.error(result.message);
+                }
+                refreshPostDiv();
+            },
+        });
+
+        $("#dropzoneForm2").dropzone({
+            autoProcessQueue: false,
+            acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
+            dictDefaultMessage: 'Drop Here!',
+            paramName: "file",
+            maxFilesize: 2, // MB
+            addRemoveLinks: true,
+            init: function() {   
+                myDropzone2 = this;
+                $.ajax({
+                    url: 'classes/components/userComponents.php?dataPurpose=updateProfile',
+                    type: 'post',
+                    data: {request: 2},
+                    dataType: 'json',
+                    success: function(response){
+                        
+                        $.each(response, function(key,value) {
+                            var mockFile = { name: value.name, size: value.size };
+
+                            myDropzone2.emit("addedfile", mockFile);
+                            myDropzone2.emit("thumbnail", mockFile, "classes/components/"+value.path);
+                            myDropzone2.emit("complete", mockFile);
+
+                        });
+
+                    }
+                });
+                this.on("complete", function(){
+                    if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
+                    {
+                        var _this = this;
+                        _this.removeAllFiles();
+                    }
+                });
+                this.on('addedfile', function(file) {
+                    fileNameUploaded2 = file.name;
+                    if (this.files.length > 1) {
+                        this.removeFile(this.files[0]);
+                        alertify.error("You cannot upload more than one file");
+                    }
+                });
+                this.on("sending", function(data, xhr, formData) {
+                    //send all the form data along with the files:
+                    formData.append("username", document.getElementById("username").value);
+                    formData.append("email", document.getElementById("email").value);
+                    formData.append("gender", document.getElementById("gender").value);
+                    formData.append("user_country", document.getElementById("user_country").value);
+                    var password = document.getElementById("password").value;
+                    if(password != "")
+                    {
+                        formData.append("password", password);
+                    }
+                    });
+                },
+            success: function(file, response ){
+                reset();
+                result = JSON.parse(response);
+                if(result.response == true)
+                {
+                    console.log(result);
+                    alertify.success(result.message);
+                }
+                else
+                {
+                    alertify.set({ delay: 15000 });
+                    alertify.error(result.message);
+                }
+            }
+        });
+
+        $("#dropzoneForm3").dropzone({
+            autoProcessQueue: false,
+            acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
+            dictDefaultMessage: 'Drop Here!',
+            paramName: "file",
+            maxFilesize: 2, // MB
+            addRemoveLinks: true,
+            init: function() {   
+                myDropzone3 = this;
+                this.on("complete", function(){
+                    if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
+                    {
+                    var _this = this;
+                    _this.removeAllFiles();
+                    }
+                    list_image();
+                });
+                this.on('addedfile', function(file) {
+                    fileNameUploaded3 = file.name;
+                    if (this.files.length > 3) {
+                    this.removeFile(this.files[0]);
+                    alertify.error("You cannot upload more than three files");
+                    }
+                });
+                this.on("sending", function(data, xhr, formData) {
+                    //send all the form data along with the files:
+                    formData.append("ad_name", document.getElementById("ad_name").value);
+                    formData.append("ad_description", document.getElementById("ad_description").value);
+                    formData.append("ad_url", document.getElementById("ad_url").value);
+                    formData.append("ad_target_Country", document.getElementById("ad_target_Country").value);
+                    formData.append("ad_duration", document.getElementById("ad_duration").value);
+                    formData.append("ad_category", document.getElementById("ad_category").value);
+                    formData.append("ad_target_gender", document.getElementById("ad_target_gender").value);
+                });
+                },
+            success: function(file, response ){
+                reset();
+                result = JSON.parse(response);
+                if(result.response == true)
+                {
+                    console.log(result);
+                    alertify.success(result.message);
+                }
+                else
+                {
+                    alertify.set({ delay: 15000 });
+                    alertify.error(result.message);
+                }
+            }
+        });
+
+
+        function refreshPostDiv()
+        {
+            $('#allPost').load(document.URL + ' #allPost')
+        }
+
+        //deletePost
+        function deleteFile(fileName, purpose)
+        {
+            $.ajax({
+                url: `classes/components/userComponents.php?dataPurpose=${purpose}`,
+                method:"POST",
+                data:{deleteFile:fileName},
+                success:function(data)
+                {
+                    var result = data;
+                    if (result.response == true) 
+                    {
+                        alertify.success(result.message);
+                    } else {
+                        alertify.set({ delay: 15000 });
+                        alertify.error(result.message);
+                    }
+                }
+            });
+        }
+        function ValidateEmail(email)
+        {
+            let emailtest = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
+
+            if (!emailtest.test(email)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         //Date range picker
         $('#ad_duration').daterangepicker()
            

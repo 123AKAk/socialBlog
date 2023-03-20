@@ -79,6 +79,9 @@
   <link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.core.css" />
 	<link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.default.css" id="toggleCSS" />
 
+  <link rel="stylesheet" type="text/css" href="assets/dropzone/dropzone.min.css">
+  <!-- dropzonejs -->
+  <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
   <?php
     if(isset($style_refrences))
     {

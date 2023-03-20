@@ -64,8 +64,6 @@ use PHPMailer\PHPMailer\Exception;
                 $mail->Body    = $message;
                 $mail->AltBody = $altBody;
 
-                $mail->send();
-
                 if (!$mail->send())
                 {
                     return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
@@ -139,6 +137,18 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        //check if file exsits
+        function checkFile($filename)
+        {
+            if (file_exists($filename))
+            {
+                return ['response' => true, 'message' => 'File Exists', 'code' => '1', 'data' => ''];
+            }
+            else
+            {
+                return ['response' => false, 'message' => 'System Processing Error', 'code' => '0', 'data' => ''];
+            }
+        }
 
         //encrypt the datastring
         function protect($routeValue)
