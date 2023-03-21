@@ -267,10 +267,59 @@
                     // echo $output;
                 break;
             case "publishPost":
-                echo "12";
+                If(isset($_POST["postId"]))
+                {
+                    $post_status = "";
+                    $post_id = $sharedComponents->unprotect($_POST["postId"]);
+
+                    $asql = "SELECT * FROM posts WHERE post_id = :post_id";
+                    if ($astmt = $pdo->prepare($asql)){
+                        // Bind variables to the prepared statement as parameters
+                        $astmt->bindParam(":post_id", $post_id, PDO::PARAM_STR);
+                        // Set parameters
+                        $stmt->execute();
+                        if ($stmt->rowCount() == 1) {
+                            if ($arow = $astmt->fetch()) {
+                                $post_status = $arow["post_status"];
+                            }
+                        }
+                    }
+
+                    if($post_status != 2)
+                    {
+                        $sql = "UPDATE `posts` SET `post_status`= ? WHERE `post_id` = ?";
+                                            
+                        $stmt = $conn->prepare($sql);
+    
+                        if($stmt->execute(["1", $post_id]))
+                        {
+                            echo json_encode( ['response' => true, 'message' => 'Post published Successfully', 'code' => '1', 'data' => '']);
+                        }
+                    }
+                    else
+                    {
+                        echo json_encode( ['response' => false, 'message' => 'The Post cannot be published, Administator has not approved Post', 'code' => '2', 'data' => '']);
+                    }
+                }
                 break;
             case "deletePost":
-                echo "13";
+                If(isset($_POST["postId"]))
+                {
+                    $post_id = $sharedComponents->unprotect($_POST["postId"]);
+
+                    $sql = "UPDATE `posts` SET `delete_status`= ? WHERE `post_id` = ?";
+                                        
+                    $stmt = $conn->prepare($sql);
+
+                    if($stmt->execute(["1", $post_id]))
+                    {
+                        echo json_encode( ['response' => true, 'message' => 'Post deleted successfully', 'code' => '1', 'data' => '']);
+                    }
+                    else
+                    {
+                        echo json_encode( ['response' => false, 'message' => 'Unable to delete Post', 'code' => '0', 'data' => '']);
+                    }
+                }
                 break;
             case "createAd":
                 //uploading files into the server
@@ -318,33 +367,40 @@
                     //uploading files into the server
                     if(!empty($_FILES))
                     {
+                        //gets user id
+                        $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                        
                         $file_name = $_FILES["file"]["name"];
                         $new_file_name = "user-".date('Y-m-d H-i-s') . "." . pathinfo($file_name, PATHINFO_EXTENSION); // Set the new file name
     
+                        $old_file_name = "";
+
+                        $asql = "SELECT * FROM posts WHERE id_user = :id_user";
+                        if ($astmt = $pdo->prepare($asql)){
+                            // Bind variables to the prepared statement as parameters
+                            $astmt->bindParam(":id_user", $userId, PDO::PARAM_STR);
+                            // Set parameters
+                            $stmt->execute();
+                            if ($stmt->rowCount() == 1) {
+                                if ($arow = $astmt->fetch()) {
+                                    $old_file_name = $arow["post_thumbnail"];
+                                }
+                            }
+                        }
+
+                        //check if the former file still exsits
+                        if($new_file_name == $old_file_name)
+                        {
+                            //deletes old file
+                            unlink($folder_name.$old_file_name);
+                        }
+
                         $temp_file = $_FILES['file']['tmp_name'];
                         $location = $folder_name . $new_file_name;
                         if(move_uploaded_file($temp_file, $location))
                         {
                             if (isset($_SESSION["macae_blog_user_loggedin_"]))
                             {
-                                // validate session value
-                                $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
-                                
-                                // $sql = "SELECT * FROM user WHERE user_id = :user_id";
-                                // if ($stmt = $pdo->prepare($sql)) 
-                                // {
-                                //     // Bind variables to the prepared statement as parameters
-                                //     $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
-                                //     // Attempt to execute the prepared statement
-                                //     if ($stmt->execute()) {
-                                //         // Check if id exists, if yes then verify password
-                                //         if ($stmt->rowCount() == 1) {
-                                //             if ($row = $stmt->fetch()) {
-                                                
-                                //             }
-                                //         }
-                                //     }
-                                // }
                                 
                                 try {
                                     if(isset($_POST["password"]))
@@ -420,24 +476,6 @@
                             }
                         }
                     }
-                    else if(isset($_POST["deleteFile"]))
-                    {
-                        $filename = $folder_name.$_POST["deleteFile"];
-
-                        if (file_exists($filename))
-                        {
-                            $status=unlink($filename);
-                            if($status){
-                                echo json_encode( ['response' => true, 'message' => 'File Deleted', 'code' => '1', 'data' => '']);
-                            }
-                            else{  
-                                echo json_encode( ['response' => false, 'message' => 'System Processing Error', 'code' => '0', 'data' => '']);
-                            }  
-                        } else {
-                            echo json_encode( ['response' => false, 'message' => 'System Processing Error', 'code' => '0', 'data' => '']);
-                        }
-                    }
-
                     // Read files from folder
                     else if(isset($_POST['request']))
                     {

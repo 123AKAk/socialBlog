@@ -11,17 +11,6 @@
             #post_contents{
                 background-color: #ffffff;
             }
-            .dz-message{
-                text-align: center;
-                font-size: 28px;
-            }
-            
-            .dz-preview .dz-image img{
-                    
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: cover;
-            }
         </style>
     ';
 
@@ -45,12 +34,18 @@
         }
     }
 
-    $folder_name = "filesUpload/";
+    $folder_name = "classes/components/filesUpload/";
 
     // Gets user created post
     $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_user = $userId  ORDER BY `post_id` DESC");
     $stmt->execute();
     $userCreatedPost = $stmt->fetchAll();
+
+    // Get all categories
+    $stmt = $conn->prepare("SELECT category_name FROM `category`");
+    $stmt->execute();
+    $categorieslist = $stmt->fetchAll();
+    
 ?>
         <main class="main">
             <!--post-default-->
@@ -144,7 +139,7 @@
                                                                 </div>
                                                             </div>
                                                         
-                                                            <div class="text-center justify-content-center">
+                                                            <div class="text-center justify-content-center mt-3">
                                                                 <button type="submit" class="btn-custom">Submit Post</button>
                                                             </div>
                                                         </form>
@@ -201,7 +196,7 @@
                                                     <ul class="widget-comments-items">
                                                         <li class="comment-item">
                                                             <label for="" > <?= $countnum ?></label>
-                                                                <img src="<?= $folder_name.$post['post_thumbnail'] ?>" alt="">
+                                                                <img src="<?= $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name.$post['post_thumbnail'] ?>" alt="">
                                                             <div class="content">
                                                         
                                                                 <ul class="info list-inline">
@@ -296,7 +291,7 @@
                                                 <div action="classes/components/userComponents.php?dataPurpose=updateProfile" class="dropzone" id="dropzoneForm2">
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group mt-3">
                                                 <div class=" text-center justify-content-center">
                                                     <button type="button" onclick="profileForm()" class="btn-custom">Save Changes</button>
                                                 </div>
@@ -474,113 +469,6 @@
     <!-- Script -->
     <script type='text/javascript'>
 
-        // signup form
-        $("#signup-form").submit(function (event)
-        {
-            reset();
-            var username = $("#username").val();
-            var email = $("#email").val();
-            var country = $("#country").val();
-            var gender = $("#gender").val();
-            var password = $("#password").val();
-            var confrimpassword = $("#confrimpassword").val();
-            var agreed = $("#agreed").val();
-
-            if (
-                username == "" ||
-                email == "" ||
-                country == "" ||
-                gender == "" ||
-                password == "" ||
-                confrimpassword == ""
-            ) {
-                alertify.error("Fill all Input Feilds");
-            } else {
-                if (ValidateEmail(email) == false) {
-                alertify.error("Invalid Email, use a Valid Email");
-                } else {
-                if (password != confrimpassword) {
-                    alertify.error("Passwords are not the same");
-                } else {
-                    if ($("#agreed").is(":checked")) {
-                    let formdata = new FormData();
-                    formdata.append("username", username);
-                    formdata.append("email", email);
-                    formdata.append("gender", gender);
-                    formdata.append("password", password);
-                    formdata.append("user_ip_address", "ipaddress");
-                    formdata.append("user_country", country);
-
-                    let loca = "classes/components/userComponents.php?dataPurpose=signup";
-                    fetch(loca, { method: "POST", body: formdata })
-                        .then((res) => res.json())
-                        .then((data) => {
-                        console.log(data);
-                        var result = (data);
-                        if (result.response == true) 
-                        {
-                            alertify.success(result.message);
-                            alertify.message("Redirecting...");
-                            setTimeout(function () {
-                            window.location.replace("login.php?loginMsg=1");
-                            }, 3000);
-
-                        } else {
-                            alertify.set({ delay: 15000 });
-                            alertify.error(result.message);
-                        }
-                        });
-                    } else {
-                    alertify.error("Accpet Terms and Agreement to continue");
-                    }
-                }
-                }
-            }
-
-            event.preventDefault();
-        });
-
-        //login form
-        $("#login-form").submit(function (event) 
-        {
-            reset();
-            var email = $("#email").val();
-            var password = $("#password").val();
-
-            if(email == "" || password == "") 
-            {
-                alertify.set('notifier','position', 'top-right');
-                alertify.error("Fill all Input Feilds");
-            }
-            else 
-            {
-                let formdata = new FormData();
-                formdata.append("email", email);
-                formdata.append("password", password);
-
-                let loca = "classes/components/userComponents.php?dataPurpose=login";
-                fetch(loca, { method: "POST", body: formdata })
-                .then((res) => res.json())
-                .then((data) => {
-                    console.log(data);
-                    var result = (data);
-                    if (result.response == true) 
-                    {
-                    alertify.success(result.message);
-                    alertify.log("Redirecting...");
-                    setTimeout(function () {
-                        window.location.replace("dashboard.php");
-                    }, 2000);
-
-                    } else {
-                    alertify.set({ delay: 11000 });
-                    alertify.error(result.message);
-                    }
-                });
-            }
-            event.preventDefault();
-        });
-
         //file name to be uploaded
         let fileNameUploaded1 = "";
         //createPost form
@@ -619,6 +507,7 @@
             $('#post_contents').summernote('code', post_contentsVal);
 
             fileNameUploaded1 = "";
+            refreshPostDiv();
             event.preventDefault();
         });
 
@@ -645,38 +534,39 @@
             {
                 if(password != "" && password != confrimPassword) 
                 {
-                alertify.error("The Passwords are not the same");
+                    alertify.error("The Passwords are not the same");
+                    return;
                 }
-                else if(fileNameUploaded2 == "")
+                else if(fileNameUploaded2 == "" || afileNameUploaded2 == 1)
                 {
-                let formdata = new FormData();
-                //send all the form data along with the files:
-                formdata.append("username", username);
-                formdata.append("email", email);
-                formdata.append("gender", gender);
-                formdata.append("user_country", user_country);
-                formdata.append("password", password);
-                
-                let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
-                fetch(loca, { method: "POST", body: formdata })
-                    .then((res) => res.json())
-                    .then((data) => {
-                    console.log(data);
-                    var result = data;
-                    if (result.response == true) 
-                    {
-                        alertify.success(result.message);
-                    } else {
-                        alertify.set({ delay: 15000 });
-                        alertify.error(result.message);
-                    }
+                    let formdata = new FormData();
+                    //send all the form data along with the files:
+                    formdata.append("username", username);
+                    formdata.append("email", email);
+                    formdata.append("gender", gender);
+                    formdata.append("user_country", user_country);
+                    formdata.append("password", password);
+                    
+                    let loca = "classes/components/userComponents.php?dataPurpose=updateProfile";
+                    fetch(loca, { method: "POST", body: formdata })
+                        .then((res) => res.json())
+                        .then((data) => {
+                        console.log(data);
+                        var result = data;
+                        if (result.response == true) 
+                        {
+                            alertify.success(result.message);
+                        } else {
+                            alertify.set({ delay: 15000 });
+                            alertify.error(result.message);
+                        }
                     });
                 }
                 else
                 {
-                //uploads file to server
-                alertify.log("Profile picture upload started");
-                myDropzone2.processQueue();
+                    //uploads file to server
+                    alertify.log("Profile picture upload started");
+                    myDropzone2.processQueue();
                 }
             }
             fileNameUploaded2 = "";
@@ -771,7 +661,7 @@
         $("#dropzoneForm1").dropzone({
             autoProcessQueue: false,
             acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
-            dictDefaultMessage: 'Drop Here!',
+            dictDefaultMessage: 'Drop Picture files here!',
             paramName: "file",
             maxFilesize: 2, // MB
             addRemoveLinks: true,
@@ -803,6 +693,7 @@
                     }
                 });
                 this.on('addedfile', function(file) {
+                    reset();
                     //keeping the file extension.
                     // var ext = file.name.split('.').pop();
                     // fileNameUploaded1 = "user-" + getCombinedDateTime() + '.' + ext; //changing the name of the file
@@ -848,7 +739,7 @@
         $("#dropzoneForm2").dropzone({
             autoProcessQueue: false,
             acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
-            dictDefaultMessage: 'Drop Here!',
+            dictDefaultMessage: 'Drop Picture files here!',
             paramName: "file",
             maxFilesize: 2, // MB
             addRemoveLinks: true,
@@ -860,26 +751,25 @@
                     data: {request: 2},
                     dataType: 'json',
                     success: function(response){
-                        
                         $.each(response, function(key,value) {
                             var mockFile = { name: value.name, size: value.size };
 
                             myDropzone2.emit("addedfile", mockFile);
                             myDropzone2.emit("thumbnail", mockFile, "classes/components/"+value.path);
                             myDropzone2.emit("complete", mockFile);
-
+                            afileNameUploaded2 = 1;
                         });
-
                     }
                 });
                 this.on("complete", function(){
                     if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
                     {
-                        var _this = this;
+                        let _this = this;
                         _this.removeAllFiles();
                     }
                 });
                 this.on('addedfile', function(file) {
+                    reset();
                     fileNameUploaded2 = file.name;
                     if (this.files.length > 1) {
                         this.removeFile(this.files[0]);
@@ -918,7 +808,7 @@
         $("#dropzoneForm3").dropzone({
             autoProcessQueue: false,
             acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
-            dictDefaultMessage: 'Drop Here!',
+            dictDefaultMessage: 'Drop Picture files here!',
             paramName: "file",
             maxFilesize: 2, // MB
             addRemoveLinks: true,
@@ -933,6 +823,7 @@
                     list_image();
                 });
                 this.on('addedfile', function(file) {
+                    reset();
                     fileNameUploaded3 = file.name;
                     if (this.files.length > 3) {
                     this.removeFile(this.files[0]);
@@ -969,29 +860,89 @@
 
         function refreshPostDiv()
         {
-            $('#allPost').load(document.URL + ' #allPost')
+            $('#allPost').load(location.href + ' #allPost')
+        }
+
+        //editPost
+        function editPost(postId)
+        {
+            reset();
+
+            refreshPostDiv();
         }
 
         //deletePost
-        function deleteFile(fileName, purpose)
+        function deletePost(postId)
         {
-            $.ajax({
-                url: `classes/components/userComponents.php?dataPurpose=${purpose}`,
-                method:"POST",
-                data:{deleteFile:fileName},
-                success:function(data)
+            reset();
+            alertify.set({ labels: { ok: "Accept", cancel: "Deny" } });
+                alertify.confirm("Are you sure you want to Delete this post?", function (e) {
+                if (e) 
                 {
-                    var result = data;
-                    if (result.response == true) 
-                    {
-                        alertify.success(result.message);
-                    } else {
-                        alertify.set({ delay: 15000 });
-                        alertify.error(result.message);
-                    }
+                    $.ajax({
+                        url: `classes/components/userComponents.php?dataPurpose=deletePost`,
+                        method:"POST",
+                        data:{postId:postId},
+                        success:function(data)
+                        {
+                            reset();
+                            var result = data;
+                            if (result.response == true) 
+                            {
+                                alertify.success(result.message);
+                            } else {
+                                alertify.set({ delay: 15000 });
+                                alertify.error(result.message);
+                            }
+                        }
+                    });    
+                } else {
+                    alertify.log("Cancelled");
                 }
             });
+            refreshPostDiv();
         }
+
+        //publishPost
+        function publishPost(postId)
+        {
+            reset();
+            alertify.set({ labels: { ok: "Accept", cancel: "Deny" } });
+                alertify.confirm("Are you sure you want to Publish this post?", function (e) {
+                if (e) 
+                {
+                    $.ajax({
+                        url: `classes/components/userComponents.php?dataPurpose=publishPost`,
+                        method:"POST",
+                        data:{postId:postId},
+                        success:function(data)
+                        {
+                            reset();
+                            var result = data;
+                            if (result.response == true) 
+                            {
+                                alertify.success(result.message);
+                            } else {
+                                if(result.code == 2)
+                                {
+                                    alertify.log(result.message);
+                                }
+                                else
+                                {
+                                    alertify.set({ delay: 15000 });
+                                    alertify.error(result.message);
+                                }
+                            }
+                        }
+                    });    
+                } else {
+                    alertify.log("Cancelled");
+                }
+            });
+            refreshPostDiv();
+        }
+
+
         function ValidateEmail(email)
         {
             let emailtest = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
@@ -1127,8 +1078,15 @@
         }
         
         /*An array containing all the country names in the world:*/
-        var postCategories = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua & Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central Arfrican Republic","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cuba","Curacao","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauro","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre & Miquelon","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","St Kitts & Nevis","St Lucia","St Vincent","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Turks & Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
-        
+        var postCategories = [];
+        //gets category names and push to js array
+        <?php
+            foreach ($categorieslist as $category) :
+        ?>
+                postCategories.push("<?= $category['category_name'] ?>");
+        <?php
+            endforeach;
+        ?>
         /*initiate the autocomplete function on the "myInput" element, and pass along the postcategories array as possible autocomplete values:*/
 
         
@@ -1159,7 +1117,7 @@
                 theme: 'monokai'
             },
             hint: {
-                words: ['Macae', 'Blog', 'Blunt Technology', 'Science'],
+                words: postCategories,
                 match: /\b(\w{1,})$/,
                 search: function (keyword, callback) {
                 callback($.grep(this.words, function (item) {

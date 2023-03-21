@@ -5,6 +5,7 @@
     
     require "includes/varnames.php";
 
+    //validates logged in session ID
     $loggedin = false;
     if (isset($_SESSION["macae_blog_user_loggedin_"])){
       // validate session value

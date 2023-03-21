@@ -140,13 +140,34 @@ use PHPMailer\PHPMailer\Exception;
         //check if file exsits
         function checkFile($filename)
         {
-            if (file_exists($filename))
+            // Define file path 
+            $dir = "classes/components/filesUpload/";
+            $pathtofile = $dir.$filename; 
+
+            // Clear cache to remove result from previous run 
+            clearstatcache(); 
+
+            if(!empty($filename))
             {
-                return ['response' => true, 'message' => 'File Exists', 'code' => '1', 'data' => ''];
+                if(is_dir($dir))
+                {
+                    if (file_exists($pathtofile))
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
             {
-                return ['response' => false, 'message' => 'System Processing Error', 'code' => '0', 'data' => ''];
+                return 0;
             }
         }
 
