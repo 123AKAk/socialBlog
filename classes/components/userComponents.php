@@ -231,8 +231,255 @@
                         }                        
                     }
                 break;
-            case "savePost":
-                echo "10";
+            case "editPost":
+                    If(isset($_POST["postId"]))
+                    {
+                        $post_id = $sharedComponents->unprotect($_POST["postId"]);
+                        $asql = "SELECT * FROM posts WHERE post_id = :post_id";
+                        if ($astmt = $pdo->prepare($asql)){
+                            // Bind variables to the prepared statement as parameters
+                            $astmt->bindParam(":post_id", $post_id, PDO::PARAM_STR);
+                            // Set parameters
+                            $astmt->execute();
+                            if ($astmt->rowCount() == 1) {
+                                if ($post = $astmt->fetch()) {
+                                    
+                                    $postThumbnail = $post['post_thumbnail'];
+                                    $postTitle = $post['post_title'];
+                                    $postCountry = $post['post_country'];
+                                    $postContents = $post['post_contents'];
+
+                                    $postCategory ="";
+                                    $resultmsg = json_encode($sharedComponents->getCategoryName($pdo, $post['id_category']));
+                                    $resultmsg = json_decode($resultmsg, 1);
+                                    if (isset($resultmsg["response"])) 
+                                    {
+                                        if ($resultmsg["response"] == true) 
+                                        {
+                                            $postCategory = $resultmsg["data"];
+                                        }
+                                    }
+
+                                    echo '
+                                        <form  class="widget-form contact_form row" id="aeditPost-form" autocomplete="off">
+                                            <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
+                
+                                            <div class="col-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="apost_title" class="col-form-label">Post Title</label>
+                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="apost_title" id="apost_title" value="'.$postTitle.'" />
+                                                </div>
+                                            </div>
+                
+                                            <div class="col-6 col-md-6">
+                                                <div class="form-group">
+                                                <label for="apost_category" class="col-form-label">Post Category</label>
+                                                <input class="form-control" type="text" name="apost_category" list="category" value="" placeholder="Select Category" id="apost_category" value="'.$postCategory.'" autocomplete="off"/>
+                                                </div>
+                                            </div>
+                
+                                            <div class="col-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="apost_country" class="col-form-label">Post Country</label>
+                                                    <input class="form-control" type="text" placeholder="Enter Post Country" name="apost_country" id="apost_country" value="'.$postCategory.'" />
+                                                </div>
+                                            </div>
+                
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="apost_contents">Post Content</label>
+                                                    <div style="background-color: white;">
+                                                        <textarea id="apost_contents" name="apost_contents" style="padding: 10px;">
+                                                            <p>
+                                                                Type here...
+                                                            </p>
+                                                        </textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                                
+                                            <div class="">
+                                                <p>Upload Post Thumbnail ↓</p>
+                                                <div action="classes/components/userComponents.php?dataPurpose=editPost" class="dropzone" id="adropzoneForm1">
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="text-center justify-content-center mt-3">
+                                                <button type="submit" class="btn-custom">Submit Post</button>
+                                            </div>
+                                        </form>
+                                        <script>
+                                            var post_contentsVal = '.$postContents.';
+                                            $("#apost_contents").summernote("code", post_contentsVal);
+
+                                            //file name to be uploaded
+                                            let fileNameUploaded1 = "";
+                                            //createPost form
+                                            $("#aeditPost-form").submit(function (event)
+                                            {
+                                                reset();
+                                    
+                                                var post_title = document.getElementById("apost_title").value;
+                                                var post_category = document.getElementById("apost_category").value;
+                                                var post_contents = $("#apost_contents").summernote("code");
+                                                var post_country = document.getElementById("apost_country").value;
+                                    
+                                                if (post_title == "" || post_category == "" || post_contents == "" || post_country == "")
+                                                {
+                                                    alertify.set("notifier","position", "top-right");
+                                                    alertify.error("Fill all Feilds");
+                                                }
+                                                else 
+                                                {
+                                                    if(fileNameUploaded1 != "")
+                                                    {
+                                                        //uploads file to server
+                                                        //alertify.log("Thumbnail upload started");
+                                                        myDropzone1.processQueue();
+                                                    }
+                                                    else
+                                                    {
+                                                        alertify.error("Choose a thumbnail for the Post");
+                                                    }
+                                                }
+                                    
+                                                //Destroy Summernote
+                                                //$("#post_contents").summernote("destroy");
+                                    
+                                                post_contentsVal = "Type here...";
+                                                $("#post_contents").summernote("code", post_contentsVal);
+                                    
+                                                fileNameUploaded1 = "";
+                                                refreshPostDiv();
+                                                event.preventDefault();
+                                            });
+
+                                            //dropzone
+                                            $("#dropzoneForm1").dropzone({
+                                                autoProcessQueue: false,
+                                                acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
+                                                dictDefaultMessage: "Drop Picture files here!",
+                                                paramName: "file",
+                                                maxFilesize: 2, // MB
+                                                addRemoveLinks: true,
+                                                init: function() {
+                                                    myDropzone1 = this;
+                                                    $.ajax({
+                                                        url: "classes/components/userComponents.php?dataPurpose=editPost",
+                                                        type: "post",
+                                                        data: {request: 2},
+                                                        dataType: "json",
+                                                        success: function(response){
+                                                            $.each(response, function(key,value) {
+                                                                var mockFile = { name: value.name, size: value.size };
+                                                                myDropzone1.emit("addedfile", mockFile);
+                                                                myDropzone1.emit("thumbnail", mockFile, value.path);
+                                                                myDropzone1.emit("complete", mockFile);
+                                                            });
+                                                        }
+                                                    });
+                                                    this.on("complete", function(){
+                                                        if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
+                                                        {
+                                                            var _this = this;
+                                                            _this.removeAllFiles();
+                                                        }
+                                                    });
+                                                    this.on("addedfile", function(file) {
+                                                        reset();
+                                                        afileNameUploaded1 = file.name;
+                                                        if (this.files.length > 1) {
+                                                            this.removeFile(this.files[0]);
+                                                            alertify.error("You cannot upload more than one file");
+                                                        }
+                                                    });
+                                                    this.on("sending", function(data, xhr, formData) {
+                                                        //send all the form data along with the files:
+                                                        formData.append("post_title", document.getElementById("apost_title").value);
+                                                        formData.append("post_category", document.getElementById("apost_category").value);
+                                                        formData.append("post_contents", $("#apost_contents").summernote("code"));
+                                                        formData.append("post_country", document.getElementById("apost_country").value);
+                                                    });
+                                                },
+                                                success: function(file, response ){
+                                                    reset();
+                                                    result = JSON.parse(response);
+                                                    if(result.response == true)
+                                                    {
+                                                        console.log(result);
+                                                        alertify.success(result.message);
+                                                    }
+                                                    else
+                                                    {
+                                                        alertify.set({ delay: 15000 });
+                                                        alertify.error(result.message);
+                                                    }
+                                                    refreshPostDiv();
+                                                },
+                                            });
+                                        </script>
+                                    ';
+                                }
+                            }
+                        }
+                    }
+                    else if(!empty($_FILES))
+                    {
+
+                    }
+                    // Read files from folder
+                    else if(isset($_POST['request']))
+                    {
+                        $file_list = array();
+                        // Target folder
+                        $dir = $folder_name;
+                        if (is_dir($dir))
+                        {
+                            if ($dh = opendir($dir))
+                            {
+                                $sql = "SELECT * FROM user WHERE user_id = :user_id";
+                                if ($stmt = $pdo->prepare($sql)) 
+                                {
+                                    $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                                    // Bind variables to the prepared statement as parameters
+                                    $stmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                                    // Attempt to execute the prepared statement
+                                    if ($stmt->execute()) {
+                                        if ($stmt->rowCount() == 1){
+                                            if ($row = $stmt->fetch()) {
+                                                // Read files and comparing with what is in the database column of a specific user
+                                                while (($file = readdir($dh)) !== false)
+                                                {
+                                                    if($file != '' && $file != '.' && $file != '..'){
+                                                        // File path
+                                                        $file_path = $folder_name.$file;
+
+                                                        //echo $file_path;
+
+                                                        if($file == $row["profile_pic"])
+                                                        {
+                                                            // Check its not folder
+                                                            if(!is_dir($file_path)){
+    
+                                                                $size = filesize($file_path);
+    
+                                                                $file_list[] = array('name'=>$file,'size'=>$size,'path'=>$file_path);
+    
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                closedir($dh);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        echo json_encode($file_list);
+                        exit;
+                    }
                 break;
             case "editPost":
                     //deleting file from server
@@ -277,15 +524,15 @@
                         // Bind variables to the prepared statement as parameters
                         $astmt->bindParam(":post_id", $post_id, PDO::PARAM_STR);
                         // Set parameters
-                        $stmt->execute();
-                        if ($stmt->rowCount() == 1) {
+                        $astmt->execute();
+                        if ($astmt->rowCount() == 1) {
                             if ($arow = $astmt->fetch()) {
                                 $post_status = $arow["post_status"];
                             }
                         }
                     }
 
-                    if($post_status != 2)
+                    if($post_status == 2)
                     {
                         $sql = "UPDATE `posts` SET `post_status`= ? WHERE `post_id` = ?";
                                             
@@ -380,8 +627,8 @@
                             // Bind variables to the prepared statement as parameters
                             $astmt->bindParam(":id_user", $userId, PDO::PARAM_STR);
                             // Set parameters
-                            $stmt->execute();
-                            if ($stmt->rowCount() == 1) {
+                            $astmt->execute();
+                            if ($astmt->rowCount() == 1) {
                                 if ($arow = $astmt->fetch()) {
                                     $old_file_name = $arow["post_thumbnail"];
                                 }

@@ -137,6 +137,26 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        function getCategoryName($pdo, $category_id)
+        {
+            if ($stmt = $pdo->prepare("SELECT * FROM category WHERE category_id = :category_id")) {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":category_id", $category_id, PDO::PARAM_STR);
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) 
+                {
+                    // Check if username exists, if yes then verify password
+                    if ($stmt->rowCount() == 1) 
+                    {
+                        if ($row = $stmt->fetch()) 
+                        {
+                            return ['response' => true, 'message' => 'Category is available', 'code' => '1', 'data' => $row["category_name"]];
+                        }
+                    }
+                }
+            }
+        }
+
         //check if file exsits
         function checkFile($filename)
         {

@@ -37,7 +37,7 @@
     $folder_name = "classes/components/filesUpload/";
 
     // Gets user created post
-    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_user = $userId  ORDER BY `post_id` DESC");
+    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_user = $userId AND delete_status = 0  ORDER BY `post_id` DESC");
     $stmt->execute();
     $userCreatedPost = $stmt->fetchAll();
 
@@ -100,7 +100,7 @@
                                                             <div class="col-12 col-md-12">
                                                                 <div class="form-group">
                                                                     <label for="post_title" class="col-form-label">Post Title</label>
-                                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="post_title" id="post_title" autocomplete="off"/>
+                                                                    <input class="form-control" type="text" placeholder="Enter Post Title" name="post_title" id="post_title"/>
                                                                 </div>
                                                             </div>
 
@@ -113,7 +113,7 @@
 
                                                             <div class="col-6 col-md-6">
                                                                 <div class="form-group">
-                                                                    <label for="post_title" class="col-form-label">Post Country</label>
+                                                                    <label for="post_country" class="col-form-label">Post Country</label>
                                                                     <input class="form-control" type="text" placeholder="Enter Post Country" name="post_country" id="post_country" />
                                                                 </div>
                                                             </div>
@@ -217,15 +217,17 @@
                                                                     <?= $truncated_string; ?>
                                                                 </p>
                                                                 <div>
-                                                                    <a href="javascript:void(0);" onclick="editPost('<?= $postId ?>')" class="btn btn-outline-primary">
+                                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-primary" onclick="editPost('<?= $postId ?>')">
                                                                         Edit
                                                                     </a>
-                                                                    <a href="javascript:void(0);" onclick="deletePost('<?= $postId ?>')" class="btn btn-outline-danger">
+                                                                    <a href="javascript:void(0);" onclick="deletePost()" class="btn btn-sm btn-outline-danger">
                                                                         Delete
                                                                     </a>
-                                                                    <a href="javascript:void(0);" onclick="publishPost('<?= $postId ?>')" class="btn btn-outline-secondary">
-                                                                        Publish
-                                                                    </a>
+                                                                    <?php if($post['post_status'] == 2){ ?>
+                                                                        <a href="javascript:void(0);" onclick="publishPost('<?= $postId ?>')" class="btn btn-sm btn-outline-secondary">
+                                                                            Publish
+                                                                        </a>
+                                                                    <?php } ?>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -376,6 +378,7 @@
                 </div>
             </div>
         </div>
+        <!-- ad modal -->
         <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -451,6 +454,25 @@
             </div>
         </div>
 
+        <!-- edit post modal  -->
+        <div class="modal fade modal-lg" id="exampleModalToggle3" aria-hidden="true" aria-labelledby="exampleModalToggleLabel3" tabindex="-1" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel3">Edit Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="post-modal-content">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-custom">Save Changes</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+
 <?php
     include 'includes/footer.php';
     include 'includes/scripts.php';
@@ -490,13 +512,13 @@
             {
                 if(fileNameUploaded1 != "")
                 {
-                //uploads file to server
-                //alertify.log("Thumbnail upload started");
-                myDropzone1.processQueue();
+                    //uploads file to server
+                    //alertify.log("Thumbnail upload started");
+                    myDropzone1.processQueue();
                 }
                 else
                 {
-                alertify.error("Choose a thumbnail for the Post");
+                    alertify.error("Choose a thumbnail for the Post");
                 }
             }
 
@@ -667,24 +689,6 @@
             addRemoveLinks: true,
             init: function() {
                 myDropzone1 = this;
-                $.ajax({
-                    url: 'classes/components/userComponents.php?dataPurpose=createPost',
-                    type: 'post',
-                    data: {request: 2},
-                    dataType: 'json',
-                    success: function(response){
-                        
-                        $.each(response, function(key,value) {
-                            var mockFile = { name: value.name, size: value.size };
-
-                            myDropzone1.emit("addedfile", mockFile);
-                            myDropzone1.emit("thumbnail", mockFile, value.path);
-                            myDropzone1.emit("complete", mockFile);
-
-                        });
-
-                    }
-                });
                 this.on("complete", function(){
                     if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
                     {
@@ -860,19 +864,60 @@
 
         function refreshPostDiv()
         {
-            $('#allPost').load(location.href + ' #allPost')
+            // reset();
+            // //$('#allPost').load(documentx.URL + ' #allPost')
+            // $.ajax({
+            //     type:"GET",
+            //     url:"dashboard.php",
+            //     datatype: 'html',
+            //     success: function(data){
+            //     $("#allPost").html(data);
+            //     }
+            // }).done(function() {
+            //     alertify.log("Page reloaded");
+            // });
         }
 
         //editPost
-        function editPost(postId)
+        function editPost(postid)
         {
             reset();
 
-            refreshPostDiv();
+            $('#exampleModalToggle3').modal('show');
+            var modal = $(this)
+            $.ajax({
+                url: 'classes/components/userComponents.php?dataPurpose=editPost',
+                method:"POST",
+                data:{postId:postid},
+                dataType: 'text',
+                success: function(data) {
+                    console.log(data);
+                    
+                    const divElement = document.getElementById("post-modal-content");
+                    divElement.innerHTML = "";
+                    var zedizus = document.createElement('pilipus');
+                    zedizus.innerHTML = data;
+                    divElement.appendChild(zedizus);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'classes/components/userComponents.php?dataPurpose=javascript', true);
+                    xhr.responseType = 'text';
+                    xhr.onload = function() {
+                        // evaluate the JavaScript code in the response
+                        eval(xhr.response);
+                        console.log(xhr.response);
+                    };
+                }
+            });
         }
 
+        //displays edit form from sever page to modal
+        // $('#exampleModalToggle3').on('show.bs.modal', function (event) {    
+        // });
+
+
         //deletePost
-        function deletePost(postId)
+        function deletePost(postid)
         {
             reset();
             alertify.set({ labels: { ok: "Accept", cancel: "Deny" } });
@@ -882,11 +927,13 @@
                     $.ajax({
                         url: `classes/components/userComponents.php?dataPurpose=deletePost`,
                         method:"POST",
-                        data:{postId:postId},
-                        success:function(data)
+                        data:{postId:postid},
+                        dataType: 'json',
+                        success:function(response)
                         {
                             reset();
-                            var result = data;
+                            console.log(response);
+                            var result = response;
                             if (result.response == true) 
                             {
                                 alertify.success(result.message);
@@ -904,40 +951,41 @@
         }
 
         //publishPost
-        function publishPost(postId)
+        function publishPost(postid)
         {
             reset();
             alertify.set({ labels: { ok: "Accept", cancel: "Deny" } });
-                alertify.confirm("Are you sure you want to Publish this post?", function (e) {
-                if (e) 
-                {
-                    $.ajax({
-                        url: `classes/components/userComponents.php?dataPurpose=publishPost`,
-                        method:"POST",
-                        data:{postId:postId},
-                        success:function(data)
+            alertify.confirm("Are you sure you want to Publish this post?", function (e) {
+            if (e) 
+            {
+                $.ajax({
+                    url: `classes/components/userComponents.php?dataPurpose=publishPost`,
+                    method:"POST",
+                    data:{postId:postid},
+                    success:function(response)
+                    {
+                        reset();
+                        var result = response;
+                        if (result.response == true) 
                         {
-                            reset();
-                            var result = data;
-                            if (result.response == true) 
+                            alertify.success(result.message);
+                        } else {
+                            console.log(response.code);
+                            if(result.code == 2)
                             {
-                                alertify.success(result.message);
-                            } else {
-                                if(result.code == 2)
-                                {
-                                    alertify.log(result.message);
-                                }
-                                else
-                                {
-                                    alertify.set({ delay: 15000 });
-                                    alertify.error(result.message);
-                                }
+                                alertify.log(result.message);
+                            }
+                            else
+                            {
+                                alertify.set({ delay: 15000 });
+                                alertify.error(result.message);
                             }
                         }
-                    });    
-                } else {
-                    alertify.log("Cancelled");
-                }
+                    }
+                });    
+            } else {
+                alertify.log("Cancelled");
+            }
             });
             refreshPostDiv();
         }
