@@ -1,6 +1,28 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    if(!isset($_GET["keywrd"]))
+    {
+        header("location: ./");
+    }
+
+    $keywrd = $_GET["keywrd"];
+    if($keywrd == "")
+    {
+        echo "<script>window.history.back()</script>";
+    }
+
+    $stmt = $conn->prepare("SELECT * FROM `article` INNER JOIN category ON id_categorie=category_id INNER JOIN author ON author_id=id_author WHERE article_status=1 AND article_title LIKE :keyword OR category_name LIKE :keyword OR author_fullname LIKE :keyword");
+    $stmt->bindValue(':keyword', '%' . $keywrd . '%', PDO::PARAM_STR);
+    $stmt->execute();
+    $searchdata = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $number_of_rows = $stmt->rowCount();
+
+    session_start();
+
+    
+
 ?>
         <main class="main">
             <!--category-->

@@ -29,7 +29,7 @@ use PHPMailer\PHPMailer\Exception;
                 //echo "New records created successfully";
                 $resultData = $conn->lastInsertId();
 
-                return ['response' => true, 'message' => 'Successfull', 'code' => '1', 'data' => $resultData];
+                return ['response' => true, 'message' => 'Data Submitted Successfully', 'code' => '1', 'data' => $resultData];
             }
             catch (PDOException $error) {
                 
@@ -63,8 +63,6 @@ use PHPMailer\PHPMailer\Exception;
                 $mail->Subject = $subject;
                 $mail->Body    = $message;
                 $mail->AltBody = $altBody;
-
-                $mail->send();
 
                 if (!$mail->send())
                 {
@@ -122,15 +120,16 @@ use PHPMailer\PHPMailer\Exception;
                     {
                         if ($row = $stmt->fetch()) 
                         {
-                            return json_encode( ['response' => true, 'message' => '', 'code' => '1', 'data' => $row["category_id"]]);
+                            return ['response' => true, 'message' => 'Category is available', 'code' => '1', 'data' => $row["category_id"]];
                         }
                     }
                     else
                     {
                         $data = array(
-                            "category_name" => $category_name
+                            "category_name" => $category_name,
+                            "category_creation_date" => date('Y-m-d H:i:s')
                         );
-                        require "db.php";
+
                         //inserts category if not found
                         return $this->insertToDB($pdo, "category", $data);
                     }
@@ -138,33 +137,58 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
-        //checks images and upload to server
-        function processUploadImage($email, $image)
+        function getCategoryName($pdo, $category_id)
         {
-
-            $filename = htmlspecialchars(basename($_FILES[$image]["name"])).$email.date('d-m-y h:i:s');
-            $target_dir = "../fileUploads/";
-            $target_file = $target_dir.basename($_FILES[$image]["name"]);
-            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-                            
-            // Check file size
-            if($_FILES[$image]["size"] > 500000)
-            {
-                $imageProcessingMsg = ['response' => false, 'message' => 'Sorry, your file is too large' ];
-                return $imageProcessingMsg;
+            if ($stmt = $pdo->prepare("SELECT * FROM category WHERE category_id = :category_id")) {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":category_id", $category_id, PDO::PARAM_STR);
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) 
+                {
+                    // Check if username exists, if yes then verify password
+                    if ($stmt->rowCount() == 1) 
+                    {
+                        if ($row = $stmt->fetch()) 
+                        {
+                            return ['response' => true, 'message' => 'Category is available', 'code' => '1', 'data' => $row["category_name"]];
+                        }
+                    }
+                }
             }
-            // Allow certain file formats
-            else if($imageFileType != "jpg" && $imageFileType != "pdf" && $imageFileType != "doc"
-            && $imageFileType != "pdf" )
-            {
-                $imageProcessingMsg = ['response' => false, 'message' => 'Sorry, only JPG, JPEG, PNG & GIF files are allowed'];
-                return $imageProcessingMsg;
-            }
-            //upload file
-            move_uploaded_file($_FILES[$image]["tmp_name"], $target_file);
+        }
 
-            $imageProcessingMsg = ['response' => true, 'message' => $filename];
-            return $imageProcessingMsg;
+        //check if file exsits
+        function checkFile($filename)
+        {
+            // Define file path 
+            $dir = "classes/components/filesUpload/";
+            $pathtofile = $dir.$filename; 
+
+            // Clear cache to remove result from previous run 
+            clearstatcache(); 
+
+            if(!empty($filename))
+            {
+                if(is_dir($dir))
+                {
+                    if (file_exists($pathtofile))
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         //encrypt the datastring

@@ -37,7 +37,7 @@
                         <div class="section-title">
                             <h5>Enter your Registered Email</h5>
                         </div>
-                        <form  action="#" class="sign-form widget-form " method="post">
+                        <form class="sign-form widget-form " id="forgotPassword-form">
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Email" id="email" value="">
                             </div>
