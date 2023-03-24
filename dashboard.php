@@ -967,16 +967,16 @@ include 'includes/scripts.php';
             data: {
                 postId: postid
             },
-            dataType: 'json',
-            success: function(dtresponse) 
+            dataType: 'text',
+            success: function(response) 
             {
-                console.log(dtresponse);
+                console.log(response);
 
-                document.getElementById("apost_title").value = dtresponse.postTitle;
-                document.getElementById("apost_category").value = dtresponse.postCategory;
-                document.getElementById("apost_country").value = dtresponse.postCountry;
+                document.getElementById("apost_title").value = response.postTitle;
+                document.getElementById("apost_category").value = response.postCategory;
+                document.getElementById("apost_country").value = response.postCountry;
                 // inserts html from db to editor
-                $("#apost_contents").summernote("code", dtresponse.postContents);
+                $("#apost_contents").summernote("code", xresponse.postContents);
 
                 //dropzone
                 // dropcheck++;
