@@ -970,7 +970,7 @@ include 'includes/scripts.php';
                 method: "POST",
                 body: formdata
             })
-            .then((res) => res.json())
+            .then((res) => res.text())
             .then((data) => {
                 console.log(data);
 
