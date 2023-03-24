@@ -235,6 +235,7 @@
                     If(isset($_POST["postId"]))
                     {
                         $post_id = $sharedComponents->unprotect($_POST["postId"]);
+
                         $asql = "SELECT * FROM posts WHERE post_id = :post_id";
                         if ($astmt = $pdo->prepare($asql)){
                             // Bind variables to the prepared statement as parameters
@@ -258,6 +259,12 @@
                                         {
                                             $postCategory = $resultmsg["data"];
                                         }
+                                        else{
+                                            echo "Help oh5";
+                                        }
+                                    }
+                                    else{
+                                        echo "Help oh4";
                                     }
 
                                     $allPost= [];
@@ -271,7 +278,16 @@
                                     array_push($allPost,$postJson);
                                     echo json_encode($postJson);
                                 }
+                                else{
+                                    echo "Help oh1";
+                                }
                             }
+                            else{
+                            echo "Help oh2";
+                            }
+                        }
+                        else{
+                            echo "Help oh3";
                         }
                     }
                     else if(!empty($_FILES))
@@ -333,6 +349,9 @@
                             echo json_encode($file_list);
                             exit;
                         }   
+                    }
+                    else{
+                        echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
                     }
                 break;
             case "publishPost":
@@ -604,7 +623,7 @@
                 break;
             
                 default:
-                    echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
+                    echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '0', 'data' => '']");
         }
     }
 
