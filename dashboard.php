@@ -961,24 +961,25 @@ include 'includes/scripts.php';
         $('#exampleModalToggle3').modal('show');
         var modal = $(this)
 
+
         let formdata = new FormData();
         formdata.append("postId", postid)
 
-        fetch("classes/components/userComponents.php?dataPurpose=editPost", {
+        let loca = "classes/components/userComponents.php?dataPurpose=editPost";
+        fetch(loca, {
                 method: "POST",
-                body: formdata,
+                body: formdata
             })
-            .then(res => res.text())
-            .then(data => {
-                console.log(data)
-                //var post_contentsVal = data.postContents;
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+
                 document.getElementById("apost_title").value = data.postTitle;
                 document.getElementById("apost_category").value = data.postCategory;
-                document.getElementById("apost_country").value = data.postCountry;                
-                
+                document.getElementById("apost_country").value = data.postCountry;
                 // inserts html from db to editor
                 $("#apost_contents").summernote("code", data.postContents);
-                
+
                 //dropzone
                 // dropcheck++;
                 // Dropzone.autoDiscover = false;
@@ -1048,12 +1049,7 @@ include 'includes/scripts.php';
                 //         refreshPostDiv();
                 //     },
                 // });
-            })
-            .catch(error => {
-                // handle the error
-                console.log(error)
             });
-
             autocomplete(document.getElementById("apost_category"), postCategories);
             loadEditSummerNote();
     }
