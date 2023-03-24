@@ -938,10 +938,10 @@ include 'includes/scripts.php';
     // check dropzone 
     let dropcheck = 1;
     //editPost
-    function editPost(postid) {
-
-       let element = document.getElementById("dropzoneFormEdit")
-        element.remove();
+    function editPost(postid) 
+    {
+    //    let element = document.getElementById("dropzoneFormEdit")
+    //     element.remove();
 
         reset();
 
@@ -980,74 +980,74 @@ include 'includes/scripts.php';
                 $("#apost_contents").summernote("code", data.postContents);
                 
                 //dropzone
-                dropcheck++;
-                Dropzone.autoDiscover = false;
-                $("#dropzoneFormEdit").dropzone({
-                    autoProcessQueue: false,
-                    acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
-                    dictDefaultMessage: "Drop Picture files here!",
-                    paramName: "file",
-                    maxFilesize: 2, // MB
-                    addRemoveLinks: true,
-                    init: function() {
-                        amyDropzone1 = this;
-                        $.ajax({
-                            url: "classes/components/userComponents.php?dataPurpose=editPost",
-                            type: "post",
-                            data: {
-                                request: 2,
-                                filepostId: postid
-                            },
-                            dataType: "json",
-                            success: function(response) {
-                                $.each(response, function(key, value) {
-                                    var mockFile = {
-                                        name: value.name,
-                                        size: value.size
-                                    };
-                                    console.log(mockFile);
-                                    amyDropzone1.emit("addedfile", mockFile);
-                                    amyDropzone1.emit("thumbnail", mockFile, "classes/components/" + value.path);
-                                    amyDropzone1.emit("complete", mockFile);
-                                });
-                            }
-                        });
-                        this.on("complete", function() {
-                            if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
-                                amyDropzone1.removeAllFiles();
-                            }
-                        });
-                        this.on("addedfile", function(file) {
-                            reset();
-                            afileNameUploaded1 = file.name;
-                            if (this.files.length > 1) {
-                                this.removeFile(this.files[0]);
-                                alertify.error("You cannot upload more than one file");
-                            }
-                        });
-                        this.on("sending", function(data, xhr, formData) {
-                            //send all the form data along with the files:
-                            formData.append("post_title", document.getElementById("apost_title").value);
-                            formData.append("post_category", document.getElementById("apost_category").value);
-                            formData.append("post_contents", $("#apost_contents").summernote("code"));
-                            formData.append("post_country", document.getElementById("apost_country").value);
-                        });
-                    },
-                    success: function(file, response) {
-                        reset();
-                        result = JSON.parse(response);
-                        if (result.response == true) {
-                            console.log(result);
-                            alertify.success(result.message);
-                        } else {
-                            alertify.set({
-                                delay: 15000
-                            });
-                            alertify.error(result.message);
-                        }
-                        refreshPostDiv();
-                    },
-                });
+                // dropcheck++;
+                // Dropzone.autoDiscover = false;
+                // $("#dropzoneFormEdit").dropzone({
+                //     autoProcessQueue: false,
+                //     acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
+                //     dictDefaultMessage: "Drop Picture files here!",
+                //     paramName: "file",
+                //     maxFilesize: 2, // MB
+                //     addRemoveLinks: true,
+                //     init: function() {
+                //         amyDropzone1 = this;
+                //         $.ajax({
+                //             url: "classes/components/userComponents.php?dataPurpose=editPost",
+                //             type: "post",
+                //             data: {
+                //                 request: 2,
+                //                 filepostId: postid
+                //             },
+                //             dataType: "json",
+                //             success: function(response) {
+                //                 $.each(response, function(key, value) {
+                //                     var mockFile = {
+                //                         name: value.name,
+                //                         size: value.size
+                //                     };
+                //                     console.log(mockFile);
+                //                     amyDropzone1.emit("addedfile", mockFile);
+                //                     amyDropzone1.emit("thumbnail", mockFile, "classes/components/" + value.path);
+                //                     amyDropzone1.emit("complete", mockFile);
+                //                 });
+                //             }
+                //         });
+                //         this.on("complete", function() {
+                //             if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
+                //                 amyDropzone1.removeAllFiles();
+                //             }
+                //         });
+                //         this.on("addedfile", function(file) {
+                //             reset();
+                //             afileNameUploaded1 = file.name;
+                //             if (this.files.length > 1) {
+                //                 this.removeFile(this.files[0]);
+                //                 alertify.error("You cannot upload more than one file");
+                //             }
+                //         });
+                //         this.on("sending", function(data, xhr, formData) {
+                //             //send all the form data along with the files:
+                //             formData.append("post_title", document.getElementById("apost_title").value);
+                //             formData.append("post_category", document.getElementById("apost_category").value);
+                //             formData.append("post_contents", $("#apost_contents").summernote("code"));
+                //             formData.append("post_country", document.getElementById("apost_country").value);
+                //         });
+                //     },
+                //     success: function(file, response) {
+                //         reset();
+                //         result = JSON.parse(response);
+                //         if (result.response == true) {
+                //             console.log(result);
+                //             alertify.success(result.message);
+                //         } else {
+                //             alertify.set({
+                //                 delay: 15000
+                //             });
+                //             alertify.error(result.message);
+                //         }
+                //         refreshPostDiv();
+                //     },
+                // });
             })
             .catch(error => {
                 // handle the error
