@@ -247,8 +247,8 @@
                                     $postThumbnail = $post['post_thumbnail'];
                                     $postTitle = $post['post_title'];
                                     $postCountry = $post['post_country'];
-                                    $postContents = $post['post_contents'];
-
+                                    $postContents = htmlspecialchars_decode($post['post_contents']);
+                                    //$postContents = htmlspecialchars($post['post_contents'], ENT_QUOTES, 'UTF-8');
                                     $postCategory ="";
                                     $resultmsg = json_encode($sharedComponents->getCategoryName($pdo, $post['id_category']));
                                     $resultmsg = json_decode($resultmsg, 1);

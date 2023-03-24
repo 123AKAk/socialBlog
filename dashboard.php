@@ -12,6 +12,9 @@ $style_refrences = '
                 background-color: #ffffff;
             }
         </style>
+        // <script>
+        //     UPLOADCARE_PUBLIC_KEY = "your_public_key";
+        // </script>
     ';
 
 include 'includes/header.php';
@@ -498,8 +501,8 @@ $categorieslist = $stmt->fetchAll();
                     </div>
 
 
-                    <div class="">
-                        <p>Upload Post Thumbnail ↓</p>
+                    <p>Upload Post Thumbnail ↓</p>
+                    <div class="" id="dropzoneContainer">
                         <div action="classes/components/userComponents.php?dataPurpose=editPost" class="dropzone" id="dropzoneFormEdit">
                         </div>
                     </div>
@@ -522,6 +525,7 @@ include 'includes/scripts.php';
 ?>
 <!-- Summernote -->
 <script src="assets/summernote/summernote-lite.js"></script>
+<script src="assets/summernote/plugin/uploadcare.js"></script>
 
 <!-- dropzonejs -->
 <script src="assets/dropzone/dropzone.js" type="text/javascript"></script>
@@ -700,6 +704,40 @@ include 'includes/scripts.php';
         event.preventDefault();
     });
 
+    //file name to be uploaded
+    let afileNameUploaded1 = "";
+    //editPost form
+    $("#aeditPost-form").submit(function(event) {
+        reset();
+
+        var post_title = document.getElementById("apost_title").value;
+        var post_category = document.getElementById("apost_category").value;
+        var post_contents = $("#apost_contents").summernote("code");
+        var post_country = document.getElementById("apost_country").value;
+
+        if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
+            alertify.set("notifier", "position", "top-right");
+            alertify.error("Fill all Feilds");
+        } else {
+            if (fileNameUploaded1 != "") {
+                //uploads file to server
+                //alertify.log("Thumbnail upload started");
+                myDropzone1.processQueue();
+            } else {
+                alertify.error("Choose a thumbnail for the Post");
+            }
+        }
+
+        //Destroy Summernote
+        //$("#post_contents").summernote("destroy");
+
+        post_contentsVal = "Type here...";
+        $("#post_contents").summernote("code", post_contentsVal);
+
+        afileNameUploaded1 = "";
+        refreshPostDiv();
+        event.preventDefault();
+    });
 
     Dropzone.autoDiscover = false;
     $("#dropzoneForm1").dropzone({
@@ -897,9 +935,28 @@ include 'includes/scripts.php';
         // });
     }
 
+    // check dropzone 
+    let dropcheck = 1;
     //editPost
     function editPost(postid) {
+
+       let element = document.getElementById("dropzoneFormEdit")
+        element.remove();
+
         reset();
+
+        if(dropcheck > 1)
+        {
+            if(amyDropzone1)
+            {
+                amyDropzone1.emit("resetFiles");
+                if(amyDropzone1.removeAllFiles())
+                {
+                    console.log("E don Die");
+                }
+                amyDropzone1.destroy();
+            }
+        }
 
         $('#exampleModalToggle3').modal('show');
         var modal = $(this)
@@ -919,47 +976,12 @@ include 'includes/scripts.php';
                 document.getElementById("apost_category").value = data.postCategory;
                 document.getElementById("apost_country").value = data.postCountry;                
                 
-                //const decodedHtmlString = data.postContents.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+                // inserts html from db to editor
                 $("#apost_contents").summernote("code", data.postContents);
-        
-                //createPost form
-                $("#aeditPost-form").submit(function(event) {
-                    //file name to be uploaded
-                    let fileNameUploaded1 = "";
-                    reset();
-        
-                    var post_title = document.getElementById("apost_title").value;
-                    var post_category = document.getElementById("apost_category").value;
-                    var post_contents = $("#apost_contents").summernote("code");
-        
-                    console.log($("#apost_contents").summernote("code"));
-                    var post_country = document.getElementById("apost_country").value;
-        
-                    if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
-                        alertify.set("notifier", "position", "top-right");
-                        alertify.error("Fill all Feilds");
-                    } else {
-                        if (fileNameUploaded1 != "") {
-                            //uploads file to server
-                            //alertify.log("Thumbnail upload started");
-                            myDropzone1.processQueue();
-                        } else {
-                            alertify.error("Choose a thumbnail for the Post");
-                        }
-                    }
-        
-                    //Destroy Summernote
-                    //$("#post_contents").summernote("destroy");
-        
-                    post_contentsVal = "Type here...";
-                    $("#post_contents").summernote("code", post_contentsVal);
-        
-                    fileNameUploaded1 = "";
-                    refreshPostDiv();
-                    event.preventDefault();
-                });
-        
+                
                 //dropzone
+                dropcheck++;
+                Dropzone.autoDiscover = false;
                 $("#dropzoneFormEdit").dropzone({
                     autoProcessQueue: false,
                     acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
@@ -992,8 +1014,7 @@ include 'includes/scripts.php';
                         });
                         this.on("complete", function() {
                             if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
-                                var _this = this;
-                                _this.removeAllFiles();
+                                amyDropzone1.removeAllFiles();
                             }
                         });
                         this.on("addedfile", function(file) {
@@ -1033,7 +1054,8 @@ include 'includes/scripts.php';
                 console.log(error)
             });
 
-            autocomplete(document.getElementById("apost_contents"), postCategories);
+            autocomplete(document.getElementById("apost_category"), postCategories);
+            loadEditSummerNote();
     }
 
     //displays edit form from sever page to modal
@@ -1123,15 +1145,6 @@ include 'includes/scripts.php';
     }
 
 
-    function ValidateEmail(email) {
-        let emailtest = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
-
-        if (!emailtest.test(email)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     //Date range picker
     $('#ad_duration').daterangepicker()
@@ -1268,8 +1281,6 @@ include 'includes/scripts.php';
         });
     }
 
-   
-
 
     function loadFunctions() {
         autocomplete(document.getElementById("post_category"), postCategories);
@@ -1304,6 +1315,111 @@ include 'includes/scripts.php';
                     return item.indexOf(keyword) === 0;
                 }));
             }
+        },
+        toolbar:[
+            ['uploadcare', ['uploadcare']],
+            ['seo',['seo']], // The Button
+            ['style',['style']],
+            ['font',['bold','italic','underline','clear']],
+            ['fontname',['fontname']],
+            ['color',['color']],
+            ['para',['ul','ol','paragraph']],
+            ['height',['height']],
+            ['table',['table']],
+            ['insert',['media','link','hr', 'picture', 'video']],
+            ['view',['fullscreen','codeview']],
+            ['help',['help']]
+        ],
+        seo:{
+            el:'.summernote', // Element ID or Class used to Initialise Summernote.
+            notTime:2400, // Time to display Notifications.
+            keyEl:'#seoKeywords', // ID or Class of the Target Element to place Keywords.
+            capEl:'#seoCaption', // ID or Class of the Target Element to place Caption.
+            desEl:'#seoDescription', // ID or Class of the Target Element to place Description.
+            triggerInput:true, // Set this to True if like me you use AJAX to update single fields
+            action:'replace', // replace|append Replace or Append Content.
+            successClass:'alert alert-success',
+            errorClass:'alert alert-danger',
+            autoClose:false, // Set to True to Auto Close Notifications
+            icon:'<i class="note-icon">[Your Icon]</i> <span class="caret"></span>',
+        },
+        uploadcare: {
+            // button name (default is Uploadcare)
+            buttonLabel: 'Upload Image / file',
+            // font-awesome icon name (you need to include font awesome on the page)
+            buttonIcon: 'picture-o',
+            // text which will be shown in button tooltip
+            tooltipText: 'Upload files or video or something',
+
+            // uploadcare widget options, see https://uploadcare.com/documentation/widget/#configuration
+            publicKey: 'demopublickey', // set your API key
+            crop: 'free',
+            tabs: 'all',
+            multiple: true
         }
     });
+
+    function loadEditSummerNote()
+    {
+        $('#apost_contents').summernote({
+            airMode: false, // removes the tool bar, but when text is highlited it shows
+            height: 200, // set editor height
+            //minHeight: null,             // set minimum height of editor
+            //maxHeight: null,             // set maximum height of editor
+            focus: true, // set focus to editable area after initializing summernote
+            codemirror: { // codemirror options
+                theme: 'monokai'
+            },
+            hint: {
+                words: postCategories,
+                match: /\b(\w{1,})$/,
+                search: function(keyword, callback) {
+                    callback($.grep(this.words, function(item) {
+                        return item.indexOf(keyword) === 0;
+                    }));
+                }
+            },
+            toolbar:[
+                ['uploadcare', ['uploadcare']],
+                ['seo',['seo']], // The Button
+                ['style',['style']],
+                ['font',['bold','italic','underline','clear']],
+                ['fontname',['fontname']],
+                ['color',['color']],
+                ['para',['ul','ol','paragraph']],
+                ['height',['height']],
+                ['table',['table']],
+                ['insert',['media','link','hr', 'picture', 'video']],
+                ['view',['fullscreen','codeview']],
+                ['help',['help']]
+            ],
+            seo:{
+                el:'.summernote', // Element ID or Class used to Initialise Summernote.
+                notTime:2400, // Time to display Notifications.
+                keyEl:'#seoKeywords', // ID or Class of the Target Element to place Keywords.
+                capEl:'#seoCaption', // ID or Class of the Target Element to place Caption.
+                desEl:'#seoDescription', // ID or Class of the Target Element to place Description.
+                triggerInput:true, // Set this to True if like me you use AJAX to update single fields
+                action:'replace', // replace|append Replace or Append Content.
+                successClass:'alert alert-success',
+                errorClass:'alert alert-danger',
+                autoClose:false, // Set to True to Auto Close Notifications
+                icon:'<i class="note-icon">[Your Icon]</i> <span class="caret"></span>',
+            },
+            uploadcare: {
+                // button name (default is Uploadcare)
+                buttonLabel: 'Upload Image / file',
+                // font-awesome icon name (you need to include font awesome on the page)
+                buttonIcon: 'picture-o',
+                // text which will be shown in button tooltip
+                tooltipText: 'Upload files or video or something',
+
+                // uploadcare widget options, see https://uploadcare.com/documentation/widget/#configuration
+                publicKey: 'demopublickey', // set your API key
+                crop: 'free',
+                tabs: 'all',
+                multiple: true
+            }
+        });
+    }
 </script>

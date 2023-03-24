@@ -108,6 +108,17 @@
   });
 
 
+
+  function ValidateEmail(email) {
+    let emailtest = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
+
+    if (!emailtest.test(email)) {
+        return false;
+    } else {
+        return true;
+    }
+  }
+
   function PingURL(URL) 
   {
     // The custom URL entered by user
