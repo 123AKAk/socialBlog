@@ -961,24 +961,22 @@ include 'includes/scripts.php';
         $('#exampleModalToggle3').modal('show');
         var modal = $(this)
 
+        $.ajax({
+            url: `classes/components/userComponents.php?dataPurpose=editPost`,
+            method: "POST",
+            data: {
+                postId: postid
+            },
+            dataType: 'json',
+            success: function(dtresponse) 
+            {
+                console.log(dtresponse);
 
-        let formdata = new FormData();
-        formdata.append("postId", postid)
-
-        let loca = "classes/components/userComponents.php?dataPurpose=editPost";
-        fetch(loca, {
-                method: "POST",
-                body: formdata
-            })
-            .then((res) => res.text())
-            .then((data) => {
-                console.log(data);
-
-                document.getElementById("apost_title").value = data.postTitle;
-                document.getElementById("apost_category").value = data.postCategory;
-                document.getElementById("apost_country").value = data.postCountry;
+                document.getElementById("apost_title").value = dtresponse.postTitle;
+                document.getElementById("apost_category").value = dtresponse.postCategory;
+                document.getElementById("apost_country").value = dtresponse.postCountry;
                 // inserts html from db to editor
-                $("#apost_contents").summernote("code", data.postContents);
+                $("#apost_contents").summernote("code", dtresponse.postContents);
 
                 //dropzone
                 // dropcheck++;
@@ -1049,9 +1047,11 @@ include 'includes/scripts.php';
                 //         refreshPostDiv();
                 //     },
                 // });
-            });
-            autocomplete(document.getElementById("apost_category"), postCategories);
-            loadEditSummerNote();
+            }
+        });
+
+        autocomplete(document.getElementById("apost_category"), postCategories);
+        loadEditSummerNote();
     }
 
     //displays edit form from sever page to modal
