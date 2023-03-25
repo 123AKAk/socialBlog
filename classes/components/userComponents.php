@@ -463,15 +463,15 @@
     
                         $old_file_name = "";
 
-                        $asql = "SELECT * FROM posts WHERE id_user = :id_user";
+                        $asql = "SELECT * FROM user WHERE user_id = :user_id";
                         if ($astmt = $pdo->prepare($asql)){
                             // Bind variables to the prepared statement as parameters
-                            $astmt->bindParam(":id_user", $userId, PDO::PARAM_STR);
+                            $astmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
                             // Set parameters
                             $astmt->execute();
                             if ($astmt->rowCount() == 1) {
                                 if ($arow = $astmt->fetch()) {
-                                    $old_file_name = $arow["post_thumbnail"];
+                                    $old_file_name = $arow["profile_pic"];
                                 }
                             }
                         }
@@ -487,38 +487,35 @@
                         $location = $folder_name . $new_file_name;
                         if(move_uploaded_file($temp_file, $location))
                         {
-                            if (isset($_SESSION["macae_blog_user_loggedin_"]))
+                            try 
                             {
-                                
-                                try {
-                                    if(isset($_POST["password"]))
+                                if(isset($_POST["password"]))
+                                {
+                                    $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
+
+                                    $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
+                                    
+                                    $stmt = $conn->prepare($sql);
+
+                                    if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $new_file_name, $_POST["user_country"], $userId]))
                                     {
-                                        $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
-
-                                        $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
-                                        
-                                        $stmt = $conn->prepare($sql);
-
-                                        if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $new_file_name, $_POST["user_country"], $userId]))
-                                        {
-                                            echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
-                                        }
+                                        echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
                                     }
-                                    else
-                                    {
-                                        $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
-                                        
-                                        $stmt = $conn->prepare($sql);
-
-                                        if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $new_file_name, $_POST["user_country"], $userId]))
-                                        {
-                                            echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
-                                        }
-                                    }
-
-                                } catch (PDOException $e) {
-                                    echo json_encode( ['response' => false, 'message' => 'Unable to update Profile', 'code' => '0', 'data' => $e->getMessage()]);
                                 }
+                                else
+                                {
+                                    $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `profile_pic`=?, `user_country`= ? WHERE `user_id` = ?";
+                                    
+                                    $stmt = $conn->prepare($sql);
+
+                                    if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $new_file_name, $_POST["user_country"], $userId]))
+                                    {
+                                        echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                    }
+                                }
+
+                            } catch (PDOException $e) {
+                                echo json_encode( ['response' => false, 'message' => 'Unable to update Profile', 'code' => '0', 'data' => $e->getMessage()]);
                             }
                         }
                         else
