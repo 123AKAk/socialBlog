@@ -350,8 +350,13 @@
                             exit;
                         }   
                     }
-                    else{
-                        echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
+                break;
+            case "aeditPost":
+                    //deleting file from server
+                    if(isset($_POST["name"]))
+                    {
+                        $filename = $folder_name.$_POST["name"];
+                        unlink($filename);
                     }
                 break;
             case "publishPost":
@@ -523,42 +528,39 @@
                             echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
                         }                        
                     }
-                    else If(isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["gender"]) && isset($_POST["user_country"]))
+                    else if(isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["gender"]) && isset($_POST["user_country"]))
                     {
-                        if (isset($_SESSION["macae_blog_user_loggedin_"]))
+                        // validate session value
+                        $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
+                        try 
                         {
-                            // validate session value
-                            $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]);
-                            try 
+                            if(isset($_POST["password"]) && !empty($_POST["password"]))
                             {
-                                if(isset($_POST["password"]) && !empty($_POST["password"]))
+                                $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
+
+                                $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `user_country`= ? WHERE `user_id` = ?";
+                                
+                                $stmt = $conn->prepare($sql);
+
+                                if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $_POST["user_country"], $userId]))
                                 {
-                                    $hashPassword = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
-
-                                    $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `password`=?, `user_country`= ? WHERE `user_id` = ?";
-                                    
-                                    $stmt = $conn->prepare($sql);
-
-                                    if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $hashPassword, $_POST["user_country"], $userId]))
-                                    {
-                                        echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
-                                    }
+                                    echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
                                 }
-                                else
-                                {
-                                    $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `user_country`= ? WHERE `user_id` = ?";
-                                    
-                                    $stmt = $conn->prepare($sql);
-
-                                    if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $_POST["user_country"], $userId]))
-                                    {
-                                        echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
-                                    }
-                                }
-
-                            } catch (PDOException $e) {
-                                echo json_encode( ['response' => false, 'message' => 'Unable to update Profile', 'code' => '0', 'data' => $e->getMessage()]);
                             }
+                            else
+                            {
+                                $sql = "UPDATE `user` SET `username`= ?, `email`= ?,`gender`=?, `user_country`= ? WHERE `user_id` = ?";
+                                
+                                $stmt = $conn->prepare($sql);
+
+                                if($stmt->execute([$_POST["username"], $_POST["email"], $_POST["gender"], $_POST["user_country"], $userId]))
+                                {
+                                    echo json_encode( ['response' => true, 'message' => 'Profile update Successful', 'code' => '1', 'data' => '']);
+                                }
+                            }
+
+                        } catch (PDOException $e) {
+                            echo json_encode( ['response' => false, 'message' => 'Unable to update Profile', 'code' => '0', 'data' => $e->getMessage()]);
                         }
                     }
                     // Read files from folder

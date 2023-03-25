@@ -592,7 +592,7 @@ include 'includes/scripts.php';
             if (password != "" && password != confrimPassword) {
                 alertify.error("The Passwords are not the same");
                 return;
-            } else if (fileNameUploaded2 == "" || afileNameUploaded2 == 1) {
+            } else if (fileNameUploaded2 == "" && afileNameUploaded2 == 1) {
                 let formdata = new FormData();
                 //send all the form data along with the files:
                 formdata.append("username", username);
