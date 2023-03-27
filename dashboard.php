@@ -94,7 +94,7 @@ $categorieslist = $stmt->fetchAll();
                                             </a>
                                         </h2>
                                         <!-- to show add the show class to the accordion-collapse -->
-                                        <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                             <div class="accordion-body">
                                                 <form class="widget-form contact_form row" id="createPost-form" autocomplete="off">
                                                     <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
