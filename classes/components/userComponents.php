@@ -235,6 +235,7 @@
                     if(isset($_POST["postId"]))
                     {
                         $post_id = $sharedComponents->unprotect($_POST["postId"]);
+
                         $asql = "SELECT * FROM posts WHERE post_id = :post_id";
                         if ($astmt = $pdo->prepare($asql)){
                             // Bind variables to the prepared statement as parameters
@@ -260,6 +261,12 @@
                                         {
                                             $postCategory = $resultmsg["data"];
                                         }
+                                        else{
+                                            echo "Help oh5";
+                                        }
+                                    }
+                                    else{
+                                        echo "Help oh4";
                                     }
 
                                     $allPost= [];
@@ -737,7 +744,7 @@
                 break;
             
                 default:
-                    echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '1', 'data' => '']");
+                    echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '0', 'data' => '']");
         }
     }
 

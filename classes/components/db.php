@@ -3,10 +3,14 @@
     session_start();
 
     // Declare DB Variables
+    // $servername  = "localhost";
+    // $username = "root";
+    // $password = "";
+    // $dbname = "macaeblog";
     $servername  = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "macaeblog";
+    $username = "donnapoo_macae";
+    $password = "donnapoo_macae";
+    $dbname = "donnapoo_macae";
 
     /* Attempt to connect to MySQL database */
     try
