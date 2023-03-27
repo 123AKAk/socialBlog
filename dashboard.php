@@ -97,6 +97,7 @@ $categorieslist = $stmt->fetchAll();
                                             <div class="accordion-body">
                                                 <form class="widget-form contact_form row" id="createPost-form" autocomplete="off">
                                                     <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
+                                                    <p>Files larger than 2mb will not be inserted</p>
 
                                                     <div class="col-12 col-md-12">
                                                         <div class="form-group">
@@ -124,11 +125,11 @@ $categorieslist = $stmt->fetchAll();
                                                             <label for="post_contents">Post Content</label>
                                                             <!-- <textarea class="form-control" name="post_contents"  required id="post_contents" rows="3" required></textarea> -->
                                                             <div style="background-color: white;">
-                                                                <textarea id="post_contents" name="post_contents" style="padding: 10px;">
-                                                                            <p>
-                                                                                 Type here...
-                                                                            </p>
-                                                                        </textarea>
+                                                                <textarea id="post_contents" name="post_contents" style="padding: 10px;" class="post_contents">
+                                                                    <p>
+                                                                            Type here...
+                                                                    </p>
+                                                                </textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -196,6 +197,7 @@ $categorieslist = $stmt->fetchAll();
                                                 <ul class="widget-comments-items">
                                                     <li class="comment-item">
                                                         <label for=""> <?= $countnum ?></label>
+                                                        <input type="hidden" value="<?= $post['post_id'] ?>" id="getPostId">
                                                         <img src="<?= $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'] ?>" alt="">
                                                         <div class="content">
 
@@ -382,7 +384,7 @@ $categorieslist = $stmt->fetchAll();
 <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalToggleLabel2">Create new Ad</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -457,63 +459,8 @@ $categorieslist = $stmt->fetchAll();
 <!-- edit post modal  -->
 <div class="modal fade" id="exampleModalToggle3" aria-hidden="true" aria-labelledby="exampleModalToggleLabel3" tabindex="-1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalToggleLabel3">Edit Post</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="post-modal-content">
-                <form class="widget-form contact_form row" id="aeditPost-form" autocomplete="off">
-                    <p>The Catgory Box is a datalist, if the post category is not available, type in a category related to the post, the category will need verting before the post is verified</p>
-
-                    <div class="col-12 col-md-12">
-                        <div class="form-group">
-                            <label for="apost_title" class="col-form-label">Post Title</label>
-                            <input class="form-control" type="text" placeholder="Enter Post Title" name="apost_title" id="apost_title" value="" />
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-md-6">
-                        <div class="form-group">
-                            <label for="apost_category" class="col-form-label">Post Category</label>
-                            <input class="form-control" type="text" name="apost_category" list="category" value="" placeholder="Select Category" id="apost_category" value="" autocomplete="off" />
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-md-6">
-                        <div class="form-group">
-                            <label for="apost_country" class="col-form-label">Post Country</label>
-                            <input class="form-control" type="text" placeholder="Enter Post Country" name="apost_country" id="apost_country" value="" />
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="apost_contents">Post Content</label>
-                            <div style="background-color: white;">
-                                <textarea id="apost_contents" name="apost_contents" style="padding: 10px;">
-                                    <p>
-                                        Type here...
-                                    </p>
-                                </textarea>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <p>Upload Post Thumbnail ↓</p>
-                    <div class="" id="dropzoneContainer">
-                        <div action="classes/components/userComponents.php?dataPurpose=editPost" class="dropzone" id="dropzoneFormEdit">
-                        </div>
-                    </div>
-
-                    <div class="text-center justify-content-center mt-3">
-                        <button type="submit" class="btn-custom">Save Changes</button>
-                    </div>
-                </form>
-
-
-            </div>
+        <div class="modal-content" id="loadModal">
+            <!-- contents displayed here is coming from editPostPh in includes folder -->
         </div>
     </div>
 </div>
@@ -608,7 +555,7 @@ include 'includes/scripts.php';
                     })
                     .then((res) => res.json())
                     .then((data) => {
-                        console.log(data);
+                        // console.log(data);
                         var result = data;
                         if (result.response == true) {
                             alertify.success(result.message);
@@ -618,7 +565,11 @@ include 'includes/scripts.php';
                             });
                             alertify.error(result.message);
                         }
-                    });
+                    })
+                .catch(error => 
+                    // handle the error
+                    console.log(error)
+                );
             } else {
                 //uploads file to server
                 alertify.log("Profile picture upload started");
@@ -683,7 +634,7 @@ include 'includes/scripts.php';
                 })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                     var result = (data);
                     if (result.response == true) {
                         alertify.success(result.message);
@@ -698,8 +649,11 @@ include 'includes/scripts.php';
                         });
                         alertify.error(result.message);
                     }
-                });
-
+                })
+            .catch(error => 
+                // handle the error
+                console.log(error)
+            );
         }
         event.preventDefault();
     });
@@ -719,12 +673,44 @@ include 'includes/scripts.php';
             alertify.set("notifier", "position", "top-right");
             alertify.error("Fill all Feilds");
         } else {
-            if (fileNameUploaded1 != "") {
+            if (afileNameUploaded1 != "") {
                 //uploads file to server
                 //alertify.log("Thumbnail upload started");
-                myDropzone1.processQueue();
-            } else {
-                alertify.error("Choose a thumbnail for the Post");
+                amyDropzone1.processQueue();
+            }
+            else
+            {
+                let postid = document.getElementById("apost_id").value;
+
+                let formdata = new FormData();
+                formdata.append("postId", postid);
+                formdata.append("post_title", post_title);
+                formdata.append("post_contents", post_contents);
+                formdata.append("post_country", post_country);
+                formdata.append("post_category", post_category);
+
+                let loca = "classes/components/userComponents.php?dataPurpose=editPost";
+                fetch(loca, {
+                        method: "POST",
+                        body: formdata
+                    })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        // console.log(data);
+                        var result = data;
+                        if (result.response == true) {
+                            alertify.success(result.message);
+                        } else {
+                            alertify.set({
+                                delay: 15000
+                            });
+                            alertify.error(result.message);
+                        }
+                    })
+                .catch(error => 
+                    // handle the error
+                    console.log(error)
+                );    
             }
         }
 
@@ -732,7 +718,7 @@ include 'includes/scripts.php';
         //$("#post_contents").summernote("destroy");
 
         post_contentsVal = "Type here...";
-        $("#post_contents").summernote("code", post_contentsVal);
+        $("#apost_contents").summernote("code", post_contentsVal);
 
         afileNameUploaded1 = "";
         refreshPostDiv();
@@ -760,10 +746,13 @@ include 'includes/scripts.php';
                 //keeping the file extension.
                 // var ext = file.name.split('.').pop();
                 // fileNameUploaded1 = "user-" + getCombinedDateTime() + '.' + ext; //changing the name of the file
-                fileNameUploaded1 = file.name;
                 if (this.files.length > 1) {
                     this.removeFile(this.files[0]);
                     alertify.error("You cannot upload more than one file");
+                }
+                else
+                {
+                    fileNameUploaded1 = file.name;
                 }
             });
             this.on("sending", function(data, xhr, formData) {
@@ -786,7 +775,7 @@ include 'includes/scripts.php';
             reset();
             result = JSON.parse(response);
             if (result.response == true) {
-                console.log(result);
+                // console.log(result);
                 alertify.success(result.message);
             } else {
                 alertify.set({
@@ -836,10 +825,13 @@ include 'includes/scripts.php';
             });
             this.on('addedfile', function(file) {
                 reset();
-                fileNameUploaded2 = file.name;
                 if (this.files.length > 1) {
                     this.removeFile(this.files[0]);
                     alertify.error("You cannot upload more than one file");
+                }
+                else
+                {
+                    fileNameUploaded2 = file.name;
                 }
             });
             this.on("sending", function(data, xhr, formData) {
@@ -858,7 +850,7 @@ include 'includes/scripts.php';
             reset();
             result = JSON.parse(response);
             if (result.response == true) {
-                console.log(result);
+                // console.log(result);
                 alertify.success(result.message);
             } else {
                 alertify.set({
@@ -887,10 +879,13 @@ include 'includes/scripts.php';
             });
             this.on('addedfile', function(file) {
                 reset();
-                fileNameUploaded3 = file.name;
                 if (this.files.length > 3) {
                     this.removeFile(this.files[0]);
                     alertify.error("You cannot upload more than three files");
+                }
+                else
+                {
+                    fileNameUploaded3 = file.name;
                 }
             });
             this.on("sending", function(data, xhr, formData) {
@@ -908,7 +903,7 @@ include 'includes/scripts.php';
             reset();
             result = JSON.parse(response);
             if (result.response == true) {
-                console.log(result);
+                // console.log(result);
                 alertify.success(result.message);
             } else {
                 alertify.set({
@@ -938,130 +933,127 @@ include 'includes/scripts.php';
     // check dropzone 
     let dropcheck = 1;
     //editPost
-    function editPost(postid) {
-
-       let element = document.getElementById("dropzoneFormEdit")
-        element.remove();
+    function editPost(postid)
+    {
+        // runs loader
+        $('#exampleModalToggle3').modal('show');
+        $('#loadModal').load("includes/editPostPg.php");
 
         reset();
-
-        if(dropcheck > 1)
-        {
-            if(amyDropzone1)
-            {
-                amyDropzone1.emit("resetFiles");
-                if(amyDropzone1.removeAllFiles())
-                {
-                    console.log("E don Die");
-                }
-                amyDropzone1.destroy();
-            }
-        }
-
-        $('#exampleModalToggle3').modal('show');
-        var modal = $(this)
-
+        
         let formdata = new FormData();
         formdata.append("postId", postid)
-
-        fetch("classes/components/userComponents.php?dataPurpose=editPost", {
+        fetch("classes/components/userComponents.php?dataPurpose=editPost", 
+        {
                 method: "POST",
                 body: formdata,
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
-                //var post_contentsVal = data.postContents;
+                // console.log(data);
+                document.getElementById("apost_id").value = data.postID;
                 document.getElementById("apost_title").value = data.postTitle;
                 document.getElementById("apost_category").value = data.postCategory;
                 document.getElementById("apost_country").value = data.postCountry;                
                 
                 // inserts html from db to editor
                 $("#apost_contents").summernote("code", data.postContents);
-                
-                //dropzone
-                dropcheck++;
-                Dropzone.autoDiscover = false;
-                $("#dropzoneFormEdit").dropzone({
-                    autoProcessQueue: false,
-                    acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
-                    dictDefaultMessage: "Drop Picture files here!",
-                    paramName: "file",
-                    maxFilesize: 2, // MB
-                    addRemoveLinks: true,
-                    init: function() {
-                        amyDropzone1 = this;
-                        $.ajax({
-                            url: "classes/components/userComponents.php?dataPurpose=editPost",
-                            type: "post",
-                            data: {
-                                request: 2,
-                                filepostId: postid
-                            },
-                            dataType: "json",
-                            success: function(response) {
-                                $.each(response, function(key, value) {
-                                    var mockFile = {
-                                        name: value.name,
-                                        size: value.size
-                                    };
-                                    console.log(mockFile);
-                                    amyDropzone1.emit("addedfile", mockFile);
-                                    amyDropzone1.emit("thumbnail", mockFile, "classes/components/" + value.path);
-                                    amyDropzone1.emit("complete", mockFile);
-                                });
-                            }
-                        });
-                        this.on("complete", function() {
-                            if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
-                                amyDropzone1.removeAllFiles();
-                            }
-                        });
-                        this.on("addedfile", function(file) {
-                            reset();
-                            afileNameUploaded1 = file.name;
-                            if (this.files.length > 1) {
-                                this.removeFile(this.files[0]);
-                                alertify.error("You cannot upload more than one file");
-                            }
-                        });
-                        this.on("sending", function(data, xhr, formData) {
-                            //send all the form data along with the files:
-                            formData.append("post_title", document.getElementById("apost_title").value);
-                            formData.append("post_category", document.getElementById("apost_category").value);
-                            formData.append("post_contents", $("#apost_contents").summernote("code"));
-                            formData.append("post_country", document.getElementById("apost_country").value);
-                        });
+        })
+        .catch(error => 
+            // handle the error
+            console.log(error)
+        );
+    }
+    //displays edit form from sever page to modal
+    $('#exampleModalToggle3').on('show.bs.modal', function (event) {   
+    });
+    
+    
+    function loadEditFiles()
+    {
+        let postid = document.getElementById("apost_id").value;
+        //dropzone
+        Dropzone.autoDiscover = false;
+        $("#dropzoneFormEdit").dropzone({
+            autoProcessQueue: false,
+            acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
+            dictDefaultMessage: "Drop Picture files here!",
+            paramName: "file",
+            maxFilesize: 2, // MB
+            addRemoveLinks: true,
+            init: function() {
+                amyDropzone1 = this;
+                if (this.files.length > 1) {
+                    this.removeFile(this.files[0]);
+                    alertify.error("You cannot upload more than one file");
+                }
+                $.ajax({
+                    url: "classes/components/userComponents.php?dataPurpose=editPost",
+                    type: "post",
+                    data: {
+                        request: 2,
+                        filepostId: postid
                     },
-                    success: function(file, response) {
-                        reset();
-                        result = JSON.parse(response);
-                        if (result.response == true) {
-                            console.log(result);
-                            alertify.success(result.message);
-                        } else {
-                            alertify.set({
-                                delay: 15000
-                            });
-                            alertify.error(result.message);
-                        }
-                        refreshPostDiv();
-                    },
+                    dataType: "json",
+                    success: function(response) {
+                        $.each(response, function(key, value) {
+                            var mockFile = {
+                                name: value.name,
+                                size: value.size
+                            };
+                            // console.log(mockFile);
+                            amyDropzone1.emit("addedfile", mockFile);
+                            amyDropzone1.emit("thumbnail", mockFile, "classes/components/" + value.path);
+                            amyDropzone1.emit("complete", mockFile);
+                        });
+                    }
                 });
-            })
-            .catch(error => {
-                // handle the error
-                console.log(error)
-            });
-
-            autocomplete(document.getElementById("apost_category"), postCategories);
-            loadEditSummerNote();
+                this.on("complete", function() {
+                    if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
+                        amyDropzone1.removeAllFiles();
+                    }
+                });
+                this.on("addedfile", function(file) {
+                    reset();
+                    if (this.files.length > 1) {
+                        this.removeFile(this.files[0]);
+                        alertify.error("You cannot upload more than one file");
+                    }
+                    else
+                    {
+                        afileNameUploaded1 = file.name;
+                    }
+                });
+                this.on("sending", function(data, xhr, formData) {
+                    //send all the form data along with the files:
+                    formData.append("post_title", document.getElementById("apost_title").value);
+                    formData.append("post_category", document.getElementById("apost_category").value);
+                    formData.append("post_contents", $("#apost_contents").summernote("code"));
+                    formData.append("post_country", document.getElementById("apost_country").value);
+                });
+            },
+            success: function(file, response) {
+                reset();
+                result = JSON.parse(response);
+                if (result.response == true) {
+                    // console.log(result);
+                    alertify.success(result.message);
+                } else {
+                    alertify.set({
+                        delay: 15000
+                    });
+                    alertify.error(result.message);
+                }
+                refreshPostDiv();
+            },
+        });
+        document.getElementById("showLoadEditFiles").style.display = "none";
     }
 
-    //displays edit form from sever page to modal
-    // $('#exampleModalToggle3').on('show.bs.modal', function (event) {    
-    // });
-
+    function getCatList(elementid)
+    {
+        autocomplete(document.getElementById(elementid), postCategories);
+    }
 
     //deletePost
     function deletePost(postid) {
@@ -1083,7 +1075,7 @@ include 'includes/scripts.php';
                     dataType: 'json',
                     success: function(response) {
                         reset();
-                        console.log(response);
+                        // console.log(response);
                         var result = response;
                         if (result.response == true) {
                             alertify.success(result.message);
@@ -1125,7 +1117,7 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            console.log(response.code);
+                            // console.log(response.code);
                             if (result.code == 2) {
                                 alertify.log(result.message);
                             } else {
@@ -1281,6 +1273,109 @@ include 'includes/scripts.php';
         });
     }
 
+    function autocompleteEdit(inp, arr) {
+        /*the autocomplete function takes two arguments,
+        the text field element and an array of possible autocompleted values:*/
+        var currentFocus;
+        /*execute a function when someone writes in the text field:*/
+        inp.addEventListener("click", function(e) {
+            var a, b, i, val = this.value;
+            /*close any already open lists of autocompleted values*/
+            closeAllLists();
+            if (!val) {
+                return false;
+            }
+            currentFocus = -1;
+            /*create a DIV element that will contain the items (values):*/
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            /*append the DIV element as a child of the autocomplete container:*/
+            this.parentNode.appendChild(a);
+            /*for each item in the array...*/
+            for (i = 0; i < arr.length; i++) {
+                /*check if the item starts with the same letters as the text field value:*/
+                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    /*create a DIV element for each matching element:*/
+                    b = document.createElement("DIV");
+                    /*make the matching letters bold:*/
+                    b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                    b.innerHTML += arr[i].substr(val.length);
+                    /*insert a input field that will hold the current array item's value:*/
+                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    /*execute a function when someone clicks on the item value (DIV element):*/
+                    b.addEventListener("click", function(e) {
+                        /*insert the value for the autocomplete text field:*/
+                        inp.value = this.getElementsByTagName("input")[0].value;
+                        /*close the list of autocompleted values,
+                        (or any other open lists of autocompleted values:*/
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
+            }
+        });
+
+        /*execute a function presses a key on the keyboard:*/
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+                /*If the arrow DOWN key is pressed,
+                increase the currentFocus variable:*/
+                currentFocus++;
+                /*and and make the current item more visible:*/
+                addActive(x);
+            } else if (e.keyCode == 38) { //up
+                /*If the arrow UP key is pressed,
+                decrease the currentFocus variable:*/
+                currentFocus--;
+                /*and and make the current item more visible:*/
+                addActive(x);
+            } else if (e.keyCode == 13) {
+                /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    /*and simulate a click on the "active" item:*/
+                    if (x) x[currentFocus].click();
+                }
+            }
+        });
+
+        function addActive(x) {
+            /*a function to classify an item as "active":*/
+            if (!x) return false;
+            /*start by removing the "active" class on all items:*/
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            /*add class "autocomplete-active":*/
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+
+        function removeActive(x) {
+            /*a function to remove the "active" class from all autocomplete items:*/
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+
+        function closeAllLists(elmnt) {
+            /*close all autocomplete lists in the document,
+            except the one passed as an argument:*/
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+        /*execute a function when someone clicks in the document:*/
+        document.addEventListener("click", function(e) {
+            closeAllLists(e.target);
+        });
+    }
+
 
     function loadFunctions() {
         autocomplete(document.getElementById("post_category"), postCategories);
@@ -1293,75 +1388,9 @@ include 'includes/scripts.php';
             backdrop: 'static',
             keyboard: false
         })
-    }
 
-    window.onload = loadFunctions;
-
-    // Summernote
-    $('#post_contents').summernote({
-        airMode: false, // removes the tool bar, but when text is highlited it shows
-        height: 200, // set editor height
-        //minHeight: null,             // set minimum height of editor
-        //maxHeight: null,             // set maximum height of editor
-        focus: true, // set focus to editable area after initializing summernote
-        codemirror: { // codemirror options
-            theme: 'monokai'
-        },
-        hint: {
-            words: postCategories,
-            match: /\b(\w{1,})$/,
-            search: function(keyword, callback) {
-                callback($.grep(this.words, function(item) {
-                    return item.indexOf(keyword) === 0;
-                }));
-            }
-        },
-        toolbar:[
-            ['uploadcare', ['uploadcare']],
-            ['seo',['seo']], // The Button
-            ['style',['style']],
-            ['font',['bold','italic','underline','clear']],
-            ['fontname',['fontname']],
-            ['color',['color']],
-            ['para',['ul','ol','paragraph']],
-            ['height',['height']],
-            ['table',['table']],
-            ['insert',['media','link','hr', 'picture', 'video']],
-            ['view',['fullscreen','codeview']],
-            ['help',['help']]
-        ],
-        seo:{
-            el:'.summernote', // Element ID or Class used to Initialise Summernote.
-            notTime:2400, // Time to display Notifications.
-            keyEl:'#seoKeywords', // ID or Class of the Target Element to place Keywords.
-            capEl:'#seoCaption', // ID or Class of the Target Element to place Caption.
-            desEl:'#seoDescription', // ID or Class of the Target Element to place Description.
-            triggerInput:true, // Set this to True if like me you use AJAX to update single fields
-            action:'replace', // replace|append Replace or Append Content.
-            successClass:'alert alert-success',
-            errorClass:'alert alert-danger',
-            autoClose:false, // Set to True to Auto Close Notifications
-            icon:'<i class="note-icon">[Your Icon]</i> <span class="caret"></span>',
-        },
-        uploadcare: {
-            // button name (default is Uploadcare)
-            buttonLabel: 'Upload Image / file',
-            // font-awesome icon name (you need to include font awesome on the page)
-            buttonIcon: 'picture-o',
-            // text which will be shown in button tooltip
-            tooltipText: 'Upload files or video or something',
-
-            // uploadcare widget options, see https://uploadcare.com/documentation/widget/#configuration
-            publicKey: 'demopublickey', // set your API key
-            crop: 'free',
-            tabs: 'all',
-            multiple: true
-        }
-    });
-
-    function loadEditSummerNote()
-    {
-        $('#apost_contents').summernote({
+        // Summernote
+        $('.post_contents').summernote({
             airMode: false, // removes the tool bar, but when text is highlited it shows
             height: 200, // set editor height
             //minHeight: null,             // set minimum height of editor
@@ -1410,10 +1439,10 @@ include 'includes/scripts.php';
                 // button name (default is Uploadcare)
                 buttonLabel: 'Upload Image / file',
                 // font-awesome icon name (you need to include font awesome on the page)
-                buttonIcon: 'picture-o',
+                // buttonIcon: 'picture-o',
                 // text which will be shown in button tooltip
-                tooltipText: 'Upload files or video or something',
-
+                // tooltipText: 'Upload files or video or something',
+    
                 // uploadcare widget options, see https://uploadcare.com/documentation/widget/#configuration
                 publicKey: 'demopublickey', // set your API key
                 crop: 'free',
@@ -1422,4 +1451,8 @@ include 'includes/scripts.php';
             }
         });
     }
+
+    window.onload = loadFunctions;
+
+
 </script>
