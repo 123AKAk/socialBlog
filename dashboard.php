@@ -85,8 +85,7 @@ $categorieslist = $stmt->fetchAll();
                         </nav>
 
                         <div class="tab-content p-3" id="nav-tabContent">
-                            <!-- to show add the show class to the tab-pane -->
-                            <div class="tab-pane fade active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 <div class="accordion accordion-flush" id="accordionFlushExample">
                                     <div class="">
                                         <h2 class="accordion-header" id="flush-headingOne">
@@ -94,6 +93,7 @@ $categorieslist = $stmt->fetchAll();
                                                 Create a Post
                                             </a>
                                         </h2>
+                                        <!-- to show add the show class to the accordion-collapse -->
                                         <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                             <div class="accordion-body">
                                                 <form class="widget-form contact_form row" id="createPost-form" autocomplete="off">
