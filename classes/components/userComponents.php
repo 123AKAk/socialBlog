@@ -232,7 +232,7 @@
                     }
                 break;
             case "editPost":
-                    If(isset($_POST["postId"]))
+                    if(isset($_POST["postId"]) && !isset($_POST["post_title"]))
                     {
                         $post_id = $sharedComponents->unprotect($_POST["postId"]);
 
@@ -244,6 +244,8 @@
                             $astmt->execute();
                             if ($astmt->rowCount() == 1) {
                                 if ($post = $astmt->fetch()) {
+                                    
+                                    $postID = $_POST["postId"];
                                     
                                     $postThumbnail = $post['post_thumbnail'];
                                     $postTitle = $post['post_title'];
@@ -270,6 +272,7 @@
                                     $allPost= [];
                                     $postJson = new stdClass();
                                     $postJson->postThumbnail = $postThumbnail;
+                                    $postJson->postID = $_POST["postId"];
                                     $postJson->postTitle = $postTitle;
                                     $postJson->postCountry = $postCountry;
                                     $postJson->postContents = $postContents;
@@ -277,22 +280,138 @@
                                     
                                     array_push($allPost,$postJson);
                                     echo json_encode($postJson);
+                                    // echo json_encode( ['response' => true, 'message' => 'Successful', 'code' => '1', 'data' => $postJson]);
                                 }
                                 else{
-                                    echo "Help oh1";
+                                    echo json_encode( ['response' => false, 'message' => 'Unsuccessful3', 'code' => '0', 'data' => '']);
                                 }
                             }
                             else{
-                            echo "Help oh2";
+                                echo json_encode( ['response' => false, 'message' => 'Unsuccessful2', 'code' => '0', 'data' => '']);
                             }
                         }
                         else{
-                            echo "Help oh3";
+                            echo json_encode( ['response' => false, 'message' => 'Unsuccessful1', 'code' => '0', 'data' => '']);
                         }
                     }
                     else if(!empty($_FILES))
                     {
+                        if(isset($_POST["postId"]))
+                        {
+                            //gets post id
+                            $postId = $sharedComponents->unprotect($_POST["postId"]);
+                            
+                            $file_name = $_FILES["file"]["name"];
+                            $new_file_name = "user-".date('Y-m-d H-i-s') . "." . pathinfo($file_name, PATHINFO_EXTENSION); // Set the new file name
+        
+                            $old_file_name = "";
 
+                            $asql = "SELECT * FROM posts WHERE post_id = :post_id";
+                            if ($astmt = $pdo->prepare($asql)){
+                                // Bind variables to the prepared statement as parameters
+                                $astmt->bindParam(":post_id", $postId, PDO::PARAM_STR);
+                                // Set parameters
+                                $astmt->execute();
+                                if ($astmt->rowCount() == 1) {
+                                    if ($arow = $astmt->fetch()) {
+                                        $old_file_name = $arow["post_thumbnail"];
+                                    }
+                                }
+                            }
+
+                            //check if the former file still exsits
+                            if($new_file_name == $old_file_name)
+                            {
+                                //deletes old file
+                                unlink($folder_name.$old_file_name);
+                            }
+
+                            $temp_file = $_FILES['file']['tmp_name'];
+                            $location = $folder_name . $new_file_name;
+                            if(move_uploaded_file($temp_file, $location))
+                            {
+                                try 
+                                {
+                                    // Call check - Insert Category function
+                                    $resultmsg = json_encode($sharedComponents->checkInsertCategory($conn, $_POST["post_category"]));
+                                    //check if data entered the table 
+                                    $resultmsg2 = json_decode($resultmsg, 1);
+                                    if (isset($resultmsg2["response"])) 
+                                    {
+                                        if ($resultmsg2["response"] == true) 
+                                        {
+                                            
+                                            $sql = "UPDATE `posts` SET `post_title`= ?, `post_contents`= ?,`post_country`=?, `post_thumbnail`=?, `id_category`= ? WHERE `post_id` = ?";
+                                            
+                                            $stmt = $conn->prepare($sql);
+
+                                            if($stmt->execute([$_POST["post_title"], $_POST["post_contents"], $_POST["post_country"], $new_file_name, $resultmsg2["data"], $postId]))
+                                            {
+                                                echo json_encode( ['response' => true, 'message' => 'Post update Successful', 'code' => '1', 'data' => '']);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            echo $resultmsg;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        echo $resultmsg;
+                                    }
+
+                                } catch (PDOException $e) {
+                                    echo json_encode( ['response' => false, 'message' => 'Unable to update Post', 'code' => '0', 'data' => $e->getMessage()]);
+                                }
+                            }
+                            else
+                            {
+                                echo json_encode( ['response' => false, 'message' => 'Upload was not Successful', 'code' => '0', 'data' => '']);
+                            }
+                        }
+                        else
+                        {
+                            echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
+                        }
+                    }
+                    else if(isset($_POST["postId"]) && isset($_POST["post_contents"]) && isset($_POST["post_title"]) && isset($_POST["post_category"]) && isset($_POST["post_country"]))
+                    {
+                        try 
+                        {
+                            //gets post id
+                            $postId = $sharedComponents->unprotect($_POST["postId"]);
+
+                            // Call check - Insert Category function
+                            $resultmsg = json_encode($sharedComponents->checkInsertCategory($conn, $_POST["post_category"]));
+                            //check if data entered the table 
+                            $resultmsg2 = json_decode($resultmsg, 1);
+                            if (isset($resultmsg2["response"])) 
+                            {
+                                if ($resultmsg2["response"] == true) 
+                                {
+                                    
+                                    $sql = "UPDATE `posts` SET `post_title`= ?, `post_contents`= ?,`post_country`=?, `id_category`= ? WHERE `post_id` = ?";
+                                    
+                                    $stmt = $conn->prepare($sql);
+
+                                    if($stmt->execute([$_POST["post_title"], $_POST["post_contents"], $_POST["post_country"], $resultmsg2["data"], $postId]))
+                                    {
+                                        echo json_encode( ['response' => true, 'message' => 'Post update Successful', 'code' => '1', 'data' => '']);
+                                    }
+                                }
+                                else
+                                {
+                                    echo $resultmsg;
+                                }
+                            }
+                            else
+                            {
+                                echo $resultmsg;
+                            }
+
+                        } catch (PDOException $e) {
+                            echo json_encode( ['response' => false, 'message' => 'Unable to update Post', 'code' => '0', 'data' => $e->getMessage()]);
+                        }
                     }
                     // Read files from folder
                     else if(isset($_POST['request']))
@@ -349,6 +468,9 @@
                             echo json_encode($file_list);
                             exit;
                         }   
+                    }
+                    else{
+                        echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
                     }
                 break;
             case "aeditPost":

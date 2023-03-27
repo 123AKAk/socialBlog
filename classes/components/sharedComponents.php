@@ -64,13 +64,13 @@ use PHPMailer\PHPMailer\Exception;
                 $mail->Body    = $message;
                 $mail->AltBody = $altBody;
 
-                if (!$mail->send())
+                if ($mail->send())
                 {
-                    return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
+                    return ['response' => true, 'message' => 'Account created Successfully, access your email to activate your account', 'code' => '1', 'data' => ''];
                 }
                 else 
                 {
-                    return ['response' => true, 'message' => 'Account created Successfully, access your email to activate your account', 'code' => '1', 'data' => ''];
+                    return ['response' => false, 'message' => 'System failed to send Email verification link, contact the adminstrator to verify your Email account.', 'code' => '0', 'data' => "Mail Error Info: ".$mail->ErrorInfo];
                 }
             }
             catch (Exception $eax) 
