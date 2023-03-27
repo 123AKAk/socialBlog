@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="text-center justify-content-center mt-3">
-                        <button type="submit" class="btn-custom">Save Changes</button>
+                        <button type="button" onclick="saveEdits()" class="btn-custom">Save Changes</button>
                     </div>
                 </form>
 

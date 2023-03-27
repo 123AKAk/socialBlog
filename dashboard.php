@@ -661,8 +661,9 @@ include 'includes/scripts.php';
 
     //file name to be uploaded
     let afileNameUploaded1 = "";
-    //editPost form
-    $("#aeditPost-form").submit(function(event) {
+    //edit form submit
+    function saveEdits()
+    {
         reset();
 
         var post_title = document.getElementById("apost_title").value;
@@ -673,7 +674,9 @@ include 'includes/scripts.php';
         if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
             alertify.set("notifier", "position", "top-right");
             alertify.error("Fill all Feilds");
-        } else {
+        }
+        else
+        {
             if (afileNameUploaded1 != "") {
                 //uploads file to server
                 //alertify.log("Thumbnail upload started");
@@ -697,7 +700,7 @@ include 'includes/scripts.php';
                     })
                     .then((res) => res.json())
                     .then((data) => {
-                        // console.log(data);
+                        console.log(data);
                         var result = data;
                         if (result.response == true) {
                             alertify.success(result.message);
@@ -715,16 +718,9 @@ include 'includes/scripts.php';
             }
         }
 
-        //Destroy Summernote
-        //$("#post_contents").summernote("destroy");
-
-        post_contentsVal = "Type here...";
-        $("#apost_contents").summernote("code", post_contentsVal);
-
         afileNameUploaded1 = "";
         refreshPostDiv();
-        event.preventDefault();
-    });
+    }
 
     Dropzone.autoDiscover = false;
     $("#dropzoneForm1").dropzone({
@@ -1027,6 +1023,7 @@ include 'includes/scripts.php';
                 });
                 this.on("sending", function(data, xhr, formData) {
                     //send all the form data along with the files:
+                    formData.append("postId", document.getElementById("apost_id").value);
                     formData.append("post_title", document.getElementById("apost_title").value);
                     formData.append("post_category", document.getElementById("apost_category").value);
                     formData.append("post_contents", $("#apost_contents").summernote("code"));

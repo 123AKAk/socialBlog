@@ -232,7 +232,7 @@
                     }
                 break;
             case "editPost":
-                    if(isset($_POST["postId"]))
+                    if(isset($_POST["postId"]) && !isset($_POST["post_title"]))
                     {
                         $post_id = $sharedComponents->unprotect($_POST["postId"]);
 
@@ -371,7 +371,7 @@
                         }
                         else
                         {
-                            echo json_encode( ['response' => false, 'message' => 'AUthentication Error', 'code' => '0', 'data' => '']);
+                            echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
                         }
                     }
                     else if(isset($_POST["postId"]) && isset($_POST["post_contents"]) && isset($_POST["post_title"]) && isset($_POST["post_category"]) && isset($_POST["post_country"]))
