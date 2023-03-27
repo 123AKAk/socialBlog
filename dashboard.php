@@ -85,7 +85,8 @@ $categorieslist = $stmt->fetchAll();
                         </nav>
 
                         <div class="tab-content p-3" id="nav-tabContent">
-                            <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <!-- to show add the show class to the tab-pane -->
+                            <div class="tab-pane fade active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 <div class="accordion accordion-flush" id="accordionFlushExample">
                                     <div class="">
                                         <h2 class="accordion-header" id="flush-headingOne">
