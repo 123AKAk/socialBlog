@@ -247,7 +247,7 @@ use PHPMailer\PHPMailer\Exception;
                             {
                                 $adminDetails= [];
                                 $adminJson = new stdClass();
-                                $adminJson->id = $this->protect($admin['user_id']);
+                                $adminJson->id = $this->protect($admin['admin_id']);
                                 $adminJson->username = $admin['admin_name'];
                                 $adminJson->email = $admin['email'];
                                 $adminJson->gender = "System";
