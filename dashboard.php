@@ -166,34 +166,6 @@ $categorieslist = $stmt->fetchAll();
                                             foreach ($userCreatedPost as $post) :
                                                 $postId = $sharedComponents->protect($post['post_id']);
                                                 $countnum++;
-
-                                                //displays the contents as HTML
-                                                $string = htmlspecialchars_decode($post['post_contents']);
-
-                                                // Strip HTML tags and leave only texts
-                                                $stripped_string = strip_tags($string);
-
-                                                // Count words
-                                                $num_words = str_word_count($stripped_string);
-
-                                                $max_words = 50; // Maximum number of words
-                                                $ellipsis = "...  <a style='font-weight:bold;' href='post.php?dt=" . $post['post_title'] . "&id=" . $postId . "'> Read more</a>"; // Text to indicate truncated string
-
-                                                if ($num_words > $max_words) {
-                                                    // Find position of the nth word boundary
-                                                    $pos = $max_words;
-                                                    for ($i = 0; $i < $max_words; $i++) {
-                                                        $pos = strpos($stripped_string, ' ', $pos + 1);
-                                                        if ($pos === false) {
-                                                            break;
-                                                        }
-                                                    }
-                                                    // Truncate string and add ellipsis
-                                                    $truncated_string = substr($stripped_string, 0, $pos) . $ellipsis;
-                                                } else {
-                                                    $truncated_string = strip_tags($string);
-                                                }
-
                                             ?>
                                                 <ul class="widget-comments-items">
                                                     <li class="comment-item">
@@ -217,7 +189,7 @@ $categorieslist = $stmt->fetchAll();
                                                                 <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>"><?= $post['post_title']; ?></a>
                                                             </b>
                                                             <p class="mt-2">
-                                                                <?= $truncated_string; ?>
+                                                                <?= $sharedComponents->convertHtmltoText($post['post_contents'], 50, $post['post_title'], $postId); ?>
                                                             </p>
                                                             <div>
                                                                 <a href="javascript:void(0);" class="btn btn-sm btn-outline-primary" onclick="editPost('<?= $postId ?>')">

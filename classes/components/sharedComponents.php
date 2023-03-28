@@ -157,6 +157,152 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        function convertHtmltoText($postContents, $max_words, $post_title, $postId)
+        {
+            //displays the contents as HTML
+            $string = htmlspecialchars_decode($postContents);
+
+            // Strip HTML tags and leave only texts
+            $stripped_string = strip_tags($string);
+
+            // Count words
+            $num_words = str_word_count($stripped_string);
+
+            //$max_words = 50; // Maximum number of words
+            iF(!empty($post_title) && !empty($postId))
+            {
+                $ellipsis = "...  <a style='font-weight:bold;' href='post.php?dt=" . $post_title . "&id=" . $postId . "'> Read more</a>"; // Text to indicate truncated string
+            }
+            else
+            {
+                $ellipsis = "...";
+            }
+
+            if ($num_words > $max_words) {
+                // Find position of the nth word boundary
+                $pos = $max_words;
+                for ($i = 0; $i < $max_words; $i++) {
+                    $pos = strpos($stripped_string, ' ', $pos + 1);
+                    if ($pos === false) {
+                        break;
+                    }
+                }
+                // Truncate string and add ellipsis
+                return substr($stripped_string, 0, $pos) . $ellipsis;
+            } 
+            else 
+            {
+                return strip_tags($string);
+            }
+        }
+
+        function getAdminUser_Post($adminId, $userId, $pdo)
+        {
+            $systemJson = [];
+            if(!empty($userId))
+            {
+                $asql = "SELECT * FROM user WHERE user_id = :user_id";
+                if ($astmt = $pdo->prepare($asql))
+                {
+                    $astmt->bindParam(":user_id", $userId, PDO::PARAM_STR);
+                    $astmt->execute();
+                    if ($astmt->rowCount() == 1) 
+                    {
+                        if ($user = $astmt->fetch()) 
+                        {   
+                            if($user['status'] == 1)
+                            {
+                                $userDetails= [];
+                                $userJson = new stdClass();
+                                $userJson->id = $this->protect($user['user_id']);
+                                $userJson->username = $user['username'];
+                                $userJson->email = $user['email'];
+                                $userJson->gender = $user['gender'];
+                                $userJson->profile_pic = $user['profile_pic'];
+                                $userJson->type = "User";
+                                $userJson->desc = $user['user_desc'];
+                                
+                                $systemJson = $userJson;
+                            }
+                            else
+                            {
+                                $systemJson = $this->useSystemDetails();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!empty($adminId))
+            {
+                $asql = "SELECT * FROM admin WHERE admin_id = :admin_id";
+                if ($astmt = $pdo->prepare($asql))
+                {
+                    $astmt->bindParam(":admin_id", $adminId, PDO::PARAM_STR);
+                    $astmt->execute();
+                    if ($astmt->rowCount() == 1) 
+                    {
+                        if ($admin = $astmt->fetch()) 
+                        {  
+                            if($admin['status'] == 1)
+                            {
+                                $adminDetails= [];
+                                $adminJson = new stdClass();
+                                $adminJson->id = $this->protect($admin['user_id']);
+                                $adminJson->username = $admin['admin_name'];
+                                $adminJson->email = $admin['email'];
+                                $adminJson->gender = "System";
+                                $adminJson->profile_pic = $admin['profile_pic'];
+                                $adminJson->type = "Admin";
+                            
+                                $systemJson = $adminJson;
+                            }
+                            else
+                            {
+                                $systemJson = $this->useSystemDetails();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                $systemJson = $this->useSystemDetails();
+            }
+
+            return json_encode($systemJson);
+        }
+        
+        function useSystemDetails()
+        {
+            require "../../includes/varnames.php"; 
+
+            $systemDetails= [];
+            $systemJson = new stdClass();
+            $systemJson->id = $this->protect(0);
+            $systemJson->username = $siteName;
+            $systemJson->email = $siteEmail;
+            $systemJson->gender = "Male";
+            $systemJson->profile_pic = $siteImage;
+            $systemJson->type = "Admin";
+            $systemJson->desc = $siteDesc;
+            
+            return $systemJson;
+        }
+       
+        function checkNumofComments($postId, $pdo)
+        {
+            $asql = "SELECT * FROM comments WHERE postid = :postid";
+            if ($astmt = $pdo->prepare($asql))
+            {
+                $astmt->bindParam(":postid", $postId, PDO::PARAM_STR);
+                $astmt->execute();
+                $comments = $astmt->fetchAll();
+                $number_of_rows = $astmt->rowCount();
+
+                return $number_of_rows;
+            }
+        }
+
         //check if file exsits
         function checkFile($filename)
         {

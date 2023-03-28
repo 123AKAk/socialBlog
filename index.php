@@ -2,6 +2,14 @@
     include 'includes/header.php';
     include 'includes/navbar.php';
 
+    // when women wear bikinis 90% of their body is exposed, we men are nice enough to look at the covered part
+
+    // Get lastest article show on first part of page
+    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 5");
+    $stmt->execute();
+    $lastestPostFirst = $stmt->fetchAll();
+
+    $folder_name = "classes/components/filesUpload/";
     
 ?>
         <main class="main">
@@ -9,29 +17,59 @@
             <div class="slider-style2">
                 <div  class="swiper swiper-top">
                    <div class="swiper-wrapper">
-                      
+                   <?php 
+                    foreach ($lastestPostFirst as $post) : $postId = $sharedComponents->protect($post['post_id']); 
+                        $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+                        $authId = $adminUserDetails["id"];
+                        $authEmail = $adminUserDetails["email"];
+                        $authName = $adminUserDetails["username"];
+                        $authGender = $adminUserDetails["gender"];
+                        $authProfilePic = $adminUserDetails["profile_pic"];
+                        $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
+
+                        $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail']
+                   ?>
+                   
                     <!--slider1-->
-                      <div class="swiper-slide slider-item" style="background-image: url(assets/img/blog/1.jpg);">
+                      <div class="swiper-slide slider-item" style="background-image: url('<?= $postImage; ?>');">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xl-7 col-lg-9 col-md-12">
                                     <div class="slider-item-inner">
                                         <div class="slider-item-content">
                                         <div class="entry-cat ">
-                                            <a href="blog-grid.php" class="categorie">interior </a> 
+                                            <a class="categorie" href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>">
+                                                <?= $post['category_name'] ?>
+                                            </a>
                                         </div>
                                         <h1 class="entry-title">
-                                            <a href="post.php"> 7 Holiday Decor Ideas and Exactly What I Love About Each One</a>
+                                            <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>">
+                                                <?= $post['post_title']; ?>
+                                            </a>
                                         </h1>
                                         <div class="post-exerpt">
-                                            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, harum eligendi. Ab obcaecati ratione facere ut minus illo sequi rerum!</p>
+                                            <p><?= $sharedComponents->convertHtmltoText($post['post_contents'], 25, '', '') ?></p>
                                        </div>
                                         
                                         <ul class="entry-meta list-inline">
-                                            <li class="post-author-img"><a href="author.php"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                            <li class="post-author"><a href="author.php">David Smith</a> </li>
-                                            <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                            <li class="post-comment"> <span class="dot"></span> 2 comments</li>
+                                            <li class="post-author-img">
+                                                <a href="<?= $authLink ?>">
+                                                    <img src="<?= $folder_name.$authProfilePic; ?>" alt="">
+                                                </a>
+                                            </li>
+                                            <li class="post-author">
+                                                <a href="<?= $authLink ?>">
+                                                    <?= $authName ?>
+                                                </a> 
+                                            </li>
+                                            <li class="post-date"> <span class="dot"></span>
+                                                <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
+                                            </li>
+                                            <li class="post-comment">
+                                                <span class="dot"></span>
+                                                <?= $sharedComponents->checkNumofComments($postId, $pdo)." comments"; ?>
+                                            </li>
                                         </ul>
                                         </div>
                                     </div>
@@ -39,13 +77,14 @@
                             </div>
                         </div>
                       </div>
-
+                      <?php endforeach;  ?>
                    </div>
                 </div>
       
                 <div thumbsSlider="" class="swiper swiper-bottom container-fluid" >
                     <div class="swiper-wrapper ">
-                        
+                        <!-- limit 4     -->
+
                         <!--slider1-->
                         <div class="swiper-slide">
                             <div class="post-item">
