@@ -35,7 +35,7 @@ if (isset($data["response"])) {
     }
 }
 
-$folder_name = "classes/components/filesUpload/";
+// $folder_name = "classes/components/filesUpload/";
 
 // Gets user created post
 $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_user = $userId AND delete_status = 0  ORDER BY `post_id` DESC");

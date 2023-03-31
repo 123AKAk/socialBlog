@@ -15,6 +15,7 @@
     <!-- <script src="assets/alertify/alertify.min.js"></script> -->
     <script src="assets/alertify_full_src/lib/alertify.min.js"></script>
     <!-- JS main  -->
+    <script type="application/javascript" src="http://ipinfo.io/?format=jsonp&callback=getIP"></script>
     <script src="assets/js/main.js"></script>
     <script src="scripts/code.js"></script>
 

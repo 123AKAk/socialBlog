@@ -158,48 +158,73 @@
     });
   }
 
+  
+  var result = document.getElementById("json-result");
+  const Http = new XMLHttpRequest();
+  var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client"
+
   function getLocation()
   {
     reset();
-    var ipadd;
-    return;
-    alertify.set({ labels: { ok: "Accept", cancel: "Deny" } });
-    alertify.confirm("This site uses Cookies. <br> <div class='container'> We are collection information about your location</div>", function (e) {
-      if (e) {
-        alertify.success("Thanks for Accepting.");
-      } else {
-        alertify.log("We are only collecting information about your location.");
-      }
-    });
 
-    // Add "https://ipinfo.io" statement
-    // this will communicate with the ipify servers
-    // in order to retrieve the IP address
-    // $.get("https://ipinfo.io", function(response) {
-    //     ipadd = response.ip
-    //     alert(response);
-    // }, "json")
+    alertify.alert("This site uses Cookies to imporove your experience, <br> <div class='container'> to continue to use this site you agree to our terms and conditions</div>");
 
-    // "json" shows that data will be fetched in json format
+    // alertify.set({ labels: { ok: "Ok", cancel: "" } });
+    // alertify.confirm("This site uses Cookies to imporove your experience, <br> <div class='container'> to continue to use this site you agree to our terms and conditions</div>", function (e) {
+    //   if (e) {
+    //     alertify.success("Thanks for Accepting.");
+    //   } else {
+    //     alertify.log("We are only collecting information about your location.");
+    //   }
+    // });
+    
 
-    /* Add "https://api.ipify.org?format=json" statement
-                this will communicate with the ipify servers in
-                order to retrieve the IP address $.getJSON will
-                load JSON-encoded data from the server using a
-                GET HTTP request */
-    $.getJSON("https://api.ipify.org?format=json", function (data) {
-      // Setting text of element P with id gfg
-      ipadd = data.ip;
-      alert(data);
-    });
+    window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;  
+    var pc = new RTCPeerConnection({iceServers:[]}), 
+    noop = function(){}; 
+      
+    pc.createDataChannel("");  
+    pc.createOffer(pc.setLocalDescription.bind(pc), noop);   
+    pc.onicecandidate = function(ice){ 
+      if(!ice || !ice.candidate || !ice.candidate.candidate)  return;
 
-    console.log(ipadd);
+      var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
 
+      console.log(myIP);
+      pc.onicecandidate = noop;
+	  };    
+    
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition);
+
+      navigator.geolocation.getCurrentPosition(
+          (position) => {
+              bdcApi = bdcApi
+                  + "?latitude=" + position.coords.latitude
+                  + "&longitude=" + position.coords.longitude
+                  + "&localityLanguage=en";
+              getApi(bdcApi);
+
+          },
+          (err) => { getApi(bdcApi); },
+          {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+          });
     } else {
-      return "Geolocation is not supported by this browser.";
+      alertify.log("Geolocation is not supported by this browser.");
     }
+  }
+
+  function getApi(bdcApi) {
+    Http.open("GET", bdcApi);
+    Http.send();
+    Http.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+        }
+    };
   }
 
   function getCombinedDateTime()

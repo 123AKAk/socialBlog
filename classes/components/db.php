@@ -6,7 +6,7 @@
     $servername  = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "macaeblog";
+    $dbname = "macaeblog2";
     // $servername  = "localhost";
     // $username = "donnapoo_macae";
     // $password = "donnapoo_macae";

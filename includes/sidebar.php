@@ -56,17 +56,42 @@
                                                 </div>
                                                 <ul class="widget-latest-posts">
                     
+                                                    <?php     
+                                                        $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id INNER JOIN postdetails ON post_id=postid WHERE post_status=1 AND delete_status=0 ORDER BY `views` DESC LIMIT 5");
+                                                        $stmt->execute();
+                                                        $most_read_posts = $stmt->fetchAll();
+
+                                                        if(isset($most_read_posts))
+                                                        {
+                                                            foreach ($most_read_posts as $post) : 
+
+                                                                $views = !isset($post["views"]) ? 0 : $post["views"];
+                                                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'];
+                                                    ?>
                                                     <li class="post-item">
                                                         <div class="image">
-                                                            <a href="post.php"> <img src="assets/img/latest/1.jpg" alt="..."></a>
+                                                            <a href="post.php"> <img src="<?= $postImage; ?>" alt="..."></a>
                                                         </div>
-                                                        <div class="count">1</div>
+                                                        <div class="count"><?= $views ?></div>
                                                         <div class="content">
-                                                            <p class="entry-title"><a href="post.php">5 Things I Wish I Knew Before Traveling to Malaysia</a></p>
-                                                            <small class="post-date"><i class="fas fa-clock"></i> January 15, 2022</small>
+                                                            <p class="entry-title">
+                                                                <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>">
+                                                                    <?= $post['post_title']; ?>
+                                                                </a>
+                                                            </p>
+                                                            <small class="post-date"><i class="fas fa-clock"></i>
+                                                                <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
+                                                            </small>
                                                         </div>
                                                     </li>
-
+                                                    <?php 
+                                                            endforeach; 
+                                                        }
+                                                        else
+                                                        {
+                                                            echo "<p>Post not avaiable</p>";
+                                                        }
+                                                    ?>
                                                 </ul>
                                             </div>
                                             <!--/-->
@@ -77,12 +102,32 @@
                                                     <h5>Categories</h5>
                                                 </div>
                                                 <ul class="widget-categories">
-                                                    
+                                                <?php     
+                                                        // Get Categories
+                                                        $stmt = $conn->prepare("SELECT *,COUNT(*) as post_count FROM `posts` INNER JOIN category ON category_id=id_category GROUP BY category_id DESC");
+                                                        $stmt->execute();
+                                                        $categories = $stmt->fetchAll();
+
+                                                        if(isset($categories))
+                                                        {
+                                                            foreach ($categories as $category) : 
+                                                            
+                                                                $catLink = "category.php?nam=".$category["category_name"]."&catd=".$sharedComponents->protect($category["category_id"]);
+                                                    ?>
                                                     <li>
-                                                        <a href="#" class="categorie">Livestyle</a>
-                                                        <span class="ml-auto">22 Posts</span>
+                                                        <a href="<?= $catLink ?>" class="categorie">
+                                                            <?= $category["category_name"] ?>
+                                                        </a>
+                                                        <span class="ml-auto"> <?= $category["post_count"] ?> Posts</span>
                                                     </li>
-                                                    
+                                                    <?php 
+                                                            endforeach; 
+                                                        }
+                                                        else
+                                                        {
+                                                            echo "<p>Category(s) not avaiable</p>";
+                                                        }
+                                                    ?>
                                                 </ul>
                                             </div>
                                             

@@ -31,6 +31,9 @@
           }
       }
     }
+
+    //set pictures folder accesible from all pages
+    $folder_name = "classes/components/filesUpload/";
 ?>
 
 <!doctype html>

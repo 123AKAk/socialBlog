@@ -291,10 +291,11 @@ use PHPMailer\PHPMailer\Exception;
        
         function checkNumofComments($postId, $pdo)
         {
-            $asql = "SELECT * FROM comments WHERE postid = :postid";
+            $post_Id = $this->unprotect($postId);
+            $asql = "SELECT * FROM comments WHERE status = 1 AND postid = :postid";
             if ($astmt = $pdo->prepare($asql))
             {
-                $astmt->bindParam(":postid", $postId, PDO::PARAM_STR);
+                $astmt->bindParam(":postid", $post_Id, PDO::PARAM_STR);
                 $astmt->execute();
                 $comments = $astmt->fetchAll();
                 $number_of_rows = $astmt->rowCount();
