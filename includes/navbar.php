@@ -1,4 +1,4 @@
-<body onload="loadPg()">
+<body onload="">
     <!-- wrapper -->
     <div id="wrapper" class="wrapper">
       <!--loading -->

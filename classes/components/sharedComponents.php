@@ -243,7 +243,7 @@ use PHPMailer\PHPMailer\Exception;
                     {
                         if ($admin = $astmt->fetch()) 
                         {  
-                            if($admin['status'] == 1)
+                            if($admin['admin_status'] == 1)
                             {
                                 $adminDetails= [];
                                 $adminJson = new stdClass();
@@ -274,7 +274,7 @@ use PHPMailer\PHPMailer\Exception;
         
         function useSystemDetails()
         {
-            require "../../includes/varnames.php"; 
+            require "includes/varnames.php"; 
 
             $systemDetails= [];
             $systemJson = new stdClass();

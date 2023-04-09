@@ -65,7 +65,7 @@
             }
         },
         glossary:{
-            title:'',
+            title:'AlertifyJS',
             ok: 'OK',
             cancel: 'Cancel',
             acccpt: 'Accept',

@@ -34,12 +34,12 @@
 
     // $folder_name = "classes/components/filesUpload/";
 
-    // Get lastest article show on slider part of page
+    // Get lastest post show on slider part of page
     $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 4");
     $stmt->execute();
     $lastestPostFirst = $stmt->fetchAll();
 
-    // Get lastest article show on second section of page
+    // Get lastest post show on second section of page
     $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 4,10");
     $stmt->execute();
     $lastestPostSecond = $stmt->fetchAll();
@@ -53,7 +53,7 @@
             <!--slider-style-2-->
             <div class="slider-style2">
                 <div  class="swiper swiper-top">
-                   <div class="swiper-wrapper">
+                   <div class="swiper-wrapper" id="slider">
                         <?php 
                             if(isset($lastestPostFirst))
                             {
@@ -128,7 +128,7 @@
                 </div>
       
                 <div thumbsSlider="" class="swiper swiper-bottom container-fluid" >
-                    <div class="swiper-wrapper ">
+                    <div class="swiper-wrapper " id="sliderControls">
                         <?php 
                         if(isset($lastestPostFirst))
                         {
@@ -184,7 +184,7 @@
                                     <div class="col-xl-9 side-content">
                                         <div class="theiaStickySidebar">
                                             <div class="row">
-                                                <div class="col-lg-12">
+                                                <div class="col-lg-12" id="bodyPost">
                                                     <?php 
                                                         if(isset($lastestPostSecond))
                                                         {
@@ -200,13 +200,23 @@
                                                             $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
                                                             $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
 
-                                                            $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail']
+                                                            $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'];
+
+                                                            // Count the number of words in the text
+                                                            $num_words = str_word_count($sharedComponents->convertHtmltoText($post['post_contents'], 25, '', ''));
+
+                                                            // Assume an average reading speed of 200 words per minute
+                                                            $avg_speed = 200;
+
+                                                            // Calculate the estimated reading time in minutes
+                                                            $reading_time = ceil($num_words / $avg_speed);
+
                                                     ?>
                                                     <!--Post-1-->
                                                     <div class="post-list">
                                                         <div class="post-list-image">
                                                             <div class="image-box">
-                                                                <a href="post.php">
+                                                                <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>">
                                                                     <img src="<?= $postImage; ?>" class="img-fluid w-100" alt="">
                                                                 </a>
                                                             </div>
@@ -231,7 +241,7 @@
                                                                         <img src="<?= $authProfilePic; ?>" alt="">
                                                                     </a>
                                                                 </li>
-                                                                <li class="post-author"><a href="author.php">
+                                                                <li class="post-author">
                                                                     <a href="<?= $authLink ?>">
                                                                         <?= $authName ?>
                                                                     </a> 
@@ -240,7 +250,7 @@
                                                                     <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
                                                                 </li>
                                                                 <li class="post-timeread"> <span class="dot"></span> 
-                                                                    15 min Read
+                                                                    <?= $reading_time; ?> min Read
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -261,82 +271,39 @@
                                     <!-- sidebar -->
                                     <?php include 'includes/sidebar.php'; ?>
                                 </div>
-                                 <!--slider-style4-->
-                                <div class="slider-style4">
-                                    <div class="swiper-wrapper">
+                                
+                                <!--slider-style6-->
+                                <div class="slider-style6">
+                                    <div class="swiper-wrapper" id="bodyPost2">
                                         <!--slider-1-->
-                                        <div class="slider-item  swiper-slide" style="background-image: url(assets/img/blog/14.jpg);">
-                                                <div class="slider-item-content">
-                                                    <div class="entry-cat ">
-                                                    <a href="blog-grid.html" class="categorie ">
-                                                        interior
-                                                    </a> 
-                                                    </div>
-                                                    <h4 class="entry-title">
-                                                    <a href="post-default.html">How To Design A Room Like An Interior Designer Step By Step</a>
-                                                    </h4>
-                                                    <ul class="entry-meta list-inline">
-                                                        <li class="post-author-img"><a href="author.html"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                                        <li class="post-author"><a href="author.html">David Smith</a> </li>
-                                                        <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                                    </ul>
-                                                </div>
-                                        </div>
-
-                                        <!--slider-2-->
-                                        <div class="slider-item  swiper-slide" style="background-image: url(assets/img/blog/7.jpg);">
-                                                <div class="slider-item-content">
-                                                    <div class="entry-cat ">
-                                                        <a href="blog-grid.html" class="categorie"> food</a> 
-                                                    </div>
-                                                    <h4 class="entry-title">
-                                                        <a href="post-default.html">10 Taco Tuesday Recipes for You If You Love Birria Tacos</a>
-                                                    </h4>
-                                                    <ul class="entry-meta list-inline">
-                                                        <li class="post-author-img"><a href="author.html"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                                        <li class="post-author"><a href="author.html">David Smith</a> </li>
-                                                        <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                                    </ul>
-                                                </div>  
-                                        </div>
-
-                                        <!--slider-3-->
-                                        <div class="slider-item  swiper-slide" style="background-image: url(assets/img/blog/12.jpg);">
-                                                <div class="slider-item-content">
-                                                    <div class="entry-cat ">
-                                                        <a href="blog-grid.html" class="categorie">fashion</a> 
-                                                    </div>
-                                                    <h4 class="entry-title">
-                                                        <a href="post-default.html">20+ Cute Girly Outfits to Buy for the First Day of Winter</a>
-                                                    </h4>
-                                                    <ul class="entry-meta list-inline">
-                                                        <li class="post-author-img"><a href="author.html"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                                        <li class="post-author"><a href="author.html">David Smith</a> </li>
-                                                        <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                                    </ul>
-                                                </div>
-                                        </div>
-
-                                        <!--slider-4-->
-                                        <div class="slider-item  swiper-slide" style="background-image: url(assets/img/blog/15.jpg);">
-                                            <div class="slider-item-content">
-                                                <div class="entry-cat ">
-                                                    <a href="blog-grid.html" class="categorie">
-                                                        travel
-                                                    </a> 
-                                                </div>
-                                                <h4 class="entry-title">
-                                                    <a href="post-default.html">Get the Most Out of Iceland with our 10 Travel Tips
+                                        <div class="slider-item  swiper-slide ">
+                                            <!--Post-1-->
+                                            <div class="post-card">
+                                                <div class="post-card-image">
+                                                    <a href="post-default.html">
+                                                        <img src="assets/img/blog/20.jpg" alt="">
                                                     </a>
-                                                </h4>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="post-author-img"><a href="author.html"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                                    <li class="post-author"><a href="author.html">David Smith</a> </li>
-                                                    <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                                </ul>
-                                            </div>   
+                                                </div>
+                                                <div class="post-card-content">
+                                                    <div class="entry-cat">
+                                                        <a href="blog-grid.html" class="categorie"> travel</a>
+                                                    </div>
+                                                    <h5 class="entry-title">
+                                                        <a href="post-default.html">Get The Most Out of Iceland With Our 10 Best Travel Tips </a>
+                                                    </h5>
+                                                    
+                                                    <ul class="entry-meta list-inline">
+                                                        <li class="post-author-img"><a href="author.html"> <img src="assets/img/author/1.jpg" alt=""></a></li>
+                                                        <li class="post-author"><a href="author.html">David Smith</a> </li>
+                                                        <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
+                                                    </ul>
+                                                </div>
+                                            </div>  
                                         </div>
                                     </div> 
+
+                                    <!--pagination-->  
+                                    <div class="swiper-pagination"></div>
                                 </div>
                             </div>
                         </section><!--/-->
@@ -362,7 +329,14 @@
             <?php include 'includes/newsletter.php'; ?>
         </main>
 
+
 <?php
     include 'includes/footer.php';
     include 'includes/scripts.php';
 ?>
+<!-- Page specific script -->
+<!-- Script -->
+<script type='text/javascript'>
+    //window.onload = loadData;
+    
+</script>

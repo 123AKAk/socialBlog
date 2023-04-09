@@ -461,7 +461,6 @@ include 'includes/scripts.php';
     let fileNameUploaded1 = "";
     //createPost form
     $('#createPost-form').submit(function(event) {
-        reset();
 
         var post_title = document.getElementById("post_title").value;
         var post_category = document.getElementById("post_category").value;
@@ -474,7 +473,7 @@ include 'includes/scripts.php';
         } else {
             if (fileNameUploaded1 != "") {
                 //uploads file to server
-                //alertify.log("Thumbnail upload started");
+                //alertify.message("Thumbnail upload started");
                 myDropzone1.processQueue();
             } else {
                 alertify.error("Choose a thumbnail for the Post");
@@ -496,7 +495,6 @@ include 'includes/scripts.php';
     let fileNameUploaded2 = "";
     //profile-form
     function profileForm() {
-        reset();
 
         var username = document.getElementById("username").value;
         var email = document.getElementById("email").value;
@@ -545,7 +543,7 @@ include 'includes/scripts.php';
                 );
             } else {
                 //uploads file to server
-                alertify.log("Profile picture upload started");
+                alertify.message("Profile picture upload started");
                 myDropzone2.processQueue();
             }
         }
@@ -556,7 +554,6 @@ include 'includes/scripts.php';
     let fileNameUploaded3 = "";
     //createAd-form
     $('#createAd-form').submit(function(event) {
-        reset();
 
         var ad_name = $('#ad_name').val();
         var ad_description = $("#ad_description").val();
@@ -579,7 +576,7 @@ include 'includes/scripts.php';
         } else {
             if ($("#agreed").is(":checked")) {
                 //uploads file to server
-                alertify.log("Ad thumbnail upload started");
+                alertify.message("Ad thumbnail upload started");
                 myDropzone3.processQueue();
             } else {
                 alertify.error("Accpet Terms of Ad Service to continue");
@@ -592,7 +589,6 @@ include 'includes/scripts.php';
 
     // forgotPassword-form
     $("#forgotPassword-form").submit(function(event) {
-        reset();
         var email = $("#email").val();
         if (email == "") {
             alertify.error("Enter Registered Email to continue");
@@ -636,7 +632,6 @@ include 'includes/scripts.php';
     //edit form submit
     function saveEdits()
     {
-        reset();
 
         var post_title = document.getElementById("apost_title").value;
         var post_category = document.getElementById("apost_category").value;
@@ -651,7 +646,7 @@ include 'includes/scripts.php';
         {
             if (afileNameUploaded1 != "") {
                 //uploads file to server
-                //alertify.log("Thumbnail upload started");
+                //alertify.message("Thumbnail upload started");
                 amyDropzone1.processQueue();
             }
             else
@@ -711,7 +706,6 @@ include 'includes/scripts.php';
                 }
             });
             this.on('addedfile', function(file) {
-                reset();
                 //keeping the file extension.
                 // var ext = file.name.split('.').pop();
                 // fileNameUploaded1 = "user-" + getCombinedDateTime() + '.' + ext; //changing the name of the file
@@ -741,7 +735,6 @@ include 'includes/scripts.php';
             });
         },
         success: function(file, response) {
-            reset();
             result = JSON.parse(response);
             if (result.response == true) {
                 // console.log(result);
@@ -793,7 +786,6 @@ include 'includes/scripts.php';
                 }
             });
             this.on('addedfile', function(file) {
-                reset();
                 if (this.files.length > 1) {
                     this.removeFile(this.files[0]);
                     alertify.error("You cannot upload more than one file");
@@ -816,7 +808,6 @@ include 'includes/scripts.php';
             });
         },
         success: function(file, response) {
-            reset();
             result = JSON.parse(response);
             if (result.response == true) {
                 // console.log(result);
@@ -847,7 +838,6 @@ include 'includes/scripts.php';
                 list_image();
             });
             this.on('addedfile', function(file) {
-                reset();
                 if (this.files.length > 3) {
                     this.removeFile(this.files[0]);
                     alertify.error("You cannot upload more than three files");
@@ -869,7 +859,6 @@ include 'includes/scripts.php';
             });
         },
         success: function(file, response) {
-            reset();
             result = JSON.parse(response);
             if (result.response == true) {
                 // console.log(result);
@@ -885,7 +874,6 @@ include 'includes/scripts.php';
 
 
     function refreshPostDiv() {
-        // reset();
         // //$('#allPost').load(documentx.URL + ' #allPost')
         // $.ajax({
         //     type:"GET",
@@ -895,7 +883,7 @@ include 'includes/scripts.php';
         //     $("#allPost").html(data);
         //     }
         // }).done(function() {
-        //     alertify.log("Page reloaded");
+        //     alertify.message("Page reloaded");
         // });
     }
 
@@ -907,8 +895,6 @@ include 'includes/scripts.php';
         // runs loader
         $('#exampleModalToggle3').modal('show');
         $('#loadModal').load("includes/editPostPg.php");
-
-        reset();
         
         let formdata = new FormData();
         formdata.append("postId", postid)
@@ -983,7 +969,6 @@ include 'includes/scripts.php';
                     }
                 });
                 this.on("addedfile", function(file) {
-                    reset();
                     if (this.files.length > 1) {
                         this.removeFile(this.files[0]);
                         alertify.error("You cannot upload more than one file");
@@ -1003,7 +988,6 @@ include 'includes/scripts.php';
                 });
             },
             success: function(file, response) {
-                reset();
                 result = JSON.parse(response);
                 if (result.response == true) {
                     // console.log(result);
@@ -1027,7 +1011,6 @@ include 'includes/scripts.php';
 
     //deletePost
     function deletePost(postid) {
-        reset();
         alertify.set({
             labels: {
                 ok: "Accept",
@@ -1044,7 +1027,6 @@ include 'includes/scripts.php';
                     },
                     dataType: 'json',
                     success: function(response) {
-                        reset();
                         // console.log(response);
                         var result = response;
                         if (result.response == true) {
@@ -1058,7 +1040,7 @@ include 'includes/scripts.php';
                     }
                 });
             } else {
-                alertify.log("Cancelled");
+                alertify.message("Cancelled");
             }
         });
         refreshPostDiv();
@@ -1066,7 +1048,6 @@ include 'includes/scripts.php';
 
     //publishPost
     function publishPost(postid) {
-        reset();
         alertify.set({
             labels: {
                 ok: "Accept",
@@ -1082,14 +1063,13 @@ include 'includes/scripts.php';
                         postId: postid
                     },
                     success: function(response) {
-                        reset();
                         var result = response;
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
                             // console.log(response.code);
                             if (result.code == 2) {
-                                alertify.log(result.message);
+                                alertify.message(result.message);
                             } else {
                                 alertify.set({
                                     delay: 15000
@@ -1100,7 +1080,7 @@ include 'includes/scripts.php';
                     }
                 });
             } else {
-                alertify.log("Cancelled");
+                alertify.message("Cancelled");
             }
         });
         refreshPostDiv();

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of Countries</title>
+  </head>
+  <body>
+    <div id="country-list"></div>
+    <script>
+      
+
+        const url = "https://restcountries.com/v3.1/all";
+        fetch(url)
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error("Failed to retrieve country list.");
+          })
+          .then(countries => {
+            const countries_sorted = countries.sort((a, b) => {
+              if (a.name.common < b.name.common) return -1;
+              if (a.name.common > b.name.common) return 1;
+              return 0;
+            });
+            
+            var earry = [];
+            for (let country of countries_sorted) {
+              earry.push(country.name.common);
+            }
+            
+            const countryListDiv = document.getElementById("country-list");
+            countryListDiv.textContent = earry.join(", ");
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      
+    </script>
+  </body>
+</html>

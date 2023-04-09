@@ -57,7 +57,8 @@
                                 "user_ip_address" => $sharedComponents->test_input($_POST["user_ip_address"]),
                                 "user_country" => $sharedComponents->test_input($_POST["user_country"]),
                                 "date_created" => date('Y-m-d H:i:s'),
-                                "code" => $code
+                                "code" => $code,
+                                "userInfo" => $userInfo
                             );
 
 
@@ -262,11 +263,11 @@
                                             $postCategory = $resultmsg["data"];
                                         }
                                         else{
-                                            echo "Help oh5";
+                                            echo json_encode( ['response' => false, 'message' => 'Unsuccessfull', 'code' => '0', 'data' => '']);
                                         }
                                     }
                                     else{
-                                        echo "Help oh4";
+                                        echo json_encode( ['response' => false, 'message' => 'Unsuccessfull', 'code' => '0', 'data' => '']);
                                     }
 
                                     $allPost= [];
@@ -283,15 +284,15 @@
                                     // echo json_encode( ['response' => true, 'message' => 'Successful', 'code' => '1', 'data' => $postJson]);
                                 }
                                 else{
-                                    echo json_encode( ['response' => false, 'message' => 'Unsuccessful3', 'code' => '0', 'data' => '']);
+                                    echo json_encode( ['response' => false, 'message' => 'Unsuccessfull', 'code' => '0', 'data' => '']);
                                 }
                             }
                             else{
-                                echo json_encode( ['response' => false, 'message' => 'Unsuccessful2', 'code' => '0', 'data' => '']);
+                                echo json_encode( ['response' => false, 'message' => 'Unsuccessfull', 'code' => '0', 'data' => '']);
                             }
                         }
                         else{
-                            echo json_encode( ['response' => false, 'message' => 'Unsuccessful1', 'code' => '0', 'data' => '']);
+                            echo json_encode( ['response' => false, 'message' => 'Unsuccessfull', 'code' => '0', 'data' => '']);
                         }
                     }
                     else if(!empty($_FILES))
@@ -471,14 +472,6 @@
                     }
                     else{
                         echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
-                    }
-                break;
-            case "aeditPost":
-                    //deleting file from server
-                    if(isset($_POST["name"]))
-                    {
-                        $filename = $folder_name.$_POST["name"];
-                        unlink($filename);
                     }
                 break;
             case "publishPost":
@@ -742,7 +735,56 @@
                         echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
                     }
                 break;
-            
+            case "loadData":
+                    if(isset($_POST["dataType"]))
+                    {
+                        $dataType = $_POST["dataType"];
+                        if($dataType == "slider")
+                        {
+    
+                        }
+                        else if($dataType == "sliderControls")
+                        {
+    
+                        }
+                        else if($dataType == "bodyPost")
+                        {
+    
+                        }
+                        else if($dataType == "popularPost")
+                        {
+    
+                        }
+                        else if($dataType == "bodyPost2")
+                        {
+    
+                        }
+                        else if($dataType == "other")
+                        {
+    
+                        }
+                        else if($dataType == "ads1")
+                        {
+    
+                        }
+                        else if($dataType == "ads2")
+                        {
+    
+                        }
+                        else if($dataType == "ads3")
+                        {
+    
+                        }
+                        else
+                        {
+                            echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
+                        }
+                    }
+                    else
+                    {
+                        echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
+                    }
+                break;
                 default:
                     echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '0', 'data' => '']");
         }

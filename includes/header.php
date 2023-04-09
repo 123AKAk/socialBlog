@@ -68,20 +68,13 @@
   <!-- ajax -->
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script> -->
 
-  <!-- old alertify -->
-	<!-- <link href="assets/js/alertify/themes/alertify.core.css" rel="stylesheet">
-	<link href="assets/js/alertify/themes/alertify.default.css" rel="stylesheet"> -->
-
 	<link href="assets/alertify/css/alertify.css" rel="stylesheet">
-	<link href="assets/alertify/css/alertify.min.css" rel="stylesheet">
+  <link href="assets/alertify/css/themes/bootstrap.css" rel="stylesheet">
+  <link href="assets/alertify/css/themes/semantic.css" rel="stylesheet">
 
-	<link href="assets/alertify/css/themes/bootstrap.css" rel="stylesheet">
-	<link href="assets/alertify/css/themes/bootstrap.min.css" rel="stylesheet">
-
-	<link href="assets/alertify/css/themes/default.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.core.css" />
-	<link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.default.css" id="toggleCSS" />
+  <!-- Select2 -->
+  <link rel="stylesheet" href="assets/select2/css/select2.min.css">
+  <link rel="stylesheet" href="assets/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
   <link rel="stylesheet" type="text/css" href="assets/dropzone/dropzone.min.css">
   <!-- dropzonejs -->
