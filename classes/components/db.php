@@ -7,15 +7,15 @@
     // Declare DB Variables
     
 
-    $servername  = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "macaeblog2";
-
     // $servername  = "localhost";
-    // $username = "donnapoo_macae";
-    // $password = "donnapoo_macae";
-    // $dbname = "donnapoo_macae";
+    // $username = "root";
+    // $password = "";
+    // $dbname = "macaeblog2";
+
+    $servername  = "localhost";
+    $username = "donnapoo_macae";
+    $password = "donnapoo_macae";
+    $dbname = "donnapoo_macae";
 
     /* Attempt to connect to MySQL database */
     try
