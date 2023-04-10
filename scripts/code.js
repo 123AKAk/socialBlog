@@ -41,6 +41,8 @@
       var confrimpassword = $("#confrimpassword").val();
       var country = selectedCountry;
 
+      var mainUserinfo = alluserInfo["latitude"]+","+alluserInfo["longitude"]+","+alluserInfo["continent"]+","+alluserInfo["locality"]+","+alluserInfo["principalSubdivision"]
+
       if (
           username == "" ||
           email == "" ||
@@ -70,7 +72,7 @@
             formdata.append("password", password);
             formdata.append("user_ip_address", ipaddress);
             formdata.append("user_country", country);
-            formdata.append("userInfo", alluserInfo.toString());
+            formdata.append("userInfo", mainUserinfo);
 
             let loca = "classes/components/userComponents.php?dataPurpose=signup";
             fetch(loca, { method: "POST", body: formdata })
@@ -314,12 +316,19 @@
   }
 
   function setUserCountry()
-  {    
-    if(selectedCountry != "")
-        loadData(selectedCountry);
+  {
+    if(selectedCountry == "" && alluserInfo["countryName"] == null)
+    {
+        alertify.error("Select a country");
+    }
     else
-        loadData(alluserInfo["countryName"]);
-    $('#startUpToogle').modal('toggle');
+    {
+        if(selectedCountry != "")
+            loadData(selectedCountry);
+        else
+            loadData(alluserInfo["countryName"]);
+        $('#startUpToogle').modal('toggle');
+    }
   }
 
   function loadData(userCountry)

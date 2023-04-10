@@ -58,7 +58,7 @@
                                 "user_country" => $sharedComponents->test_input($_POST["user_country"]),
                                 "date_created" => date('Y-m-d H:i:s'),
                                 "code" => $code,
-                                "userInfo" => $userInfo
+                                "userInfo" => $sharedComponents->test_input($_POST["userInfo"])
                             );
 
 

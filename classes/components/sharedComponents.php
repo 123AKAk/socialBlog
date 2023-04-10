@@ -56,7 +56,7 @@ use PHPMailer\PHPMailer\Exception;
                 $mail->SMTPSecure = 'SSL';
                 $mail->Port = $siteEmailPort;
 
-                $mail->setFrom($siteEmail, $siteName, 0);
+                $mail->setFrom($siteEmail, $siteName);
                 $mail->addAddress($toEmail);
                 $mail->addReplyTo($siteEmail, 'For any Information');
                 $mail->isHTML(true);
