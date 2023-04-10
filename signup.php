@@ -33,7 +33,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="country">Select your Country</label>
-                                <select name="country" id="country" class="select2bs4 form-control" style="width: 100%;">
+                                <select name="country" id="country" class="select2bs4 form-control" style="width: 100%;" onchange="getSelectedCountry(this)">
                                 </select>
                             </div>
                             <div class="sign-controls form-group">
