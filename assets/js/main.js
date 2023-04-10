@@ -143,14 +143,14 @@ Table of Content
   /* -----------------------------------
       slider-style3
     -----------------------------------*/
-      var swiper = new Swiper(".slider-style3", {
+      var swiper3 = new Swiper(".slider-style3", {
         slidesPerView: 3,
-         spaceBetween: 30,
+        spaceBetween: 30,
         loop: true,
-       /* autoplay: {
+        autoplay: {
           delay: 2500,
           disableOnInteraction: false,
-        },*/
+        },
         breakpoints: {
           0: {
             slidesPerView: 1,
@@ -174,8 +174,8 @@ Table of Content
           },
         },
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+          nextEl: ".swiper-button-nexta",
+          prevEl: ".swiper-button-preva",
         },
       });
 

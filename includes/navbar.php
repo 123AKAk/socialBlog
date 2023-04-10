@@ -1,11 +1,11 @@
-<body onload="">
+<body>
     <!-- wrapper -->
     <div id="wrapper" class="wrapper">
-      <!--loading -->
-      <!-- <div class="loading">
-          <div class="circle"></div>
-      </div> -->
-      <!--/-->
+        <!--loading -->
+        <!-- <div class="loading">
+            <div class="circle"></div>
+        </div> -->
+        <!--/-->
 
         <!-- Header -->
         <header class="header fixed-top">

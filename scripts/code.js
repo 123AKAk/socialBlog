@@ -311,7 +311,9 @@
   }
 
   function loadData(userCountry)
-  {        
+  {
+    //alert(userCountry+" | "+ipaddress+" | "+alluserInfo);
+        return;
         let formdata1 = new FormData();
         formdata1.append("dataType", "slider")
         formdata1.append("userCountry", userCountry)

@@ -2,39 +2,125 @@
 <html>
   <head>
     <title>List of Countries</title>
+    
+    <style>
+
+.awrapper {
+  margin: 30px;
+  padding: 30px;
+  background: #fff;
+  width: 360px;
+  height: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+.awrapper-cell {
+   display: flex;
+   margin-bottom: 30px;
+}
+
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+}
+
+.animated-background {
+    animation-duration: 1.25s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #F6F6F6;
+    background: linear-gradient(to right, #F6F6F6 8%, #F0F0F0 18%, #F6F6F6 33%);
+    background-size: 800px 104px;
+    height: 96px;
+    position: relative;
+}
+
+
+.awrapper-image {
+  height: 60px;
+  width: 60px;
+  @extend .animated-background;
+}
+
+.awrapper-text {
+  margin-left: 20px
+}
+
+.awrapper-text-line {
+  height: 10px;
+  width: 230px;
+  margin: 4px 0;
+}
+
+    </style>
   </head>
   <body>
-    <div id="country-list"></div>
-    <script>
-      
+    <div class="container">
+        <div class="awrapper">
+          <div class="awrapper-cell">
+            <div class="awrapper-image animated-background "></div>
+            <div class="awrapper-text">
+              <div class="awrapper-text-line animated-background "> </div>
+              <div class="awrapper-text-line animated-background "></div>
+              <div class="awrapper-text-line animated-background "></div>
+              <div class="awrapper-text-line animated-background "></div>
+            </div>
+          </div>
+          <div class="awrapper-cell">
+            <div class="awrapper-image animated-background "></div>
+            <div class="awrapper-text">
+              <div class="awrapper-text-line animated-background "></div>
+              <div class="awrapper-text-line animated-background "></div>
+              <div class="awrapper-text-line animated-background "></div>
+              <div class="awrapper-text-line animated-background ">   </div>
+            </div>
+          </div>
+          <div class="awrapper-cell">
+            <div class="image animated-background "></div>
+            <div class="text">
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+            </div>
+          </div>
+          <div class="awrapper-cell">
+            <div class="image animated-background "></div>
+            <div class="text">
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+            </div>
+          </div>
+          <div class="awrapper-cell">
+            <div class="image animated-background "></div>
+            <div class="text">
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+            </div>
+          </div>
+          <div class="awrapper-cell">
+            <div class="image animated-background "></div>
+            <div class="text">
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+              <div class="text-line animated-background "></div>
+            </div>
+          </div>
+            <p class="text-center">Credits: <a href="https://codepen.io/brucevang/pen/qZOPwR">Bruce vang</a></p>
+        </div>
+    </div>
 
-        const url = "https://restcountries.com/v3.1/all";
-        fetch(url)
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            }
-            throw new Error("Failed to retrieve country list.");
-          })
-          .then(countries => {
-            const countries_sorted = countries.sort((a, b) => {
-              if (a.name.common < b.name.common) return -1;
-              if (a.name.common > b.name.common) return 1;
-              return 0;
-            });
-            
-            var earry = [];
-            for (let country of countries_sorted) {
-              earry.push(country.name.common);
-            }
-            
-            const countryListDiv = document.getElementById("country-list");
-            countryListDiv.textContent = earry.join(", ");
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      
-    </script>
   </body>
 </html>

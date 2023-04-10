@@ -26,6 +26,11 @@
             .myText {
                 overflow: hidden;
             }
+
+            
+            
+            
+
         </style>
     ';
 
@@ -54,119 +59,75 @@
             <div class="slider-style2">
                 <div  class="swiper swiper-top">
                    <div class="swiper-wrapper" id="slider">
-                        <?php 
-                            if(isset($lastestPostFirst))
-                            {
-                                foreach ($lastestPostFirst as $post) : 
-                                
-                                $postId = $sharedComponents->protect($post['post_id']); 
-                                $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
-
-                                $authId = $adminUserDetails["id"];
-                                $authEmail = $adminUserDetails["email"];
-                                $authName = $adminUserDetails["username"];
-                                $authGender = $adminUserDetails["gender"];
-                                $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
-                                $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
-
-                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'];
-                        ?>
+                        
                         <!--slider1-->
-                        <div class="swiper-slide slider-item" style="background-image: url('<?= $postImage; ?>');">
+                        <div class="swiper-slide slider-item ">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-xl-7 col-lg-9 col-md-12">
-                                        <div class="slider-item-inner">
-                                            <div class="slider-item-content">
-                                            <div class="entry-cat ">
-                                                <a class="categorie" href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>">
-                                                    <?= $post['category_name'] ?>
-                                                </a>
-                                            </div>
-                                            <h1 class="entry-title">
-                                                <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>">
-                                                    <?= $post['post_title']; ?>
-                                                </a>
-                                            </h1>
-                                            <div class="post-exerpt">
-                                                <p><?= $sharedComponents->convertHtmltoText($post['post_contents'], 25, '', '') ?></p>
-                                            </div>
-                                            <ul class="entry-meta list-inline">
-                                                <li class="post-author-img">
-                                                    <a href="<?= $authLink ?>">
-                                                        <img src="<?= $authProfilePic; ?>" alt="">
-                                                    </a>
-                                                </li>
-                                                <li class="post-author">
-                                                    <a href="<?= $authLink ?>">
-                                                        <?= $authName ?>
-                                                    </a> 
-                                                </li>
-                                                <li class="post-date"> <span class="dot"></span>
-                                                    <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
-                                                </li>
-                                                <li class="post-comment">
-                                                    <span class="dot"></span>
-                                                    <?= $sharedComponents->checkNumofComments($postId, $pdo)." comments"; ?>
-                                                </li>
-                                            </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
-                        <?php 
-                            endforeach; 
-                        }
-                        else
-                        {
-                            echo "<h4>Post not avaiable</h4>";
-                        }
-                        ?>
+                        
                    </div>
                 </div>
       
                 <div thumbsSlider="" class="swiper swiper-bottom container-fluid" >
                     <div class="swiper-wrapper " id="sliderControls">
-                        <?php 
-                        if(isset($lastestPostFirst))
-                        {
-                            foreach ($lastestPostFirst as $post) : 
-                                
-                                $postId = $sharedComponents->protect($post['post_id']); 
-                                $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
-
-                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail']
-                        ?>
+                       
                         <!--slider1-->
-                        <div class="swiper-slide">
+                        <div class="swiper-slide cwrapper-cell">
                             <div class="post-item">
-                                <img src="<?= $postImage; ?>"  alt="">
-                                <div class="details">
-
-                                        <p class="entry-title"> 
-                                        <span>
-                                            <?= $post['post_title']; ?>
-                                        </span>
-                                        </p>
-
-                                    <ul class="entry-meta list-inline">
-                                        <li class="post-date"> <i class="fas fa-clock"></i> 
-                                            <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
-                                        </li>
+                                <div class="cwrapper-image animated-background ">
+                                </div>
+                                <div class="details awrapper-text ">
+                                    <p class="entry-title cwrapper-text-line1 animated-background">
+                                    </p>
+                                    <ul class="entry-meta list-inline cwrapper-text-line2 animated-background">
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <?php 
-                            endforeach; 
-                        }
-                        else
-                        {
-                            echo "<h4>Post not avaiable</h4>";
-                        }
-                        ?>
+
+                        <div class="swiper-slide cwrapper-cell">
+                            <div class="post-item">
+                                <div class="cwrapper-image animated-background">
+                                </div>
+                                <div class="details awrapper-text">
+                                    <p class="entry-title cwrapper-text-line1 animated-background">
+                                    </p>
+                                    <ul class="entry-meta list-inline cwrapper-text-line2 animated-background">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide cwrapper-cell">
+                            <div class="post-item">
+                                <div class="cwrapper-image animated-background">
+                                </div>
+                                <div class="details awrapper-text">
+                                    <p class="entry-title cwrapper-text-line1 animated-background">
+                                    </p>
+                                    <ul class="entry-meta list-inline cwrapper-text-line2 animated-background">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide cwrapper-cell">
+                            <div class="post-item">
+                                <div class="cwrapper-image animated-background">
+                                </div>
+                                <div class="details awrapper-text">
+                                    <p class="entry-title cwrapper-text-line1 animated-background">
+                                    </p>
+                                    <ul class="entry-meta list-inline cwrapper-text-line2 animated-background">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                       
                     </div>
                 </div>      
             </div>
@@ -185,85 +146,85 @@
                                         <div class="theiaStickySidebar">
                                             <div class="row">
                                                 <div class="col-lg-12" id="bodyPost">
-                                                    <?php 
-                                                        if(isset($lastestPostSecond))
-                                                        {
-                                                            foreach ($lastestPostSecond as $post) : 
-                                                            
-                                                            $postId = $sharedComponents->protect($post['post_id']); 
-                                                            $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
-
-                                                            $authId = $adminUserDetails["id"];
-                                                            $authEmail = $adminUserDetails["email"];
-                                                            $authName = $adminUserDetails["username"];
-                                                            $authGender = $adminUserDetails["gender"];
-                                                            $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
-                                                            $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
-
-                                                            $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'];
-
-                                                            // Count the number of words in the text
-                                                            $num_words = str_word_count($sharedComponents->convertHtmltoText($post['post_contents'], 25, '', ''));
-
-                                                            // Assume an average reading speed of 200 words per minute
-                                                            $avg_speed = 200;
-
-                                                            // Calculate the estimated reading time in minutes
-                                                            $reading_time = ceil($num_words / $avg_speed);
-
-                                                    ?>
+                                                
                                                     <!--Post-1-->
-                                                    <div class="post-list">
+                                                    <div class="post-list awrapper-cell">
                                                         <div class="post-list-image">
                                                             <div class="image-box">
-                                                                <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>">
-                                                                    <img src="<?= $postImage; ?>" class="img-fluid w-100" alt="">
-                                                                </a>
+                                                                <div class="awrapper-image animated-background">
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="post-list-content">
-                                                            <div class="entry-cat">
-                                                                <a class="categorie" href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>">
-                                                                    <?= $post['category_name'] ?>
-                                                                </a>
+                                                        <div class="post-list-content awrapper-text">
+                                                            <div class="entry-cat awrapper-text-line  animated-background">
                                                             </div>
-                                                            <h4 class="entry-title">
-                                                                <a href="post.php?dt=<?= $post['post_title'] ?>&id=<?= $postId ?>">
-                                                                    <?= $post['post_title']; ?>
-                                                                </a>
+                                                            <h4 class="entry-title awrapper-text-line animated-background">
                                                             </h4>
-                                                            <div class="post-exerpt">
-                                                                <p class="myText"><?= $sharedComponents->convertHtmltoText($post['post_contents'], 25, '', '') ?></p>
+                                                            <div class="post-exerpt awrapper-text-line animated-background">
                                                             </div>
-                                                            <ul class="entry-meta list-inline">
-                                                                <li class="post-author-img">
-                                                                    <a href="<?= $authLink ?>">
-                                                                        <img src="<?= $authProfilePic; ?>" alt="">
-                                                                    </a>
+                                                            <ul class="entry-meta list-inline awrapper-text">
+                                                                <li class="post-author awrapper-atext-line animated-background">
                                                                 </li>
-                                                                <li class="post-author">
-                                                                    <a href="<?= $authLink ?>">
-                                                                        <?= $authName ?>
-                                                                    </a> 
+                                                                <li class="post-date awrapper-atext-line animated-background">
                                                                 </li>
-                                                                <li class="post-date"> <span class="dot"></span>
-                                                                    <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
-                                                                </li>
-                                                                <li class="post-timeread"> <span class="dot"></span> 
-                                                                    <?= $reading_time; ?> min Read
+                                                                <li class="post-timeread awrapper-atext-line animated-background">
                                                                 </li>
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                    <!--/-->
-                                                    <?php 
-                                                        endforeach; 
-                                                    }
-                                                    else
-                                                    {
-                                                        echo "<h4>Post not avaiable</h4>";
-                                                    }
-                                                    ?>
+
+
+                                                    <div class="post-list awrapper-cell">
+                                                        <div class="post-list-image">
+                                                            <div class="image-box">
+                                                                <div class="awrapper-image animated-background">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="post-list-content awrapper-text">
+                                                            <div class="entry-cat awrapper-text-line  animated-background">
+                                                            </div>
+                                                            <h4 class="entry-title awrapper-text-line animated-background">
+                                                            </h4>
+                                                            <div class="post-exerpt awrapper-text-line animated-background">
+                                                            </div>
+                                                            <ul class="entry-meta list-inline awrapper-text">
+                                                                <li class="post-author awrapper-atext-line animated-background">
+                                                                </li>
+                                                                <li class="post-date awrapper-atext-line animated-background">
+                                                                </li>
+                                                                <li class="post-timeread awrapper-atext-line animated-background">
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="post-list awrapper-cell">
+                                                        <div class="post-list-image">
+                                                            <div class="image-box">
+                                                                <div class="awrapper-image animated-background">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="post-list-content awrapper-text">
+                                                            <div class="entry-cat awrapper-text-line  animated-background">
+                                                            </div>
+                                                            <h4 class="entry-title awrapper-text-line animated-background">
+                                                            </h4>
+                                                            <div class="post-exerpt awrapper-text-line animated-background">
+                                                            </div>
+                                                            <ul class="entry-meta list-inline awrapper-text">
+                                                                <li class="post-author awrapper-atext-line animated-background">
+                                                                </li>
+                                                                <li class="post-date awrapper-atext-line animated-background">
+                                                                </li>
+                                                                <li class="post-timeread awrapper-atext-line animated-background">
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -272,39 +233,65 @@
                                     <?php include 'includes/sidebar.php'; ?>
                                 </div>
                                 
-                                <!--slider-style6-->
-                                <div class="slider-style6">
-                                    <div class="swiper-wrapper" id="bodyPost2">
+                                <!--slider-style3-->
+                                <div class="slider-style3">
+                                    <div class="swiper-wrapper">
                                         <!--slider-1-->
-                                        <div class="slider-item  swiper-slide ">
-                                            <!--Post-1-->
-                                            <div class="post-card">
-                                                <div class="post-card-image">
-                                                    <a href="post-default.html">
-                                                        <img src="assets/img/blog/20.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                                <div class="post-card-content">
-                                                    <div class="entry-cat">
-                                                        <a href="blog-grid.html" class="categorie"> travel</a>
-                                                    </div>
-                                                    <h5 class="entry-title">
-                                                        <a href="post-default.html">Get The Most Out of Iceland With Our 10 Best Travel Tips </a>
-                                                    </h5>
+                                        <div class="slider-item  swiper-slide"> 
+                                            <div class="slider-item-content">
+                                                <div class="entry-cat bwrapper-text-line animated-background">
                                                     
-                                                    <ul class="entry-meta list-inline">
-                                                        <li class="post-author-img"><a href="author.html"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                                        <li class="post-author"><a href="author.html">David Smith</a> </li>
-                                                        <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                                    </ul>
                                                 </div>
-                                            </div>  
-                                        </div>
-                                    </div> 
+                                                <h4 class="entry-title bwrapper-text-line animated-background">
+                                                    
+                                                </h4>
 
+                                                <ul class="entry-meta list-inline">
+                                                    <li class="post-author-img wrapper-atext-line animated-background"></li>
+                                                    <li class="post-author bwrapper-atext-line animated-background"></li>
+                                                    <li class="post-date bwrapper-atext-line animated-background"></li>
+                                                </ul>
+                                            </div>       
+                                        </div>
+                                        <div class="slider-item  swiper-slide"> 
+                                            <div class="slider-item-content">
+                                                <div class="entry-cat bwrapper-text-line animated-background">
+                                                    
+                                                </div>
+                                                <h4 class="entry-title bwrapper-text-line animated-background">
+                                                    
+                                                </h4>
+
+                                                <ul class="entry-meta list-inline">
+                                                    <li class="post-author-img wrapper-atext-line animated-background"></li>
+                                                    <li class="post-author bwrapper-atext-line animated-background"></li>
+                                                    <li class="post-date bwrapper-atext-line animated-background"></li>
+                                                </ul>
+                                            </div>       
+                                        </div>
+                                        <div class="slider-item  swiper-slide"> 
+                                            <div class="slider-item-content">
+                                                <div class="entry-cat bwrapper-text-line animated-background">
+                                                    
+                                                </div>
+                                                <h4 class="entry-title bwrapper-text-line animated-background">
+                                                    
+                                                </h4>
+
+                                                <ul class="entry-meta list-inline">
+                                                    <li class="post-author-img wrapper-atext-line animated-background"></li>
+                                                    <li class="post-author bwrapper-atext-line animated-background"></li>
+                                                    <li class="post-date bwrapper-atext-line animated-background"></li>
+                                                </ul>
+                                            </div>       
+                                        </div>
+
+                                    </div> 
                                     <!--pagination-->  
-                                    <div class="swiper-pagination"></div>
+                                    <div class="swiper-button-nexta"></div>
+                                    <div class="swiper-button-preva"></div>
                                 </div>
+
                             </div>
                         </section><!--/-->
 
