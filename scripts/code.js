@@ -34,15 +34,12 @@
   // signup form
   $("#signup-form").submit(function (event)
   {
-    alert(ipaddress+" | "+alluserInfo);
-    return;
       var username = $("#username").val();
       var email = $("#email").val();
       var country = $("#country").val();
       var gender = $("#gender").val();
       var password = $("#password").val();
       var confrimpassword = $("#confrimpassword").val();
-      var agreed = $("#agreed").val();
 
       if (
           username == "" ||
@@ -205,8 +202,9 @@
 
     //Initialize Select2 Elements
     $('.select2bs4').select2({
-      theme: 'bootstrap4'
-    })
+        theme: 'bootstrap4',
+        placeholder: 'Select your Country'
+    });
 
     window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;  
     var pc = new RTCPeerConnection({iceServers:[]}), 
@@ -271,20 +269,24 @@
     })
     .then(userLocationData => {
         alluserInfo = userLocationData;
+        
+        var select = document.getElementById("userCountryList");
+        var select2 = document.getElementById("country");
 
         var option = document.createElement("option");
         option.text = alluserInfo["countryName"];
         option.value = alluserInfo["countryName"];
-        var select = document.getElementById("userCountryList");
         //select.appendChild(option);
         //select.insertBefore(option, select.firstChild);
         select.insertAdjacentHTML('afterbegin', option.outerHTML);
+        select2.insertAdjacentHTML('afterbegin', option.outerHTML);
 
         for (let country of arrCountry) {
             var optionN = document.createElement("option");
             optionN.text = country;
             optionN.value = country;
             select.appendChild(optionN);
+            select2.appendChild(optionN);
         }
 
         $('#counSpiner').hide();

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 04, 2023 at 12:08 AM
+-- Generation Time: Apr 10, 2023 at 06:37 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -319,16 +319,17 @@ CREATE TABLE `user` (
   `categories_followed` text NOT NULL,
   `user_ip_address` text NOT NULL,
   `user_country` text NOT NULL,
-  `authors_followed` text NOT NULL
+  `authors_followed` text NOT NULL,
+  `userInfo` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `username`, `email`, `gender`, `password`, `profile_pic`, `user_desc`, `date_created`, `date_updated`, `status`, `code`, `saved_posts`, `categories_followed`, `user_ip_address`, `user_country`, `authors_followed`) VALUES
-(1, 'Eyo Akak', 'favourakak@gmail.com', 'Male', '$2y$10$A70lPOgqrNqx58oL/CsDmOYhkAT8vbdk0.zBgiowbZxik.ZgRt.TG', 'user-2023-03-27 12-42-05.png', 'This is Eyo Akak, software Developer ', '2023-03-12 18:32:15', '2023-03-12 18:32:15', 1, 'B23KK1NYLUTA', '', '', 'ipaddress', 'Nigeria', ''),
-(2, 'James Okoli', 'eyoakak@outlook.com', 'Male', '$2y$10$A70lPOgqrNqx58oL/CsDmOYhkAT8vbdk0.zBgiowbZxik.ZgRt.TG', 'user-2023-03-27 12-42-05.png', 'I am James Okoli, one of the best contents writers.\r\n', '2023-03-12 18:32:15', '2023-03-12 18:32:15', 1, 'B23KK1NYLUTA', '', '', 'ipaddress', 'Togo', '');
+INSERT INTO `user` (`user_id`, `username`, `email`, `gender`, `password`, `profile_pic`, `user_desc`, `date_created`, `date_updated`, `status`, `code`, `saved_posts`, `categories_followed`, `user_ip_address`, `user_country`, `authors_followed`, `userInfo`) VALUES
+(1, 'Eyo Akak', 'afavourakak@gmail.com', 'Male', '$2y$10$A70lPOgqrNqx58oL/CsDmOYhkAT8vbdk0.zBgiowbZxik.ZgRt.TG', 'user-2023-03-27 12-42-05.png', 'This is Eyo Akak, software Developer ', '2023-03-12 18:32:15', '2023-03-12 18:32:15', 1, 'B23KK1NYLUTA', '', '', 'ipaddress', 'Nigeria', '', ''),
+(2, 'James Okoli', 'eyoakak@outlook.com', 'Male', '$2y$10$A70lPOgqrNqx58oL/CsDmOYhkAT8vbdk0.zBgiowbZxik.ZgRt.TG', 'user-2023-03-27 12-42-05.png', 'I am James Okoli, one of the best contents writers.\r\n', '2023-03-12 18:32:15', '2023-03-12 18:32:15', 1, 'B23KK1NYLUTA', '', '', 'ipaddress', 'Togo', '', '');
 
 --
 -- Indexes for dumped tables

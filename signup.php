@@ -19,19 +19,10 @@
                                 <input type="email" class="form-control" placeholder="Email Address*" id="email" name="email" value="">
                             </div>
                             <div class="form-group">
-                                <select name="country" id="country" class="form-control">
-                                    <option value="">Select Country</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="Ghana">Ghana</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
                                 <select name="gender" id="gender" class="form-control">
                                     <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -39,6 +30,11 @@
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Confrim Password*" id="confrimpassword" name="confrimpassword" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Select your Country</label>
+                                <select name="country" id="country" class="select2bs4 form-control">
+                                </select>
                             </div>
                             <div class="sign-controls form-group">
                                 <div class="custom-control custom-checkbox">
