@@ -3,10 +3,10 @@
     session_start();
 
     // Declare DB Variables
-    $servername  = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "macaeblog";
+    // $servername  = "localhost";
+    // $username = "root";
+    // $password = "";
+    // $dbname = "macaeblog";
     // $servername  = "localhost";
     // $username = "root";
     // $password = "";
