@@ -39,7 +39,7 @@ use PHPMailer\PHPMailer\Exception;
 
         function sendUsersMail($username, $subject, $message, $toEmail, $altBody)
         {
-            require "../../includes/varnames.php"; 
+            require SITE_ROOT."/../../includes/varnames.php";
             require 'mailers/autoload.php';
 
             $mail = new PHPMailer(true);
@@ -47,7 +47,7 @@ use PHPMailer\PHPMailer\Exception;
             {
                 //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
                 //only to be used on Localhost
-                $mail->IsSMTP();
+                //$mail->IsSMTP();
                 
                 $mail->Host = $siteEmailHost;
                 $mail->SMTPAuth = true;
