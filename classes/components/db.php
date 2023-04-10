@@ -7,6 +7,10 @@
     // $username = "root";
     // $password = "";
     // $dbname = "macaeblog";
+    // $servername  = "localhost";
+    // $username = "root";
+    // $password = "";
+    // $dbname = "macaeblog";
     $servername  = "localhost";
     $username = "donnapoo_macae";
     $password = "donnapoo_macae";

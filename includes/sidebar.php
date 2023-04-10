@@ -2,50 +2,19 @@
                                         <div class="theiaStickySidebar">
                                             <!--widget-author-->
                                             <div class="widget">
+
                                                 <div class="widget-author">
-                                                    <div class="author-img">
-                                                        <a href="author.php" class="image">
-                                                            <img src="assets/img/author/1.jpg" alt="">
-                                                        </a>
-                                                    </div>
-                                                    <div class="author-content">
-                                                        <h6 class="name"> Hi, I'm David Smith</h6>
-                                                        <p class="bio">
-                                                            I'm David Smith, husband and father ,
-                                                            I love Photography,travel and nature. I'm working as a writer and blogger with experience
-                                                            of 5 years until now.
-                                                        </p>
-                                                        <div class="social-media">
-                                                            <ul class="list-inline">
-                                                                <li>
-                                                                    <a href="#" class="color-facebook">
-                                                                        <i class="fab fa-facebook"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" class="color-instagram">
-                                                                        <i class="fab fa-instagram"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" class="color-twitter">
-                                                                        <i class="fab fa-twitter"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" class="color-youtube">
-                                                                        <i class="fab fa-youtube"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" class="color-pinterest">
-                                                                        <i class="fab fa-pinterest"></i>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
+                                                    <div class="author-img dwrapper-cell">
+                                                        <div class="image dwrapper-image animated-background">
+
                                                         </div>
                                                     </div>
+                                                    <div class="author-content">
+                                                        <h6 class="name dwrapper-text-line1 animated-background"></h6>
+                                                        <p class="bio dwrapper-text-line2 animated-background"></p>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                             <!--/-->
 
@@ -54,19 +23,21 @@
                                                 <div class="section-title">
                                                     <h5>Popular Posts</h5>
                                                 </div>
-                                                <ul class="widget-latest-posts">
+                                                <ul class="widget-latest-posts" id="popularPost">
                     
-                                                    <li class="post-item">
-                                                        <div class="image">
-                                                            <a href="post.php"> <img src="assets/img/latest/1.jpg" alt="..."></a>
+                                                    <li class="post-item dwrapper-cell">
+                                                        <div class="image dwrapper-image animated-background">
                                                         </div>
-                                                        <div class="count">1</div>
                                                         <div class="content">
-                                                            <p class="entry-title"><a href="post.php">5 Things I Wish I Knew Before Traveling to Malaysia</a></p>
-                                                            <small class="post-date"><i class="fas fa-clock"></i> January 15, 2022</small>
+                                                            <p class="entry-title dwrapper-text-line1 animated-background">
+                                                            </p>
+                                                            <p class="entry-title dwrapper-text-line1 animated-background">
+                                                            </p>
+                                                            <small class="post-date dwrapper-text-line1 animated-background">
+                                                            </small>
                                                         </div>
                                                     </li>
-
+                                                    
                                                 </ul>
                                             </div>
                                             <!--/-->
@@ -77,10 +48,11 @@
                                                     <h5>Categories</h5>
                                                 </div>
                                                 <ul class="widget-categories">
-                                                    
+                                                
                                                     <li>
-                                                        <a href="#" class="categorie">Livestyle</a>
-                                                        <span class="ml-auto">22 Posts</span>
+                                                        <a href="#" class="categorie ewrapper-text-line1 animated-background">
+                                                        </a>
+                                                        <span class="ml-auto ewrapper-text-line1 animated-background"></span>
                                                     </li>
                                                     
                                                 </ul>
@@ -90,16 +62,28 @@
                                             <!--widget-tags-->
                                             <div class="widget">
                                                 <div class="section-title">
-                                                    <h5>Tags</h5>
+                                                    <h5>Popular Authors</h5>
                                                 </div>
-                                                <div class="widget-tags">
-                                                    <ul class="list-inline">
-                                                        
-                                                        <li>
-                                                            <a href="blog-grid.php">Tech</a>
-                                                        </li>
-
-                                                    </ul>
+                                                <div class="">
+                                                <ul class="widget-latest-posts">
+                                                    
+                                                    
+                                                    <li class="post-item dwrapper-cell">
+                                                        <div class="image">
+                                                            <div class="image dwrapper-image animated-background">
+                                                            </div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <p class="entry-title dwrapper-text-line1 animated-background">
+                                                            </p>
+                                                            <p class="entry-title dwrapper-text-line1 animated-background">
+                                                            </p>
+                                                            <small class="post-date dwrapper-text-line1 animated-background">
+                                                            </small>
+                                                        </div>
+                                                    </li>
+                                                    
+                                                </ul>
                                                 </div>
                                             </div>
                                             <!--/-->
@@ -109,10 +93,9 @@
                                                 <div class="section-title">
                                                     <h5>ads</h5>
                                                 </div>
-                                                <div class="widget-ads">
-                                                    <a href="#">
-                                                        <img src="assets/img/ads/ads3.jpg" alt="">
-                                                    </a>
+                                                <div>
+                                                    <div class="fwrapper-image animated-background">
+                                                    </div>
                                                 </div>
                                             </div>
 

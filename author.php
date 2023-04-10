@@ -1,6 +1,8 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    // if author id is 0 show author not found or inaccesible on the website
 ?>
     <main class="main">
         <!--author-->

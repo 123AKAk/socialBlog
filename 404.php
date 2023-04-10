@@ -13,8 +13,19 @@
                                     <img src="assets/img/pic/error.png" alt="">
                                 </div>
                                 <div class="page404-content">
-                                    <h3>Oops! This page can’t be found </h3>
-                                    <p>The page which you are looking for does not exist. </p>
+                                    <h3>
+                                        <?php
+                                            if(isset($_GET['err']))
+                                            {
+                                                echo $_GET['err'];
+                                            }
+                                            else
+                                            {
+                                                echo "Oops! Page can’t be found ";
+                                            }
+                                        ?>
+                                    </h3>
+                                    <p>The data which you are looking for does not exist. </p>
                                     <a href="./" class="btn-custom">Go back to Home</a>
                                 </div>
                             </div>

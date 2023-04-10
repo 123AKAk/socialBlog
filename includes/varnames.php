@@ -12,4 +12,6 @@
     $siteURL = "http://bluntechnology.com/";
     $pageLogo = "http://bluntechnology.com/assets/img/logo.png";
     $logoDesc = "Nice Color";
+    $siteImage = "siteImage.jpg";
+    $siteDesc = "This is from Macae";
 ?>

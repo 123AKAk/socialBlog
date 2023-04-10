@@ -1,6 +1,46 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    if(!isset($_GET['id']))
+    {
+        echo "<script>window.location.replace('404.php?err=Error Getting Post Details');</script>";
+    }
+    
+    $postId = $sharedComponents->unprotect($_GET['id']);
+    
+    //check if value is an integer
+
+    // Get post details
+    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_id=$postId");
+    $stmt->execute();
+    $post = $stmt->fetch();
+
+    if(empty($post))
+    {
+        echo "<script>window.location.replace('404.php?err=Post does not Exists, cannot be found');</script>";
+    }
+
+    $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+    $authId = $adminUserDetails["id"];
+    $authEmail = $adminUserDetails["email"];
+    $authName = $adminUserDetails["username"];
+    $authGender = $adminUserDetails["gender"];
+    $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
+    $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
+
+    $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'];
+
+    // Count the number of words in the text
+    $num_words = str_word_count($sharedComponents->convertHtmltoText($post['post_contents'], 25, '', ''));
+
+    // Assume an average reading speed of 200 words per minute
+    $avg_speed = 200;
+
+    // Calculate the estimated reading time in minutes
+    $reading_time = ceil($num_words / $avg_speed);
+    
 ?>
         <main class="main">
             <!--post-default-->
@@ -12,27 +52,36 @@
                                 <!--Post-single-->
                                 <div class="post-single">
                                     <div class="post-single-image">
-                                        <img src="assets/img/blog/2.jpg" alt="">
+                                        <img src="<?= $postImage; ?>" alt="">
                                     </div>
                                     <div class="post-single-content">
-                                        <a href="blog-grid.php" class="categorie">travel</a> 
-                                        <h3 class="title">What The Secrets You Will know about Jordan Petra if Visit it One Day? </h3>
+                                        <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
+                                            <?= $post['category_name'] ?>
+                                        </a>
+                                        <h3 class="title"><?= $post['post_title'] ?></h3>
                                         <ul class="entry-meta list-inline">
-                                            <li class="post-author-img"><a href="author.php"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                            <li class="post-author"><a href="author.php">David Smith</a> </li>
-                                            <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
-                                            <li class="post-timeread"> <span class="dot"></span> 15 min Read</li>
-                                            <li class="post-comment"> <span class="dot"></span> 2 comments</li>
+                                            <li class="post-author-img">
+                                                <a href="<?= $authLink ?>">
+                                                    <img src="<?= $authProfilePic; ?>" alt="">
+                                                </a>
+                                            </li>
+                                            <li class="post-author"><a href="<?= $authLink ?>"><?= $authName ?></a> </li>
+                                            <li class="post-date"><span class="dot"></span>  
+                                                <?= date_format(date_create($post['post_creation_time']), "F d, Y") ?>
+                                            </li>
+                                            <li class="post-timeread"> <span class="dot"></span> 
+                                                <?= $reading_time; ?> min Read
+                                            </li>
+                                            <li class="post-comment"><span class="dot"></span>
+                                                <?= $sharedComponents->checkNumofComments($postId, $pdo)." comments"; ?>
+                                            </li>
                                         </ul>
                                     
                                     </div>
                             
                                     <div class="post-single-body">
                                         <p>
-                                            Its sometimes her behaviour are contented. Do listening am eagerness oh objection collected. Together gay feelings continue
-                                            juvenile had off Unknown may service 
-                                            subject her letters one bed. Child years noise ye in forty. Loud in this in both
-                                            hold. My entrance me is disposal bachelor remember relation
+                                            <?= htmlspecialchars_decode($post['post_contents']) ?>
                                         </p>
                                     </div>
 
@@ -40,11 +89,14 @@
                                         <div class="tags">
                                             <ul class="list-inline">
                                                 <li>
-                                                    <a href="blog-grid.php">Travel</a>
+                                                    <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
+                                                        <?= $post['category_name'] ?>
+                                                    </a>
                                                 </li>
                                             </ul>
                                         </div>
                                         <div class="social-media">
+                                            <!-- share to diffrent social media -->
                                             <ul class="list-inline">
                                                 <li>
                                                     <a href="#" class="color-facebook">

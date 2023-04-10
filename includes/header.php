@@ -31,6 +31,9 @@
           }
       }
     }
+
+    //set pictures folder accesible from all pages
+    $folder_name = "classes/components/filesUpload/";
 ?>
 
 <!doctype html>
@@ -48,52 +51,175 @@
     <!-- Title -->
     <title> MACAE </title>
 
-  <!--Stylesheets -->
-  <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/all.min.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/line-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/swiper.min.css">
+    <!--Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/line-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/swiper.min.css">
 
-  <!-- main style -->
-  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/custom.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/edits.css">
+    <!-- main style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/custom.css">
+    <!-- <link rel="stylesheet" type="text/css" href="assets/css/edits.css"> -->
 
-  <!-- daterange picker -->
-  <link rel="stylesheet" type="text/css" href="admin/assets/daterangepicker/daterangepicker.css">
+    <!-- daterange picker -->
+    <link rel="stylesheet" type="text/css" href="admin/assets/daterangepicker/daterangepicker.css">
 
-  <!-- ajax -->
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script> -->
+    <!-- ajax -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script> -->
 
-  <!-- old alertify -->
-	<!-- <link href="assets/js/alertify/themes/alertify.core.css" rel="stylesheet">
-	<link href="assets/js/alertify/themes/alertify.default.css" rel="stylesheet"> -->
+    <link href="assets/alertify/css/alertify.css" rel="stylesheet">
+    <link href="assets/alertify/css/themes/bootstrap.css" rel="stylesheet">
+    <link href="assets/alertify/css/themes/semantic.css" rel="stylesheet">
 
-	<link href="assets/alertify/css/alertify.css" rel="stylesheet">
-	<link href="assets/alertify/css/alertify.min.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="assets/select2/css/select2.min.css">
+    <link rel="stylesheet" href="assets/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
-	<link href="assets/alertify/css/themes/bootstrap.css" rel="stylesheet">
-	<link href="assets/alertify/css/themes/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/dropzone/dropzone.min.css">
+    <!-- dropzonejs -->
+    <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
 
-	<link href="assets/alertify/css/themes/default.css" rel="stylesheet">
+    <?php
+      if(isset($style_refrences))
+      {
+        echo $style_refrences;
+      }
+    ?>  
 
-  <link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.core.css" />
-	<link rel="stylesheet" href="assets/alertify_full_src/themes/alertify.default.css" id="toggleCSS" />
+    <style>
+      .alertify-log-custom {
+        background: blue;
+      }
 
-  <link rel="stylesheet" type="text/css" href="assets/dropzone/dropzone.min.css">
-  <!-- dropzonejs -->
-  <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
-  <?php
-    if(isset($style_refrences))
-    {
-      echo $style_refrences;
-    }
-  ?>  
 
-  <style>
-		.alertify-log-custom {
-			background: blue;
-		}
-	</style>
+      @keyframes placeHolderShimmer{
+        0%{
+            background-position: -468px 0
+        }
+        100%{
+            background-position: 468px 0
+        }
+      }
+      .animated-background {
+        animation-duration: 1.25s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: placeHolderShimmer;
+        animation-timing-function: linear;
+        background: #F6F6F6;
+        background: linear-gradient(to right, #F6F6F6 8%, #F0F0F0 18%, #F6F6F6 33%);
+        background-size: 800px 104px;
+        height: 96px;
+        position: relative;
+      }
+      /* for blog post */
+      .awrapper-cell {
+        display: flex;
+      }
+      .awrapper-image {
+        height: 300px;
+        width: 400px;
+        border-radius: 10px;
+        @extend .animated-background;
+      }
+      .awrapper-text-line {
+        margin-top: 10px;
+        height: 50px;
+        width: 100%;
+        border-radius: 3px; 
+      }
+      .awrapper-atext-line {
+        height: 30px;
+        width: 100%;
+        margin-top: 15px;
+        margin-right: 5px;
+        border-radius: 3px; 
+      }
+
+
+      /* for slider child */
+      .cwrapper-cell {
+        display: flex;
+      }
+      .cwrapper-image {
+        height: 100px;
+        width: 100px;
+        border-radius: 15px;
+        margin-right: 5px;  
+        @extend .animated-background;
+      }
+      .cwrapper-text-line1 {
+        margin-left: 5px;
+        height: 20px;
+        width: 130px;
+        border-radius: 3px;
+      }
+      .cwrapper-text-line2 {
+        margin-left: 5px;
+        height: 15px;
+        width: 130px;
+        border-radius: 3px;
+      }
+
+
+      /* for slider 2 */
+      .bwrapper-text{
+        padding-bottom: 20px;
+      }
+      .bwrapper-text-line {
+        height: 30px;
+        width: 100%;
+        border-radius: 3px;
+      }
+      .bwrapper-atext-line {
+        margin: 5px;
+        height: 15px;
+        width: 130px;
+        border-radius: 3px;
+      }
+    
+      /* for author description and for popular post*/
+      .dwrapper-cell {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+      }
+      .dwrapper-image {
+        height: 100px;
+        width: 100px;
+        border-radius: 15px;
+        @extend .animated-background;
+      }
+      .dwrapper-text-line1 {
+        height: 15px;
+        width: 100%;
+        border-radius: 3px;
+      }
+      .dwrapper-text-line2 {
+        height: 30px;
+        width: 100%;
+        border-radius: 3px;
+      }
+
+      /* for categories */
+      .ewrapper-text-line1
+      {
+        height: 20px;
+        width: 95px;
+        border-radius: 3px;
+      }
+
+      /* for ads */
+      .fwrapper-image
+      {
+        height: 200px;
+        width: 100%;
+        border-radius: 3px;
+      }
+      
+
+      
+    </style>
 
 </head>
