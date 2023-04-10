@@ -73,7 +73,7 @@
                             </ul>
                                         
                             <!--theme-switch-->
-                            <div class="theme-switch-wrapper switch-icon">
+                            <!-- <div class="theme-switch-wrapper switch-icon">
                                 <label class="theme-switch" for="checkbox">
                                 <input type="checkbox" id="checkbox">
                                 <span class="slider round ">
@@ -81,7 +81,7 @@
                                     <i class="lar la-moon icon-dark"></i>
                                 </span>
                                 </label>
-                            </div>
+                            </div> -->
 
                             <!--search-icon-->
                             <div class="search-icon"> <a href="#search">  <i class="fas fa-search"></i></a></div>
