@@ -471,7 +471,6 @@ include 'includes/scripts.php';
         var post_country = document.getElementById("post_country").value;
 
         if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
-            alertify.set('notifier', 'position', 'top-right');
             alertify.error("Fill all Feilds");
         } else {
             if (fileNameUploaded1 != "") {
@@ -507,7 +506,6 @@ include 'includes/scripts.php';
         var confrimPassword = document.getElementById("confrimPassword").value;
 
         if (username == "" || email == "" || gender == "" || user_country == "") {
-            alertify.set('notifier', 'position', 'top-right');
             alertify.error("Fill all Feilds");
         } else {
             if (password != "" && password != confrimPassword) {
@@ -534,9 +532,6 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            alertify.set({
-                                delay: 15000
-                            });
                             alertify.error(result.message);
                         }
                     })
@@ -572,7 +567,6 @@ include 'includes/scripts.php';
         const date2 = new Date(parts[1]);
 
         if (ad_name == "" || ad_description == "" || ad_target_Country == "" || ad_duration == "" || ad_category == "" || ad_target_gender == "") {
-            alertify.set('notifier', 'position', 'top-right');
             alertify.error("Fill all Feilds");
         } else if (date1 == date2) {
             alertify.error("Duration cannot be the same Date");
@@ -616,9 +610,6 @@ include 'includes/scripts.php';
                         }, 3000);
 
                     } else {
-                        alertify.set({
-                            delay: 15000
-                        });
                         alertify.error(result.message);
                     }
                 })
@@ -642,7 +633,6 @@ include 'includes/scripts.php';
         var post_country = document.getElementById("apost_country").value;
 
         if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
-            alertify.set("notifier", "position", "top-right");
             alertify.error("Fill all Feilds");
         }
         else
@@ -675,9 +665,6 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            alertify.set({
-                                delay: 15000
-                            });
                             alertify.error(result.message);
                         }
                     })
@@ -743,9 +730,6 @@ include 'includes/scripts.php';
                 // console.log(result);
                 alertify.success(result.message);
             } else {
-                alertify.set({
-                    delay: 15000
-                });
                 alertify.error(result.message);
             }
             refreshPostDiv();
@@ -816,9 +800,6 @@ include 'includes/scripts.php';
                 // console.log(result);
                 alertify.success(result.message);
             } else {
-                alertify.set({
-                    delay: 15000
-                });
                 alertify.error(result.message);
             }
         }
@@ -867,9 +848,6 @@ include 'includes/scripts.php';
                 // console.log(result);
                 alertify.success(result.message);
             } else {
-                alertify.set({
-                    delay: 15000
-                });
                 alertify.error(result.message);
             }
         }
@@ -996,9 +974,6 @@ include 'includes/scripts.php';
                     // console.log(result);
                     alertify.success(result.message);
                 } else {
-                    alertify.set({
-                        delay: 15000
-                    });
                     alertify.error(result.message);
                 }
                 refreshPostDiv();
@@ -1014,14 +989,11 @@ include 'includes/scripts.php';
 
     //deletePost
     function deletePost(postid) {
-        alertify.set({
-            labels: {
-                ok: "Accept",
-                cancel: "Deny"
-            }
-        });
-        alertify.confirm("Are you sure you want to Delete this post?", function(e) {
-            if (e) {
+      
+        alertify.confirm(
+            'Confirm Delete', 'Are you sure you want to Delete this post?', 
+            function()
+            {
                 $.ajax({
                     url: `classes/components/userComponents.php?dataPurpose=deletePost`,
                     method: "POST",
@@ -1035,30 +1007,27 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            alertify.set({
-                                delay: 15000
-                            });
                             alertify.error(result.message);
                         }
                     }
-                });
-            } else {
-                alertify.message("Cancelled");
+                });                
+            },
+            function()
+            {
+                alertify.message('Cancelled')
             }
-        });
+        );
+        
         refreshPostDiv();
     }
 
     //publishPost
     function publishPost(postid) {
-        alertify.set({
-            labels: {
-                ok: "Accept",
-                cancel: "Deny"
-            }
-        });
-        alertify.confirm("Are you sure you want to Publish this post?", function(e) {
-            if (e) {
+
+        alertify.confirm(
+            'Confirm Publish', 'Are you sure you want to Publish this post?', 
+            function()
+            {
                 $.ajax({
                     url: `classes/components/userComponents.php?dataPurpose=publishPost`,
                     method: "POST",
@@ -1074,18 +1043,17 @@ include 'includes/scripts.php';
                             if (result.code == 2) {
                                 alertify.message(result.message);
                             } else {
-                                alertify.set({
-                                    delay: 15000
-                                });
                                 alertify.error(result.message);
                             }
                         }
                     }
                 });
-            } else {
-                alertify.message("Cancelled");
+            },
+            function()
+            {
+                alertify.message('Cancelled')
             }
-        });
+        );
         refreshPostDiv();
     }
 

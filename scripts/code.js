@@ -82,7 +82,6 @@
                       }, 3000);
 
                   } else {
-                      alertify.set({ delay: 15000 });
                       alertify.error(result.message);
                   }
                   });
