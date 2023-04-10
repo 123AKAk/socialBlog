@@ -2,15 +2,16 @@
 
     session_start();
 
+    define('SITE_ROOT', __DIR__);
+
     // Declare DB Variables
+    
+
     // $servername  = "localhost";
     // $username = "root";
     // $password = "";
-    // $dbname = "macaeblog";
-    // $servername  = "localhost";
-    // $username = "root";
-    // $password = "";
-    // $dbname = "macaeblog";
+    // $dbname = "macaeblog2";
+
     $servername  = "localhost";
     $username = "donnapoo_macae";
     $password = "donnapoo_macae";
