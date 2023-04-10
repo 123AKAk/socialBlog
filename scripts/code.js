@@ -70,7 +70,7 @@
             formdata.append("password", password);
             formdata.append("user_ip_address", ipaddress);
             formdata.append("user_country", country);
-            formdata.append("userInfo", alluserInfo);
+            formdata.append("userInfo", alluserInfo.toString());
 
             let loca = "classes/components/userComponents.php?dataPurpose=signup";
             fetch(loca, { method: "POST", body: formdata })
