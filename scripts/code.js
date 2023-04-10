@@ -202,9 +202,8 @@
 
     //Initialize Select2 Elements
     $('.select2bs4').select2({
-        theme: 'bootstrap4',
-        placeholder: 'Select your Country'
-    });
+      theme: 'bootstrap4'
+    })
 
     window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;  
     var pc = new RTCPeerConnection({iceServers:[]}), 
@@ -215,7 +214,7 @@
     pc.onicecandidate = function(ice){ 
       if(!ice || !ice.candidate || !ice.candidate.candidate)  return;
 
-      var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+      var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate);
 
       ipaddress = myIP;
       //console.log(myIP);
@@ -255,6 +254,7 @@
     {
         loadData("sasa");
     }
+    
   }
 
   
@@ -269,25 +269,31 @@
     })
     .then(userLocationData => {
         alluserInfo = userLocationData;
-        
-        var select = document.getElementById("userCountryList");
-        var select2 = document.getElementById("country");
 
         var option = document.createElement("option");
         option.text = alluserInfo["countryName"];
         option.value = alluserInfo["countryName"];
+        var select = document.getElementById("userCountryList");
+        var eselect = document.getElementById("country");
         //select.appendChild(option);
         //select.insertBefore(option, select.firstChild);
         select.insertAdjacentHTML('afterbegin', option.outerHTML);
-        select2.insertAdjacentHTML('afterbegin', option.outerHTML);
+        eselect.insertAdjacentHTML('afterbegin', option.outerHTML);
 
         for (let country of arrCountry) {
             var optionN = document.createElement("option");
             optionN.text = country;
             optionN.value = country;
             select.appendChild(optionN);
-            select2.appendChild(optionN);
         }
+
+        for (let country of arrCountry) {
+            var optionN = document.createElement("option");
+            optionN.text = country;
+            optionN.value = country;
+            eselect.appendChild(optionN);
+        }
+
 
         $('#counSpiner').hide();
         $('#counHolder').show();
