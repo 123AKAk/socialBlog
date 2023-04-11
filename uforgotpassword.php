@@ -62,3 +62,42 @@
     include 'includes/footer.php';
     include 'includes/scripts.php';
 ?>
+
+<script>
+     // forgotPassword-form
+    // $("#forgotPassword-form").submit(function(event) {
+    //     var email = $("#email").val();
+    //     if (email == "") {
+    //         alertify.error("Enter Registered Email to continue");
+    //     } else {
+    //         let formdata = new FormData();
+    //         formdata.append("email", email);
+
+    //         let loca = "classes/components/userComponents.php?dataPurpose=forgotPassword";
+    //         fetch(loca, {
+    //                 method: "POST",
+    //                 body: formdata
+    //             })
+    //             .then((res) => res.json())
+    //             .then((data) => {
+    //                 // console.log(data);
+    //                 var result = (data);
+    //                 if (result.response == true) {
+    //                     alertify.success(result.message);
+    //                     alertify.message("Redirecting...");
+    //                     setTimeout(function() {
+    //                         window.location.replace("ureset.php?" + email);
+    //                     }, 3000);
+
+    //                 } else {
+    //                     alertify.error(result.message);
+    //                 }
+    //             })
+    //         .catch(error => 
+    //             // handle the error
+    //             console.log(error)
+    //         );
+    //     }
+    //     event.preventDefault();
+    // });
+</script>

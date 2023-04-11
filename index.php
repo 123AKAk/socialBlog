@@ -26,11 +26,6 @@
             .myText {
                 overflow: hidden;
             }
-
-            
-            
-            
-
         </style>
     ';
 
@@ -127,7 +122,7 @@
                                     <div class="col-xl-9 side-content">
                                         <div class="theiaStickySidebar">
                                             <div class="row">
-                                                <div class="col-lg-12" id="bodyPost">
+                                                <div class="col-lg-12" id="bodyPost1">
                                                 
                                                     <!--Post-1-->
                                                     <div class="post-list awrapper-cell">

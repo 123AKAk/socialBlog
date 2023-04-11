@@ -338,8 +338,8 @@ $categorieslist = $stmt->fetchAll();
 
 
 <?php
-include 'includes/footer.php';
-include 'includes/scripts.php';
+    include 'includes/footer.php';
+    include 'includes/scripts.php';
 ?>
 <!-- Summernote -->
 <script src="assets/summernote/summernote-lite.js"></script>
@@ -444,86 +444,12 @@ include 'includes/scripts.php';
         }
         fileNameUploaded2 = "";
     }
-
-    //file name to be uploaded
-    let fileNameUploaded3 = "";
-    //createAd-form
-    $('#createAd-form').submit(function(event) {
-
-        var ad_name = $('#ad_name').val();
-        var ad_description = $("#ad_description").val();
-        var ad_target_Country = $("#ad_target_Country").val();
-        var ad_duration = $("#ad_duration").val();
-        var ad_category = $("#ad_category").val();
-        var ad_target_gender = $("#ad_target_gender").val();
-        var agreed = $("#agreed").val();
-
-        //compare date
-        const parts = ad_duration.split(" - ");
-        const date1 = new Date(parts[0]);
-        const date2 = new Date(parts[1]);
-
-        if (ad_name == "" || ad_description == "" || ad_target_Country == "" || ad_duration == "" || ad_category == "" || ad_target_gender == "") {
-            alertify.error("Fill all Feilds");
-        } else if (date1 == date2) {
-            alertify.error("Duration cannot be the same Date");
-        } else {
-            if ($("#agreed").is(":checked")) {
-                //uploads file to server
-                alertify.message("Ad thumbnail upload started");
-                myDropzone3.processQueue();
-            } else {
-                alertify.error("Accpet Terms of Ad Service to continue");
-            }
-        }
-
-        fileNameUploaded3 = "";
-        event.preventDefault();
-    });
-
-    // forgotPassword-form
-    $("#forgotPassword-form").submit(function(event) {
-        var email = $("#email").val();
-        if (email == "") {
-            alertify.error("Enter Registered Email to continue");
-        } else {
-            let formdata = new FormData();
-            formdata.append("email", email);
-
-            let loca = "classes/components/userComponents.php?dataPurpose=forgotPassword";
-            fetch(loca, {
-                    method: "POST",
-                    body: formdata
-                })
-                .then((res) => res.json())
-                .then((data) => {
-                    // console.log(data);
-                    var result = (data);
-                    if (result.response == true) {
-                        alertify.success(result.message);
-                        alertify.message("Redirecting...");
-                        setTimeout(function() {
-                            window.location.replace("ureset.php?" + email);
-                        }, 3000);
-
-                    } else {
-                        alertify.error(result.message);
-                    }
-                })
-            .catch(error => 
-                // handle the error
-                console.log(error)
-            );
-        }
-        event.preventDefault();
-    });
-
+ 
     //file name to be uploaded
     let afileNameUploaded1 = "";
     //edit form submit
     function saveEdits()
     {
-
         var post_title = document.getElementById("apost_title").value;
         var post_category = document.getElementById("apost_category").value;
         var post_contents = $("#apost_contents").summernote("code");
@@ -689,54 +615,6 @@ include 'includes/scripts.php';
                 if (password != "") {
                     formData.append("password", password);
                 }
-            });
-        },
-        success: function(file, response) {
-            result = JSON.parse(response);
-            if (result.response == true) {
-                // console.log(result);
-                alertify.success(result.message);
-            } else {
-                alertify.error(result.message);
-            }
-        }
-    });
-
-    $("#dropzoneForm3").dropzone({
-        autoProcessQueue: false,
-        acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
-        dictDefaultMessage: 'Drop Picture files here!',
-        paramName: "file",
-        maxFilesize: 2, // MB
-        addRemoveLinks: true,
-        init: function() {
-            myDropzone3 = this;
-            this.on("complete", function() {
-                if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
-                    var _this = this;
-                    _this.removeAllFiles();
-                }
-                list_image();
-            });
-            this.on('addedfile', function(file) {
-                if (this.files.length > 3) {
-                    this.removeFile(this.files[0]);
-                    alertify.error("You cannot upload more than three files");
-                }
-                else
-                {
-                    fileNameUploaded3 = file.name;
-                }
-            });
-            this.on("sending", function(data, xhr, formData) {
-                //send all the form data along with the files:
-                formData.append("ad_name", document.getElementById("ad_name").value);
-                formData.append("ad_description", document.getElementById("ad_description").value);
-                formData.append("ad_url", document.getElementById("ad_url").value);
-                formData.append("ad_target_Country", document.getElementById("ad_target_Country").value);
-                formData.append("ad_duration", document.getElementById("ad_duration").value);
-                formData.append("ad_category", document.getElementById("ad_category").value);
-                formData.append("ad_target_gender", document.getElementById("ad_target_gender").value);
             });
         },
         success: function(file, response) {
@@ -1197,16 +1075,6 @@ include 'includes/scripts.php';
 
     function loadFunctions() {
         autocomplete(document.getElementById("post_category"), postCategories);
-
-        $('#exampleModalToggle').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-        $('#exampleModalToggle2').modal({
-            backdrop: 'static',
-            keyboard: false
-        })
-
         // Summernote
         $('.post_contents').summernote({
             airMode: false, // removes the tool bar, but when text is highlited it shows

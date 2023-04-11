@@ -351,41 +351,19 @@
                 method: "POST",
                 body: formdata1,
             })
-            .then(res => res.text())
+            .then(res => res.json())
             .then(data => {
-                // console.log(data);
+                //console.log(data);
                 if(data != 0)
                 {
-                    $("#slider").html(data);
+                    $("#slider").html(data.slider);
+                    $("#sliderControls").html(data.sliderControls);
                 }
         })
         .catch(error => 
             // handle the error
             console.log(error)
         );
-        
-        let formdata2 = new FormData();
-        formdata2.append("dataType", "sliderControls")
-        formdata2.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
-        {
-                method: "POST",
-                body: formdata2,
-            })
-            .then(res => res.text())
-            .then(data => {
-                // console.log(data);
-                if(data != 0)
-                {
-                    $("#sliderControls").html(data);
-                }
-        })
-        .catch(error => 
-            // handle the error
-            console.log(error)
-        );
-
-        return;
 
         let formdata3 = new FormData();
         formdata3.append("dataType", "bodyPost1")
@@ -397,16 +375,28 @@
             })
             .then(res => res.text())
             .then(data => {
-                console.log(data);
+                //console.log(data);
                 if(data != 0)
                 {
-                    $("#bodyPost").html(data);
+                    $("#bodyPost1").html(data);
+
+                    // adding styling
+                    // $(".image-box").css({
+                    //     "position": "relative",
+                    //     "margin": "auto",
+                    //     "overflow": "hidden",
+                    //     "justify-content": "center",
+                    //     "align-items": "center",
+                    //     "overflow": "hidden"
+                    // });
                 }
         })
         .catch(error => 
             // handle the error
             console.log(error)
         );
+
+        return;
 
         let formdata4 = new FormData();
         formdata4.append("dataType", "popularPost")

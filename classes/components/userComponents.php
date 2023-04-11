@@ -818,91 +818,126 @@
                                     </div>
                                 ';
 
-
                                 $sliderControls .= '
-                                        <div class="swiper-slide" style="width:100%;">
-                                            <div class="post-item">
-                                                <img src="'.$postImage.'" alt="">
-                                                <div class="details">
-                                                    <p class="entry-title"> 
-                                                    <span>'.
-                                                        $post['post_title']
-                                                    .'</span>
-                                                    </p>
-                                                    <ul class="entry-meta list-inline">
-                                                        <li class="post-date"> <i class="fas fa-clock"></i>'.
-                                                            date_format(date_create($post['post_creation_time']), "F d, Y")
-                                                        .'</li>
-                                                    </ul>
-                                                </div>
+                                    <div class="swiper-slide" style="width:100%;">
+                                        <div class="post-item">
+                                            <img src="'.$postImage.'" alt="">
+                                            <div class="details">
+                                                <p class="entry-title"> 
+                                                <span>'.
+                                                    $post['post_title']
+                                                .'</span>
+                                                </p>
+                                                <ul class="entry-meta list-inline">
+                                                    <li class="post-date"> <i class="fas fa-clock"></i>'.
+                                                        date_format(date_create($post['post_creation_time']), "F d, Y")
+                                                    .'</li>
+                                                </ul>
                                             </div>
                                         </div>
+                                    </div>
                                 ';
 
                                 endforeach;
                             }
 
-                            if(isset($slider) )
-                                echo $slider.'<script src="assets/js/swiper.min.js"></script>
-                                <script src="assets/js/main.js"></script>';
-                            else
-                                echo 0;
-                        }
-                        else if($dataType == "sliderControls")
-                        {
-                            // Get lastest post show on slider part of page
-                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT 4");
-                            $stmt->execute();
-                            $lastestPostFirst = $stmt->fetchAll();
-
-                            $sliderControls = "";
-
-                            if(isset($lastestPostFirst))
+                            if(isset($slider))
                             {
-                                foreach ($lastestPostFirst as $post) : 
+                                $postJson = new stdClass();
+                                $postJson->slider = $slider;
+                                $postJson->sliderControls = $sliderControls.'<script src="assets/js/swiper.min.js"></script><script src="assets/js/main.js"></script>';
                                     
-                                    $postId = $sharedComponents->protect($post['post_id']); 
-                                    $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
-    
-                                    $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
-
-                                    $sliderControls .= '
-                                            <div class="swiper-slide" style="width:100%;">
-                                                <div class="post-item">
-                                                    <img src="'.$postImage.'" alt="">
-                                                    <div class="details">
-                                                        <p class="entry-title"> 
-                                                        <span>'.
-                                                            $post['post_title']
-                                                        .'</span>
-                                                        </p>
-                                                        <ul class="entry-meta list-inline">
-                                                            <li class="post-date"> <i class="fas fa-clock"></i>'.
-                                                                date_format(date_create($post['post_creation_time']), "F d, Y")
-                                                            .'</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                    ';
-
-                                endforeach;
+                                echo json_encode($postJson);
                             }
-
-                            if(isset($sliderControls))
-                                echo $sliderControls.'<script src="assets/js/swiper.min.js"></script>
-                                <script src="assets/js/main.js"></script>';
                             else
+                            {
                                 echo 0;
+                            }
                         }
-                        else if($dataType == "bodyPost")
+                        else if($dataType == "bodyPost1")
                         {
                             // Get lastest post show on second section of page
-                            // $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 4,10");
-                            // $stmt->execute();
-                            // $lastestPostSecond = $stmt->fetchAll();
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT 4,10");
+                            $stmt->execute();
+                            $lastestPostSecond = $stmt->fetchAll();
 
+                            $blogPost1 = "";
 
+                            if(isset($lastestPostSecond))
+                            {
+                                foreach ($lastestPostSecond as $post) : 
+                                
+                                $postId = $sharedComponents->protect($post['post_id']); 
+                                $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+                                $authId = $adminUserDetails["id"];
+                                $authEmail = $adminUserDetails["email"];
+                                $authName = $adminUserDetails["username"];
+                                $authGender = $adminUserDetails["gender"];
+                                $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $picturesfolder_name . $adminUserDetails["profile_pic"];
+                                $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
+
+                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
+
+                                // Count the number of words in the text
+                                $num_words = str_word_count($sharedComponents->convertHtmltoText($post['post_contents'], 25, '', ''));
+
+                                // Assume an average reading speed of 200 words per minute
+                                $avg_speed = 200;
+                                // Calculate the estimated reading time in minutes
+                                $reading_time = ceil($num_words / $avg_speed);
+
+                                $blogPost1 .= '
+                                    <div class="post-list">
+                                        <div class="post-list-image">
+                                            <div class="image-box">
+                                                <a href="post.php?dt='. $post['post_title'] .'&id='. $postId .'">
+                                                    <img src="'. $postImage .'" class="img-fluid " alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="post-list-content">
+                                            <div class="entry-cat">
+                                                <a class="categorie" href="category.php?dt='. $post['category_name'] .'&catid='. $post['category_id'] .'">'.
+                                                    $post['category_name']
+                                                .'</a>
+                                            </div>
+                                            <h4 class="entry-title">
+                                                <a href="post.php?dt='. $post['post_title'] .'&id='. $postId .'">'.
+                                                    $post['post_title']
+                                                .'</a>
+                                            </h4>
+                                            <div class="post-exerpt">
+                                                <p class="myText">'. $sharedComponents->convertHtmltoText($post['post_contents'], 25, '', '') .'</p>
+                                            </div>
+                                            <ul class="entry-meta list-inline">
+                                                <li class="post-author-img">
+                                                    <a href="'. $authLink .'">
+                                                        <img src="'.$authProfilePic .'" alt="">
+                                                    </a>
+                                                </li>
+                                                <li class="post-author">
+                                                    <a href="'. $authLink .'">'.
+                                                        $authName
+                                                    .'</a> 
+                                                </li>
+                                                <li class="post-date"> <span class="dot"></span>'.
+                                                    date_format(date_create($post["post_creation_time"]), "F d, Y")
+                                                .'</li>
+                                                <li class="post-timeread"> <span class="dot"></span>'.
+                                                    $reading_time .' min Read
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ';
+    
+                                endforeach;
+                            }
+                            if(isset($blogPost1))
+                                echo $blogPost1;
+                            else
+                                echo 0;
                         }
                         else if($dataType == "popularPost")
                         {
