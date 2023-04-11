@@ -1007,6 +1007,24 @@ input:checked + .slider:before {
   opacity: 0.8;
 }
 
+.header-action-items .country-icon i {
+  background-color: #ebe846;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  color: #ffffff;
+  font-size: 10px;
+  margin-left: 5px;
+}
+
+.header-action-items .country-icon i:hover {
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+
 .header-action-items .navbar-toggler {
   width: 30px;
   height: 40px;

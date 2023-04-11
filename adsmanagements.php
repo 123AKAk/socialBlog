@@ -13,13 +13,116 @@
                                 <h2 class="text-center">Ads Management</h2>
                                
                             </div>
+                            <div class="container">
+                              <a class="nav-link" data-bs-toggle="modal" href="#exampleModalToggle" role="button" style="color:gray">Ads Managements</a>
+                            </div>
 
                         </div>
                     </div>
                 </div>
-            </section><!--/-->
+            </section><!--/-->      
+          </main>
 
-        </main>
+      <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalToggleLabel">Ads Management</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class=" row text-center justify-content-center">
+                      <div class="col-md-6">
+                          <a href="adsmanagements.php" class="btn btn-outline-default">
+                              View Exsiting Ad(s) stats
+                          </a>
+                      </div>
+                      <div class="col-md-6">
+                          <button type="button" class="btn btn-outline-default" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal" data-backdrop="static" data-keyboard="false">
+                              Create new Ad
+                          </button>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- ad modal -->
+      <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+              <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalToggleLabel2">Create new Ad</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <div>
+                          <form class="sign-form widget-form contact_form " id="createAd-form">
+                              <div class="form-group">
+                                  <label for="ad_name" class="pl-2">Ad Name</label>
+                                  <input type="text" class="form-control" placeholder="" name="ad_name" value="" id="ad_name">
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_description" class="pl-2">Ad Description</label>
+                                  <textarea class="form-control" placeholder="" name="ad_description" id="ad_description" value=""></textarea>
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_url" class="pl-2">Ad URL</label>
+                                  <input type="text" class="form-control" placeholder="" name="ad_url" value="" id="ad_url">
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_duration" class="pl-2">Duration of Ad</label>
+                                  <input type="text" class="form-control" name="ad_duration" id="ad_duration">
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_category" class="pl-2">Ad Category</label>
+                                  <select name="ad_category" id="ad_category" class="form-control">
+                                      <option value=""></option>
+                                      <option value="">Bussiness</option>
+                                      <option value="">Health</option>
+                                      <option value="">Food</option>
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_target_Country" class="pl-2">Ad Target Country</label>
+                                  <select name="ad_target_Country" id="ad_target_Country" class="form-control">
+                                      <option value=""></option>
+                                      <option value="Nigeria">Nigeria</option>
+                                      <option value="UK">United Kingdom</option>
+                                      <option value="Ghana">Ghana</option>
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_target_gender" class="pl-2">Ad Target Gender</label>
+                                  <select name="ad_target_gender" id="ad_target_gender" class="form-control">
+                                      <option value=""></option>
+                                      <option value="Male">Males</option>
+                                      <option value="Female">Females</option>
+                                      <option value="All">All</option>
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label for="ad_thumbnail" class="pl-2">Upload Ad Thumbnail ↓</label>
+                                  <div action="classes/components/userComponents.php?dataPurpose=createAd" class="dropzone" id="dropzoneForm3">
+                                  </div>
+                              </div>
+                              <div class="sign-controls form-group">
+                                  <div class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" id="agreed">
+                                      <label class="custom-control-label" for="agreed">Agree to the<a href="adstermandconditions.php" class="btn-link">terms of our Ad Service</a> </label>
+                                  </div>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-outline-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                      <button type="submit" class="btn-custom">Next</button>
+                  </div>
+              </div>
+          </div>
+      </div>
 
 <?php
     include 'includes/footer.php';

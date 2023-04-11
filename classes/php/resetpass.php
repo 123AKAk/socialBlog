@@ -1,12 +1,13 @@
 <?php
-include("connect.php");
+require "components/db.php";
+
 $email=$_POST["email"];
 $password=$_POST["password"];
-$newpass = password_hash($password, PASSWORD_DEFAULT);
+$newpass = password_hash(trim($password), PASSWORD_DEFAULT);
 
 $sql = "UPDATE `user` SET  `password`= ?  WHERE `email` = ?";
 $stmt = $conn->prepare($sql);
-$stmt->execute([$password,$email]);
+$stmt->execute([$newpass,$email]);
 
 $sql = "UPDATE `code` SET  `expire`= ?  WHERE `email` = ?";
 $stmt = $conn->prepare($sql);

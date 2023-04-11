@@ -4,53 +4,58 @@ document.getElementById("click").addEventListener("click", (e) => {
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
 
-  if (password == confirmPassword) {
-    fetch(`./assets/php/checkCode.php?code=${code}`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.length > 0) {
-          let diff = GetDateDiff(data[0].date, data[0].time);
-          console.log(Number(diff.split(" ")[0]));
-          console.log(diff);
+  if(code != "")
+  {
+    if (password == confirmPassword) {
+      fetch(`classes/php/checkCode.php?code=${code}`, {
+        method: "GET",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.length > 0) {
+            let diff = GetDateDiff(data[0].date, data[0].time);
+            console.log(Number(diff.split(" ")[0]));
+            console.log(diff);
+            if (
+              (diff.toLowerCase().includes("min") &&
+                Number(diff.split(" ")[0]) <= 10) ||
+                diff.toLowerCase().includes("sec")
+            ){
+              if (data[0].expire == 0) {
+                alertify.error("This code has already been Used");
+              } else {
+                const formdata = new FormData();
+                formdata.append("password", password);
+                formdata.append("email", data[0].email);
 
-          if (
-            (diff.toLowerCase().includes("min") &&
-              Number(diff.split(" ")[0]) <= 10) ||
-            diff.toLowerCase().includes("sec")
-          ) {
-            if (data[0].expire == 0) {
-              alert("this code has Has Already Been Used");
+                fetch("classes/php/resetpass.php", {
+                  method: "POST",
+                  body: formdata,
+                })
+                  .then((res) => res.text())
+                  .then((data) => {
+                    console.log(data);
+                    if (data == 1) {
+                      alertify.success("Password Reset Succesful");
+                    } else {
+                      alertify.error("Somthing Went Wrong");
+                    }
+                  });
+              }
             } else {
-              const formdata = new FormData();
-              formdata.append("password", password);
-              formdata.append("email", data[0].email);
-
-              fetch("./assets/php/resetpass.php", {
-                method: "POST",
-                body: formdata,
-              })
-                .then((res) => res.text())
-                .then((data) => {
-                  console.log(data);
-                  if (data == 1) {
-                    alert("Password Reset Succesful");
-                  } else {
-                    alert("Somthing Went Wrong");
-                  }
-                });
+              alertify.error("This code has expired, Input code within 4 minutes");
             }
           } else {
-            alert("this code has expired, input code within 4 minutes");
+            alertify.error("Invalid Code");
           }
-        } else {
-          alert("code is wrong");
-        }
-      });
-  } else {
-    alert("confirm password should macth the password");
+        });
+    } else {
+      alertify.error("confirm password should macth the password");
+    }
+  }
+  else{
+    alertify.error("Input a valid Code");
   }
 });
 

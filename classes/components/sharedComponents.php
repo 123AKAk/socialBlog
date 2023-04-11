@@ -308,7 +308,7 @@ use PHPMailer\PHPMailer\Exception;
         function checkFile($filename)
         {
             // Define file path 
-            $dir = "classes/components/filesUpload/";
+            $dir = "filesUpload/";
             $pathtofile = $dir.$filename; 
 
             // Clear cache to remove result from previous run 

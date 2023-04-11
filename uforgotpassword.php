@@ -42,7 +42,7 @@
                                 <input type="text" class="form-control" placeholder="Email" id="email" value="">
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="btn-custom" id="click">Send Mail</button>
+                                <button type="button" class="btn-custom" id="click">Send Mail</button>
                             </div>
                             <p class="form-group text-center">Don't have an account? <a href="signup.php" class="btn-link" >Create One</a> </p>
                         </form>
@@ -56,7 +56,7 @@
         <?php include 'includes/newsletter.php'; ?>
     </main>
 
-    <script src="./assets/js/forgotpass.js"></script>
+    <script src="scripts/forgotpass.js"></script>
 
 <?php
     include 'includes/footer.php';

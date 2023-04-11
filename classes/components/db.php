@@ -6,16 +6,16 @@
 
     // Declare DB Variables
     
+    $dbname = "macaeblog";
+    $servername  = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "macaeblog2";
 
     // $servername  = "localhost";
-    // $username = "root";
-    // $password = "";
-    // $dbname = "macaeblog2";
-
-    $servername  = "localhost";
-    $username = "donnapoo_macae";
-    $password = "donnapoo_macae";
-    $dbname = "donnapoo_macae";
+    // $username = "donnapoo_macae";
+    // $password = "donnapoo_macae";
+    // $dbname = "donnapoo_macae";
 
     /* Attempt to connect to MySQL database */
     try

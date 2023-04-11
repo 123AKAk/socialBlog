@@ -1,8 +1,8 @@
 <?php
-include("connect.php");
+require "components/db.php";
 $code=$_GET["code"];
 
-$courses = [];
+$codes = [];
 
 
 $sql = "SELECT * FROM `code` WHERE `code` = ? ORDER BY id DESC LIMIT 1";
@@ -17,6 +17,6 @@ while($row = $stmt->fetch())
     ${'user' . $row['id']}->date = $row["date"];
     ${'user' . $row['id']}->email = $row["email"];
     ${'user' . $row['id']}->expire = $row["expire"];
-    array_push($courses,${'user' . $row['id']});
+    array_push($codes,${'user' . $row['id']});
 }
-echo json_encode($courses);
+echo json_encode($codes);

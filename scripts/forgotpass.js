@@ -12,7 +12,7 @@ document.getElementById("click").addEventListener("click", (e) => {
   formdata.append("time", time);
   formdata.append("date", date);
 
-  fetch("./assets/php/code.php", {
+  fetch("classes/php/code.php", {
     method: "POST",
     body: formdata,
   })
@@ -20,16 +20,18 @@ document.getElementById("click").addEventListener("click", (e) => {
     .then((data) => {
       console.log(data);
       if (data == 1) {
-        alert("Suceesful Check your email for the code");
-        location.href = "resetPassword.php";
+        alertify.success("Suceesful check your Email for the code");
+        alertify.message("Redirecting...");
+        setTimeout(function () {
+            window.location.replace("ureset.php");
+        }, 2000);
       } 
       else if(data == 2)
       {
-        alert("Email Not Registered");
-
+        alertify.error("Email Not Registered");
       }
       else {
-        alert("Somthing Went Wrong");
+        alertify.error("Somthing Went Wrong");
       }
     });
 });

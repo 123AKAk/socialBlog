@@ -194,6 +194,7 @@
   var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client"
   var ipaddress = "";
   let selectedCountry = "";
+  let alluserInfo = "";
   function getLocation()
   {
     
@@ -258,7 +259,8 @@
     }
     else
     {
-        loadData("sasa");
+        countryCookie = getCookie("tok__enCountry");
+        loadData(countryCookie);
     }
     
   }
@@ -317,24 +319,30 @@
 
   function setUserCountry()
   {
-    if(selectedCountry == "" && alluserInfo["countryName"] == null)
+    if(selectedCountry == "" && alluserInfo == "")
     {
         alertify.error("Select a country");
     }
     else
     {
         if(selectedCountry != "")
+        {
+            document.cookie = `tok__enCountry=${selectedCountry}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/cookieFolder`;
             loadData(selectedCountry);
+        }
         else
+        {
+            document.cookie = `tok__enCountry=${alluserInfo["countryName"]}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/cookieFolder`;
             loadData(alluserInfo["countryName"]);
+        }
         $('#startUpToogle').modal('toggle');
     }
   }
 
   function loadData(userCountry)
   {
-    //alert(userCountry+" | "+ipaddress+" | "+alluserInfo);
-        return;
+    console.log(userCountry);
+
         let formdata1 = new FormData();
         formdata1.append("dataType", "slider")
         formdata1.append("userCountry", userCountry)
@@ -343,16 +351,19 @@
                 method: "POST",
                 body: formdata1,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
-                console.log(data);
-                $("#slider").html(data);
+                // console.log(data);
+                if(data != 0)
+                {
+                    $("#slider").html(data);
+                }
         })
         .catch(error => 
             // handle the error
             console.log(error)
         );
-
+        
         let formdata2 = new FormData();
         formdata2.append("dataType", "sliderControls")
         formdata2.append("userCountry", userCountry)
@@ -361,16 +372,20 @@
                 method: "POST",
                 body: formdata2,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
-                console.log(data);
-                $("#sliderControls").html(data);
+                // console.log(data);
+                if(data != 0)
+                {
+                    $("#sliderControls").html(data);
+                }
         })
         .catch(error => 
             // handle the error
             console.log(error)
         );
 
+        return;
 
         let formdata3 = new FormData();
         formdata3.append("dataType", "bodyPost1")
@@ -380,10 +395,13 @@
                 method: "POST",
                 body: formdata3,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
                 console.log(data);
-                $("#bodyPost").html(data);
+                if(data != 0)
+                {
+                    $("#bodyPost").html(data);
+                }
         })
         .catch(error => 
             // handle the error
@@ -398,10 +416,13 @@
                 method: "POST",
                 body: formdata4,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
                 console.log(data);
-                $("#popularPost").html(data);
+                if(data != 0)
+                {
+                    $("#popularPost").html(data);
+                }
         })
         .catch(error => 
             // handle the error
@@ -416,10 +437,13 @@
                 method: "POST",
                 body: formdata5,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
                 console.log(data);
-                $("#bodyPost2").html(data);
+                if(data != 0)
+                {
+                    $("#bodyPost2").html(data);
+                }
         })
         .catch(error => 
             // handle the error
@@ -434,10 +458,13 @@
                 method: "POST",
                 body: formdata6,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
                 console.log(data);
-                // $("#other").html(data);
+                if(data != 0)
+                {
+                    // $("#other").html(data);
+                }
         })
         .catch(error => 
             // handle the error
@@ -452,10 +479,13 @@
                 method: "POST",
                 body: formdata7,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
                 console.log(data);
-                // $("#ads1").html(data);
+                if(data != 0)
+                {
+                    // $("#ads1").html(data);
+                }
         })
         .catch(error => 
             // handle the error

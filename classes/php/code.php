@@ -1,5 +1,6 @@
 <?php
-include("connect.php");
+require "components/db.php";
+
 $code=$_POST["code"];
 // $email="favour@gmail.com";
 $email=$_POST["email"];
@@ -27,7 +28,6 @@ if ($error_handling == 1) {
     $stmt->execute([$email,$code,$time,$date]);
     echo 1;
 }
-
 else{
     echo 2;
 }

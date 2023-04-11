@@ -39,16 +39,6 @@
 
     // $folder_name = "classes/components/filesUpload/";
 
-    // Get lastest post show on slider part of page
-    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 4");
-    $stmt->execute();
-    $lastestPostFirst = $stmt->fetchAll();
-
-    // Get lastest post show on second section of page
-    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 4,10");
-    $stmt->execute();
-    $lastestPostSecond = $stmt->fetchAll();
-
     $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id INNER JOIN postdetails ON post_id=postid WHERE post_status=1 AND delete_status=0 ORDER BY `views` DESC LIMIT 4");
     $stmt->execute();
     $mostViewdPost = $stmt->fetchAll();
@@ -58,24 +48,16 @@
             <!--slider-style-2-->
             <div class="slider-style2">
                 <div  class="swiper swiper-top">
-                   <div class="swiper-wrapper" id="slider">
-                        
-                        <!--slider1-->
-                        <div class="swiper-slide slider-item ">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        
+                   <div class="swiper-wrapper" id="slider">     
+                    <!-- slider post shows here -->
                    </div>
                 </div>
       
                 <div thumbsSlider="" class="swiper swiper-bottom container-fluid" >
                     <div class="swiper-wrapper " id="sliderControls">
                        
-                        <!--slider1-->
+                        <!-- slidercontrols post shows here -->
+
                         <div class="swiper-slide cwrapper-cell">
                             <div class="post-item">
                                 <div class="cwrapper-image animated-background ">

@@ -75,7 +75,7 @@
                                     $userid =  $sharedComponents->protect($resultmsg2["data"]);
 
                                     // Append the host(domain name, ip) to the URL.
-                                    $url.= $_SERVER['HTTP_HOST']."/uctivate.php?code=".$code."&userid=".$userid."";
+                                    $url.= $_SERVER['HTTP_HOST']."/uactivate.php?code=".$code."&userid=".$userid."";
 
                                     $emailSubject = "Macae Blog Signup Successful";
                                     $emailMessage = "
@@ -739,17 +739,146 @@
                     if(isset($_POST["dataType"]))
                     {
                         $dataType = $_POST["dataType"];
+                        $userCountry = $_POST["userCountry"];
+
+                        $picturesfolder_name = "classes/components/filesUpload/";
+
                         if($dataType == "slider")
                         {
-    
+                            // Get lastest post show on slider part of page
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT 4");
+                            $stmt->execute();
+                            $lastestPostFirst = $stmt->fetchAll();
+
+                            $slider = "";
+                            
+                            if(isset($lastestPostFirst))
+                            {
+                                foreach ($lastestPostFirst as $post) : 
+                                
+                                $postId = $sharedComponents->protect($post['post_id']); 
+                                $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+                                $authId = $adminUserDetails["id"];
+                                $authEmail = $adminUserDetails["email"];
+                                $authName = $adminUserDetails["username"];
+                                $authGender = $adminUserDetails["gender"];
+                                $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $picturesfolder_name . $adminUserDetails["profile_pic"];
+                                $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
+
+                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? 'noimage.jpg' : $picturesfolder_name . $post['post_thumbnail'];
+
+                                $apostImage = "'$postImage'";
+
+                                $slider .= '
+                                    <div class="swiper-slide slider-item" style="background-image: url('. $apostImage .');">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-xl-7 col-lg-9 col-md-12">
+                                                    <div class="slider-item-inner">
+                                                        <div class="slider-item-content">
+                                                        <div class="entry-cat ">
+                                                            <a class="categorie" href="category.php?dt='.$post["category_name"] .'&catid='. $post["category_id"] .'">'.
+                                                                $post["category_name"]
+                                                            .'</a>
+                                                        </div>
+                                                        <h1 class="entry-title">
+                                                            <a href="post.php?dt='. $post["post_title"] .'&id='. $postId .'">'.
+                                                                $post["post_title"]
+                                                            .'</a>
+                                                        </h1>
+                                                        <div class="post-exerpt">
+                                                            <p>'.$sharedComponents->convertHtmltoText($post["post_contents"], 25, "", "") .'</p>
+                                                        </div>
+                                                        <ul class="entry-meta list-inline">
+                                                            <li class="post-author-img">
+                                                                <a href="'. $authLink .'">
+                                                                    <img src="'. $authProfilePic .'" alt="">
+                                                                </a>
+                                                            </li>
+                                                            <li class="post-author">
+                                                                <a href="'. $authLink .'">'.
+                                                                    $authName 
+                                                                .'</a>
+                                                            </li>
+                                                            <li class="post-date"> <span class="dot"></span>'.
+                                                                date_format(date_create($post['post_creation_time']), "F d, Y")
+                                                            .'</li>
+                                                            <li class="post-comment">
+                                                                <span class="dot"></span>'.
+                                                                $sharedComponents->checkNumofComments($postId, $pdo)." comments"
+                                                            .'</li>
+                                                        </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ';
+
+                                endforeach;
+                            }
+
+                            if(isset($slider))
+                                echo $slider;
+                            else
+                                echo 0;
                         }
                         else if($dataType == "sliderControls")
                         {
+                            // Get lastest post show on slider part of page
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT 4");
+                            $stmt->execute();
+                            $lastestPostFirst = $stmt->fetchAll();
+
+                            $sliderControls = "";
+
+                            if(isset($lastestPostFirst))
+                            {
+                                foreach ($lastestPostFirst as $post) : 
+                                    
+                                    $postId = $sharedComponents->protect($post['post_id']); 
+                                    $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
     
+                                    $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
+
+                                    $sliderControls .= '
+                                            <div class="swiper-slide">
+                                                <div class="post-item">
+                                                    <img src="'.$postImage.'" alt="">
+                                                    <div class="details">
+                                                        <p class="entry-title"> 
+                                                        <span>'.
+                                                            $post['post_title']
+                                                        .'</span>
+                                                        </p>
+                                                        <ul class="entry-meta list-inline">
+                                                            <li class="post-date"> <i class="fas fa-clock"></i>'.
+                                                                date_format(date_create($post['post_creation_time']), "F d, Y")
+                                                            .'</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    ';
+
+                                endforeach;
+                            }
+
+                            if(isset($sliderControls))
+                                echo $sliderControls;
+                            else
+                                echo 0;
                         }
                         else if($dataType == "bodyPost")
                         {
-    
+                            // Get lastest post show on second section of page
+                            // $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 ORDER BY `post_id` DESC LIMIT 4,10");
+                            // $stmt->execute();
+                            // $lastestPostSecond = $stmt->fetchAll();
+
+
                         }
                         else if($dataType == "popularPost")
                         {

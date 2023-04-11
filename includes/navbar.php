@@ -29,20 +29,35 @@
                                 <ul class="navbar-nav ">
                                     <!--Homes -->
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="index.php"> Home </a>
+                                        <!-- add "active" to show page is active -->
+                                        <a class="nav-link" href="index.php"> Home </a>
                                     </li>
                     
                                     <li class="nav-item">
-                                        <a class="nav-link" href="author.php"> Authors </a>
+                                        <!-- add "active" to show page is active -->
+                                        <a class="nav-link" href="authorlist.php"> Authors </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <!-- add "active" to show page is active -->
+                                        <a class="nav-link" href="categorylist.php"> Categories </a>
                                     </li>
                                     
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="signup.php">  </a>
+                                    </li>
+
                                     <!--Pages-->
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown4" role="button" data-bs-toggle="dropdown" aria-expanded="false"> pages </a>
+                                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown4" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Pages </a>
                                         <ul class="dropdown-menu ">
                                             <li><a class="dropdown-item" href="about.php">About us </a> </li>
                                             <li><a class="dropdown-item" href="contact.php">Contact us</a></li>
                                        </ul>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="signup.php"> Sign up </a>
                                     </li>
 
                                     <li class="nav-item">
@@ -51,9 +66,6 @@
                                         </a>
                                     </li>
 
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="signup.php"> Sign up </a>
-                                    </li>
                                    
 
                                 </ul>
@@ -83,8 +95,14 @@
                                 </label>
                             </div> -->
 
+                            <div class="country-icon">
+                                <a href="javascript:void(0);" title="Select Country"><i class="fas fa-globe"></i></a>
+                            </div>
+                            
                             <!--search-icon-->
-                            <div class="search-icon"> <a href="#search">  <i class="fas fa-search"></i></a></div>
+                            <div class="search-icon">
+                                <a href="#search" title="Make a Search"> <i class="fas fa-search"></i></a>
+                            </div>
 
                             <!--navbar-toggler-->
                             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
