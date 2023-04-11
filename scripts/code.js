@@ -317,6 +317,7 @@
     selectedCountry = value;
   }
 
+  setCountry_check = 0;
   function setUserCountry()
   {
     if(selectedCountry == "" && alluserInfo == "")
@@ -337,6 +338,11 @@
         }
         $('#startUpToogle').modal('toggle');
     }
+    if(setCountry_check == 1)
+    {
+        location.reload();
+    }
+    setCountry_check = 1;
   }
 
   function loadData(userCountry)
