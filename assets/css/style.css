@@ -2542,13 +2542,9 @@ input:checked + .slider:before {
   border: 2px solid #ffffff;
 }
 
-@media screen and (max-width: 576px)
-{
   .slider-style2 .swiper-bottom .swiper-slide {
-      width: 70px !important;
-      margin-left: 5%;
+      
   }
-}
 /*slider-style3*/
 .slider-style3 {
   width: 100%;

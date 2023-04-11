@@ -751,6 +751,7 @@
                             $lastestPostFirst = $stmt->fetchAll();
 
                             $slider = "";
+                            $sliderControls = "";
                             
                             if(isset($lastestPostFirst))
                             {
@@ -817,11 +818,33 @@
                                     </div>
                                 ';
 
+
+                                $sliderControls .= '
+                                        <div class="swiper-slide" style="width:100%;">
+                                            <div class="post-item">
+                                                <img src="'.$postImage.'" alt="">
+                                                <div class="details">
+                                                    <p class="entry-title"> 
+                                                    <span>'.
+                                                        $post['post_title']
+                                                    .'</span>
+                                                    </p>
+                                                    <ul class="entry-meta list-inline">
+                                                        <li class="post-date"> <i class="fas fa-clock"></i>'.
+                                                            date_format(date_create($post['post_creation_time']), "F d, Y")
+                                                        .'</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                ';
+
                                 endforeach;
                             }
 
-                            if(isset($slider))
-                                echo $slider;
+                            if(isset($slider) )
+                                echo $slider.'<script src="assets/js/swiper.min.js"></script>
+                                <script src="assets/js/main.js"></script>';
                             else
                                 echo 0;
                         }
@@ -844,7 +867,7 @@
                                     $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
 
                                     $sliderControls .= '
-                                            <div class="swiper-slide">
+                                            <div class="swiper-slide" style="width:100%;">
                                                 <div class="post-item">
                                                     <img src="'.$postImage.'" alt="">
                                                     <div class="details">
@@ -867,7 +890,8 @@
                             }
 
                             if(isset($sliderControls))
-                                echo $sliderControls;
+                                echo $sliderControls.'<script src="assets/js/swiper.min.js"></script>
+                                <script src="assets/js/main.js"></script>';
                             else
                                 echo 0;
                         }
