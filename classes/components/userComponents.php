@@ -746,7 +746,7 @@
                         if($dataType == "slider")
                         {
                             // Get lastest post show on slider part of page
-                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT 4");
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=2 AND delete_status=0 AND post_country='$userCountry' ORDER BY RAND()");
                             $stmt->execute();
                             $lastestPostFirst = $stmt->fetchAll();
 
@@ -819,7 +819,7 @@
                                 ';
 
                                 $sliderControls .= '
-                                    <div class="swiper-slide" style="width:100%;">
+                                    <div class="swiper-slide">
                                         <div class="post-item">
                                             <img src="'.$postImage.'" alt="">
                                             <div class="details">
@@ -856,8 +856,11 @@
                         }
                         else if($dataType == "bodyPost1")
                         {
+                            $limitdt1 = $_POST["limitdt1"];
+                            $limitdt2 = $_POST["limitdt2"];
+
                             // Get lastest post show on second section of page
-                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT 4,10");
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY `post_id` DESC LIMIT $limitdt1,$limitdt2");
                             $stmt->execute();
                             $lastestPostSecond = $stmt->fetchAll();
 
@@ -939,17 +942,246 @@
                             else
                                 echo 0;
                         }
-                        else if($dataType == "popularPost")
+                        else if($dataType == "sidebar")
                         {
-    
+                            $aabout = $apopularPost = $acategories = $apopularAuthors = "";
+                           
+                            // Get About Info
+                            $stmt = $conn->prepare("SELECT * FROM `admin` WHERE admin_id=1");
+                            $stmt->execute();
+                            $about = $stmt->fetch();
+
+                            if(isset($about))
+                            {   
+                                $aboutImage = $sharedComponents->checkFile($about['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $about['profile_pic'];
+
+                                $aabout .= '
+                                    <div class="widget-author">
+                                        <div class="author-img">
+                                            <a href="author.php?authDType=Admin&authd='.$about['admin_id'].'" class="image">
+                                                <img src="'. $aboutImage .'" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="author-content">
+                                            <h6 class="name"> Hi, I am '. $about['admin_name'] .'</h6>
+                                            <p class="bio">'.
+                                                $about['admin_desc']
+                                            .'</p>
+                                        </div>
+                                    </div>
+                                ';
+                            }
+
+                            //Get popular Post
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id INNER JOIN postdetails ON post_id=postid WHERE post_status=1 AND delete_status=0  AND post_country='$userCountry' ORDER BY `views` DESC LIMIT 5");
+                            $stmt->execute();
+                            $most_read_posts = $stmt->fetchAll();
+
+                            if(isset($most_read_posts))
+                            {
+                                foreach ($most_read_posts as $post) : 
+
+                                $views = !isset($post["views"]) ? 0 : $post["views"];
+                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
+
+                                $apopularPost .= '
+                                    <li class="post-item">
+                                        <div class="image">
+                                            <a href="post.php?dt='.$post["post_title"].'&id='.$sharedComponents->protect($post["post_id"]) .'"> <img src="'. $postImage .'" alt="..."></a>
+                                        </div>
+                                        <div class="count">'. $views .'</div>
+                                        <div class="content">
+                                            <p class="entry-title">
+                                                <a href="post.php?dt='. $post["post_title"] .'&id='. $sharedComponents->protect($post["post_id"]) .'">'.
+                                                    $post["post_title"]
+                                                .'</a>
+                                            </p>
+                                            <small class="post-date"><i class="fas fa-clock"></i>'.
+                                                date_format(date_create($post["post_creation_time"]), "F d, Y")
+                                            .'</small>
+                                        </div>
+                                    </li>
+                                ';
+                                endforeach;
+                            }
+
+                            // Get Categories
+                            $stmt = $conn->prepare("SELECT *,COUNT(*) as post_count FROM `posts` INNER JOIN category ON category_id=id_category GROUP BY category_id DESC");
+                            $stmt->execute();
+                            $categories = $stmt->fetchAll();
+
+                            if(isset($categories))
+                            {
+                                foreach ($categories as $category) : 
+                                
+                                $catLink = "category.php?nam=".$category["category_name"]."&catd=".$sharedComponents->protect($category["category_id"]);
+
+                                $acategories .= '
+                                    <li>
+                                        <a href="'.$catLink.'" class="categorie">'.
+                                            $category["category_name"]
+                                        .'</a>
+                                        <span class="ml-auto">'. $category["post_count"] .' Posts</span>
+                                    </li>
+                                ';
+                                endforeach;
+                            }
+
+                            $stmt = $conn->prepare("SELECT *, COUNT(*) as post_count FROM `posts` WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' GROUP BY id_user  ORDER BY COUNT(*) DESC LIMIT 5");
+                            $stmt->execute();
+                            $most_read_authors = $stmt->fetchAll();
+
+                            if(isset($most_read_authors))
+                            {
+                                foreach ($most_read_authors as $authors) : 
+
+                                $authorId = $authLink = $authorName = $authorImage = $authorDesc = "";
+
+                                if($authors['id_user'] != 0 && $authors['id_admin'] == 0)
+                                {
+                                    $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = :user_id");
+                                    $stmt->bindParam(":user_id", $authors['id_user'], PDO::PARAM_STR);
+                                    $stmt->execute();
+                                    $users_authors = $stmt->fetchAll();
+
+                                    foreach ($users_authors as $authors_u) : 
+
+                                    $authorId = $sharedComponents->protect($authors_u['user_id']);
+                                    $authLink = "author.php?authDType=User&authd=".$authorId;
+                                    $authorName = $authors_u['username'];
+                                    $authorDesc = $authors_u['user_desc'];
+                                    $authorImage = $sharedComponents->checkFile($authors_u['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $authors_u['profile_pic'];
+
+                                    endforeach; 
+                                }
+                                else if($authors['id_admin'] != 0 && $authors['id_user'] == 0)
+                                {
+                                    $stmt = $conn->prepare("SELECT * FROM admin WHERE admin_id = :admin_id");
+                                    $stmt->bindParam(":admin_id",  $authors['id_admin'], PDO::PARAM_STR);
+                                    $stmt->execute();
+                                    $admins_authors = $stmt->fetchAll();
+
+                                    foreach ($admins_authors as $authors_a) : 
+
+                                    $authorId = $sharedComponents->protect($authors['id_admin']);
+                                    $authLink = "author.php?authDType=Admin&authd=".$authorId;
+                                    $authorName = $authors_a['admin_name'];
+                                    $authorDesc = $authors_a['admin_desc'];
+                                    $authorImage = $sharedComponents->checkFile($authors_a['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $authors_a['profile_pic'];
+
+                                    endforeach; 
+                                }
+
+                                $apopularAuthors = '
+                                    <li class="post-item">
+                                        <div class="image">
+                                            <a href="'. $authLink .'"> <img src="'. $authorImage .'" alt="."></a>
+                                        </div>
+                                        <div class="count">'. $authors['post_count'] .'</div>
+                                        <div class="content">
+                                            <p class="entry-title">
+                                                <a href="'. $authLink .'">'.
+                                                    $authorName
+                                                .'</a>
+                                            </p>
+                                            <small class="post-date">'.
+                                                $authorDesc
+                                            .'</small>
+                                        </div>
+                                    </li>
+                                ';
+                                endforeach; 
+                            }
+                                   
+                            if(isset($aabout) || isset($apopularPost) || isset($acategories) || isset($apopularAuthors))
+                            {
+                                $postJson = new stdClass();
+                                $postJson->about = $aabout;
+                                $postJson->popularPost = $apopularPost;
+                                $postJson->categories = $acategories;
+                                $postJson->popularAuthors = $apopularAuthors;
+                                
+                                echo json_encode($postJson);
+                            }
+                            else
+                            {
+                                echo 0;
+                            }
                         }
-                        else if($dataType == "bodyPost2")
+                        else if($dataType == "postSlider2")
                         {
+                            // Get lastest post show on second section of page
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' ORDER BY RAND() LIMIT 10");
+                            $stmt->execute();
+                            $postSlider2data = $stmt->fetchAll();
+
+                            $postSlider2 = "";
+
+                            if(isset($postSlider2data))
+                            {
+                                foreach ($postSlider2data as $post) : 
+                                
+                                $postId = $sharedComponents->protect($post['post_id']); 
+                                $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+                                $authId = $adminUserDetails["id"];
+                                $authEmail = $adminUserDetails["email"];
+                                $authName = $adminUserDetails["username"];
+                                $authGender = $adminUserDetails["gender"];
+                                $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $picturesfolder_name . $adminUserDetails["profile_pic"];
+                                $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
+
+                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
+
+                                $apostImage = "'$postImage'";
+
+                                // Count the number of words in the text
+                                $num_words = str_word_count($sharedComponents->convertHtmltoText($post['post_contents'], 25, '', ''));
+
+                                // Assume an average reading speed of 200 words per minute
+                                $avg_speed = 200;
+                                // Calculate the estimated reading time in minutes
+                                $reading_time = ceil($num_words / $avg_speed);
+
+                                $postSlider2 .= '
+                                    <div class="slider-item  swiper-slide" style="background-image: url('. $apostImage .');"> 
+                                        <div class="slider-item-content">
+                                            <div class="entry-cat ">
+                                                <a class="categorie " href="category.php?dt='. $post['category_name'] .'&catid='. $post['category_id'] .'">'.
+                                                    $post['category_name']
+                                                .'</a>
+                                            </div>
+                                            <h4 class="entry-title">
+                                                <a href="post.php?dt='. $post['post_title'] .'&id='. $postId .'">'.
+                                                    $post['post_title']
+                                                .'</a>
+                                            </h4>
+
+                                            <ul class="entry-meta list-inline">
+                                                <li class="post-author-img">
+                                                    <a href="'. $authLink .'">
+                                                        <img src="'.$authProfilePic .'" alt="">
+                                                    </a>
+                                                </li>
+                                                <li class="post-author">
+                                                    <a href="'. $authLink .'">'.
+                                                        $authName
+                                                    .'</a> 
+                                                </li>
+                                                <li class="post-date"> <span class="dot"></span>'.
+                                                    date_format(date_create($post["post_creation_time"]), "F d, Y")
+                                                .'</li>
+                                            </ul>
+                                        </div>       
+                                    </div>
+                                ';
     
-                        }
-                        else if($dataType == "other")
-                        {
-    
+                                endforeach;
+                            }
+                            if(isset($postSlider2))
+                                echo $postSlider2.'<script src="assets/js/swiper.min.js"></script><script src="assets/js/main.js"></script>';
+                            else
+                                echo 0;
                         }
                         else if($dataType == "ads1")
                         {
@@ -977,5 +1209,3 @@
                     echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '0', 'data' => '']");
         }
     }
-
-?>

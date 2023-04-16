@@ -43,9 +43,9 @@
                                         <a class="nav-link" href="categorylist.php"> Categories </a>
                                     </li>
                                     
-                                    <li class="nav-item">
+                                    <!-- <li class="nav-item">
                                         <a class="nav-link" href="signup.php">  </a>
-                                    </li>
+                                    </li> -->
 
                                     <!--Pages-->
                                     <li class="nav-item dropdown">

@@ -338,20 +338,20 @@
         }
         $('#startUpToogle').modal('toggle');
     }
-    if(setCountry_check == 1)
-    {
-        location.reload();
-    }
-    setCountry_check = 1;
+    alertify.success("Country change Successful");
+    alertify.message("Refreshing...");
+      setTimeout(function () {
+      location.reload();
+    }, 2000);
   }
 
   function loadData(userCountry)
   {
-    console.log(userCountry);
+      console.log(userCountry);
 
         let formdata1 = new FormData();
-        formdata1.append("dataType", "slider")
-        formdata1.append("userCountry", userCountry)
+        formdata1.append("dataType", "slider");
+        formdata1.append("userCountry", userCountry);
         fetch("classes/components/userComponents.php?dataPurpose=loadData", 
         {
                 method: "POST",
@@ -371,13 +371,15 @@
             console.log(error)
         );
 
-        let formdata3 = new FormData();
-        formdata3.append("dataType", "bodyPost1")
-        formdata3.append("userCountry", userCountry)
+        let formdata2 = new FormData();
+        formdata2.append("dataType", "bodyPost1");
+        formdata2.append("userCountry", userCountry);
+        formdata2.append("limitdt1", 0);
+        formdata2.append("limitdt2", 10);
         fetch("classes/components/userComponents.php?dataPurpose=loadData", 
         {
                 method: "POST",
-                body: formdata3,
+                body: formdata2,
             })
             .then(res => res.text())
             .then(data => {
@@ -402,22 +404,24 @@
             console.log(error)
         );
 
-        return;
 
         let formdata4 = new FormData();
-        formdata4.append("dataType", "popularPost")
-        formdata4.append("userCountry", userCountry)
+        formdata4.append("dataType", "sidebar");
+        formdata4.append("userCountry", userCountry);
         fetch("classes/components/userComponents.php?dataPurpose=loadData", 
         {
                 method: "POST",
                 body: formdata4,
             })
-            .then(res => res.text())
+            .then(res => res.json())
             .then(data => {
-                console.log(data);
+                //console.log(data);
                 if(data != 0)
                 {
-                    $("#popularPost").html(data);
+                    $("#about").html(data.about);
+                    $("#popularPost").html(data.popularPost);
+                    $("#categories").html(data.categories);
+                    $("#popularAuthors").html(data.popularAuthors);
                 }
         })
         .catch(error => 
@@ -425,20 +429,20 @@
             console.log(error)
         );
 
-        let formdata5 = new FormData();
-        formdata5.append("dataType", "bodyPost2")
-        formdata5.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+        let formdata3 = new FormData();
+        formdata3.append("dataType", "postSlider2");
+        formdata3.append("userCountry", userCountry);
+        fetch("classes/components/userComponents.php?dataPurpose=loadData",
         {
                 method: "POST",
-                body: formdata5,
+                body: formdata3,
             })
             .then(res => res.text())
             .then(data => {
-                console.log(data);
+                //console.log(data);
                 if(data != 0)
                 {
-                    $("#bodyPost2").html(data);
+                    $("#postSlider2").html(data);
                 }
         })
         .catch(error => 
@@ -446,26 +450,29 @@
             console.log(error)
         );
 
-        let formdata6 = new FormData();
-        formdata6.append("dataType", "other")
-        formdata6.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
-        {
-                method: "POST",
-                body: formdata6,
-            })
-            .then(res => res.text())
-            .then(data => {
-                console.log(data);
-                if(data != 0)
-                {
-                    // $("#other").html(data);
-                }
-        })
-        .catch(error => 
-            // handle the error
-            console.log(error)
-        );
+
+        // let formdata5 = new FormData();
+        // formdata5.append("dataType", "postSlider2")
+        // formdata5.append("userCountry", userCountry)
+        // fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+        // {
+        //         method: "POST",
+        //         body: formdata5,
+        //     })
+        //     .then(res => res.text())
+        //     .then(data => {
+        //         console.log(data);
+        //         if(data != 0)
+        //         {
+        //             $("#postSlider2").html(data);
+        //         }
+        // })
+        // .catch(error => 
+        //     // handle the error
+        //     console.log(error)
+        // );
+
+        return;
 
         let formdata7 = new FormData();
         formdata7.append("dataType", "ads1")
@@ -487,6 +494,44 @@
             // handle the error
             console.log(error)
         );
+  }
+
+  function loadMore()
+  {
+    countryCookie = getCookie("tok__enCountry");
+    
+    let formdata0 = new FormData();
+    formdata0.append("dataType", "bodyPost1");
+    formdata0.append("userCountry", countryCookie);
+    formdata0.append("limitdt1", 0);
+    formdata0.append("limitdt2", 10);
+    fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+    {
+            method: "POST",
+            body: formdata0,
+        })
+        .then(res => res.text())
+        .then(data => {
+            //console.log(data);
+            if(data != 0)
+            {
+                $("#bodyPost1").html(data);
+
+                // adding styling
+                // $(".image-box").css({
+                //     "position": "relative",
+                //     "margin": "auto",
+                //     "overflow": "hidden",
+                //     "justify-content": "center",
+                //     "align-items": "center",
+                //     "overflow": "hidden"
+                // });
+            }
+    })
+    .catch(error => 
+        // handle the error
+        console.log(error)
+    );
   }
 
   function getCombinedDateTime()

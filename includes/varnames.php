@@ -1,4 +1,11 @@
-<?php 
+<?php
+
+
+$stmt = $conn->prepare("SELECT * FROM `siteInfo` WHERE id=1");
+$stmt->execute();
+$siteInfo = $stmt->fetch();
+
+if (isset($siteInfo)) {
     $siteName = "Macae Blog";
     $globalName = "Macae";
     $siteEmail = "admin@donnapoodles.com";
@@ -7,11 +14,11 @@
     $siteEmailPort = 465;
     $siteMsg = "Check out this Post on ";
     $siteHashTag = "BLUNT BLOGGING NIGERIA";
-    $pageTitle = "BLUNT BLOG";
-    $pageDesc = "BLOGGING FOR EVERYONE";
+    $pageTitleDefault = "BLUNT BLOG";
+    $pageDescDefault = "BLOGGING FOR EVERYONE";
     $siteURL = "http://bluntechnology.com/";
     $pageLogo = "http://bluntechnology.com/assets/img/logo.png";
     $logoDesc = "Nice Color";
     $siteImage = "siteImage.jpg";
     $siteDesc = "This is from Macae";
-?>
+}

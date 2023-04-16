@@ -42,8 +42,8 @@
         <main class="main">
             <!--slider-style-2-->
             <div class="slider-style2">
-                <div  class="swiper swiper-top">
-                   <div class="swiper-wrapper" id="slider">     
+                <div  class="swiper swiper-top animated-background">
+                   <div class="swiper-wrapper" id="slider">
                     <!-- slider post shows here -->
                    </div>
                 </div>
@@ -53,7 +53,7 @@
                        
                         <!-- slidercontrols post shows here -->
 
-                        <div class="swiper-slide cwrapper-cell">
+                        <div class="swiper-slide ">
                             <div class="post-item">
                                 <div class="cwrapper-image animated-background ">
                                 </div>
@@ -202,7 +202,37 @@
                                                         </div>
                                                     </div>
                                                     
+                                                    <div class="post-list awrapper-cell">
+                                                        <div class="post-list-image">
+                                                            <div class="image-box">
+                                                                <div class="awrapper-image animated-background">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="post-list-content awrapper-text">
+                                                            <div class="entry-cat awrapper-text-line  animated-background">
+                                                            </div>
+                                                            <h4 class="entry-title awrapper-text-line animated-background">
+                                                            </h4>
+                                                            <div class="post-exerpt awrapper-text-line animated-background">
+                                                            </div>
+                                                            <ul class="entry-meta list-inline awrapper-text">
+                                                                <li class="post-author awrapper-atext-line animated-background">
+                                                                </li>
+                                                                <li class="post-date awrapper-atext-line animated-background">
+                                                                </li>
+                                                                <li class="post-timeread awrapper-atext-line animated-background">
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    
+
                                                 </div>
+                                            </div>
+                                            <div class="text-center justify-content-center">
+                                                <button type="button" onclick="loadMore()" class="btn btn-outline-secondary">Load More</button>
                                             </div>
                                         </div>
                                     </div>
@@ -212,7 +242,7 @@
                                 
                                 <!--slider-style3-->
                                 <div class="slider-style3">
-                                    <div class="swiper-wrapper">
+                                    <div class="swiper-wrapper" id="postSlider2">
                                         <!--slider-1-->
                                         <div class="slider-item  swiper-slide"> 
                                             <div class="slider-item-content">
@@ -273,7 +303,7 @@
                         </section><!--/-->
 
                         <!--pagination-->
-                        <div class="col-lg-12 mt-30">
+                        <!-- <div class="col-lg-12 mt-30">
                             <div class="pagination">
                                 <ul class="list-inline">
                                     <li class="active"><a href="#">1</a></li>
@@ -283,7 +313,7 @@
                                     <li><a href="#"><i class="fas fa-arrow-right"></i></a> </li>
                                 </ul>
                             </div> 
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </section>

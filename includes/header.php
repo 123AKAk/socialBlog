@@ -140,14 +140,14 @@
 
       /* for slider child */
       .cwrapper-cell {
-        display: flex;
+        /* display: flex; */
       }
       .cwrapper-image {
         height: 100px;
         width: 100px;
         border-radius: 15px;
-        margin-right: 5px;  
-        @extend .animated-background;
+        /* margin-right: 5px;   */
+        
       }
       .cwrapper-text-line1 {
         margin-left: 5px;
