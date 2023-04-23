@@ -329,8 +329,6 @@
     include 'includes/scripts.php';
 ?>
 <!-- Page specific script -->
-<!-- Script -->
 <script type='text/javascript'>
-    //window.onload = loadData;
     
 </script>

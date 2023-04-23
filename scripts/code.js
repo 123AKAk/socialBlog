@@ -1,4 +1,13 @@
-  window.onload = getLocation;
+window.onload = getLocation;
+
+
+// Get all HTML tags with an alt attribute
+const tagsWithAlt = document.querySelectorAll('[alt]');
+
+// Loop through the tags and add alt text
+tagsWithAlt.forEach(tag => {
+  tag.alt = "MACAE Images";
+});
 
 
   //to get complete data about countries 
@@ -422,6 +431,7 @@
                     $("#popularPost").html(data.popularPost);
                     $("#categories").html(data.categories);
                     $("#popularAuthors").html(data.popularAuthors);
+                    $("#randomAds").html(data.randomAds);
                 }
         })
         .catch(error => 
@@ -527,6 +537,26 @@
                 //     "overflow": "hidden"
                 // });
             }
+    })
+    .catch(error => 
+        // handle the error
+        console.log(error)
+    );
+  }
+
+  function adClickCount(adId)
+  {
+    //if user clicks on the ad stores its count
+    let formdata = new FormData();
+    formdata.append("adId", adId);
+    fetch("classes/components/userComponents.php?dataPurpose=storeAdCount", 
+    {
+            method: "POST",
+            body: formdata,
+        })
+        .then(res => res.text())
+        .then(data => {
+            console.log(data);
     })
     .catch(error => 
         // handle the error

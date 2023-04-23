@@ -6,6 +6,7 @@
     $dataPurpose = $_GET['dataPurpose'];
 
     $folder_name = "filesUpload/";
+    $adfolder_name = "filesUpload/ads/";
 
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     {
@@ -745,99 +746,180 @@
 
                         if($dataType == "slider")
                         {
-                            // Get lastest post show on slider part of page
-                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=2 AND delete_status=0 AND post_country='$userCountry' ORDER BY RAND()");
-                            $stmt->execute();
-                            $lastestPostFirst = $stmt->fetchAll();
+                            $limitSize = $sharedComponents->getLimitSize($conn);
 
                             $slider = "";
                             $sliderControls = "";
                             
-                            if(isset($lastestPostFirst))
+                            $a = $limitSize[1]; // first variable
+                            $b = $limitSize[0]; // second variable
+
+                            $sum = $a + $b; // add the two variables together
+
+                            if ($sum > 4) { // check if the sum is greater than 4
+                                $diff = $sum - 4; // calculate the difference between the sum and 4
+                                $b = $b - $diff; // subtract the difference from the second variable
+                            }
+
+                            $a = 4 - $b; // calculate the value of the first variable based on the output of the second variable
+
+                            if($b < 0)
                             {
-                                foreach ($lastestPostFirst as $post) : 
-                                
-                                $postId = $sharedComponents->protect($post['post_id']); 
-                                $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+                                $b = 0;
+                            }
+                            
+                            $adstmtb = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=2 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(1, ad_position) > 0 AND trans_reference!='' ORDER BY RAND() LIMIT $a");
+                            $adstmtb->execute();
+                            $ads = $adstmtb->fetchAll();
 
-                                $authId = $adminUserDetails["id"];
-                                $authEmail = $adminUserDetails["email"];
-                                $authName = $adminUserDetails["username"];
-                                $authGender = $adminUserDetails["gender"];
-                                $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $picturesfolder_name . $adminUserDetails["profile_pic"];
-                                $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
-
-                                $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? 'noimage.jpg' : $picturesfolder_name . $post['post_thumbnail'];
-
-                                $apostImage = "'$postImage'";
-
-                                $slider .= '
-                                    <div class="swiper-slide slider-item" style="background-image: url('. $apostImage .');">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-xl-7 col-lg-9 col-md-12">
-                                                    <div class="slider-item-inner">
-                                                        <div class="slider-item-content">
-                                                        <div class="entry-cat ">
-                                                            <a class="categorie" href="category.php?dt='.$post["category_name"] .'&catid='. $post["category_id"] .'">'.
-                                                                $post["category_name"]
-                                                            .'</a>
-                                                        </div>
-                                                        <h1 class="entry-title">
-                                                            <a href="post.php?dt='. $post["post_title"] .'&id='. $postId .'">'.
-                                                                $post["post_title"]
-                                                            .'</a>
-                                                        </h1>
-                                                        <div class="post-exerpt">
-                                                            <p>'.$sharedComponents->convertHtmltoText($post["post_contents"], 25, "", "") .'</p>
-                                                        </div>
-                                                        <ul class="entry-meta list-inline">
-                                                            <li class="post-author-img">
-                                                                <a href="'. $authLink .'">
-                                                                    <img src="'. $authProfilePic .'" alt="">
+                            if(isset($ads))
+                            {
+                                foreach ($ads as $ad) :                                 
+                                    $adImage = $sharedComponents->checkFile2($ad["ad_thumbnail"]) == 0 ? "noimage.jpg" : $adfolder_name . $ad["ad_thumbnail"];
+                                    
+                                    $slider .= '
+                                        <div class="swiper-slide slider-item" style="background-image: url('. $adImage .');">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-xl-7 col-lg-9 col-md-12">
+                                                        <div class="slider-item-inner">
+                                                            <div class="slider-item-content">
+                                                            <div class="entry-cat ">
+                                                                <a class="categorie">
+                                                                    Sponsored Post
                                                                 </a>
-                                                            </li>
-                                                            <li class="post-author">
-                                                                <a href="'. $authLink .'">'.
-                                                                    $authName 
+                                                            </div>
+                                                            <h1 class="entry-title">
+                                                                <a href="'. $ad["ad_url"] .'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">'.
+                                                                    $ad["ad_name"]
                                                                 .'</a>
-                                                            </li>
-                                                            <li class="post-date"> <span class="dot"></span>'.
-                                                                date_format(date_create($post['post_creation_time']), "F d, Y")
-                                                            .'</li>
-                                                            <li class="post-comment">
-                                                                <span class="dot"></span>'.
-                                                                $sharedComponents->checkNumofComments($postId, $pdo)." comments"
-                                                            .'</li>
-                                                        </ul>
+                                                            </h1>
+                                                            <div class="post-exerpt">
+                                                                <a href="'. $ad["ad_url"].'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">
+                                                                    <p>'.$ad["ad_desc"] .'</p>
+                                                                </a>
+                                                            </div>
+                                                            <ul class="entry-meta list-inline">
+                                                                
+                                                            </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ';
+                                    ';
 
-                                $sliderControls .= '
-                                    <div class="swiper-slide">
-                                        <div class="post-item">
-                                            <img src="'.$postImage.'" alt="">
-                                            <div class="details">
-                                                <p class="entry-title"> 
-                                                <span>'.
-                                                    $post['post_title']
-                                                .'</span>
-                                                </p>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="post-date"> <i class="fas fa-clock"></i>'.
-                                                        date_format(date_create($post['post_creation_time']), "F d, Y")
-                                                    .'</li>
-                                                </ul>
+                                    $sliderControls .= '
+                                        <div class="swiper-slide">
+                                            <div class="post-item">
+                                                <img src="'.$adImage.'" alt="">
+                                                <div class="details">
+                                                    <p class="entry-title"> 
+                                                        <a href="'. $ad["ad_url"] .'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">
+                                                            <span>'.
+                                                                $ad["ad_name"]
+                                                            .'</span>
+                                                        </a>
+                                                    </p>
+                                                    <ul class="entry-meta list-inline">
+                                                        
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ';
+                                    ';
+                                endforeach;
+                            }
 
+                            // Get lastest post show on slider part of page
+                            $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE post_status=2 AND delete_status=0 AND post_country='$userCountry' ORDER BY RAND() LIMIT $b");
+                            $stmt->execute();
+                            $lastestPostFirst = $stmt->fetchAll();
+
+                            if(isset($lastestPostFirst))
+                            {
+                                foreach ($lastestPostFirst as $post) : 
+                                    $postId = $sharedComponents->protect($post['post_id']); 
+                                    $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+                                    $authId = $adminUserDetails["id"];
+                                    $authEmail = $adminUserDetails["email"];
+                                    $authName = $adminUserDetails["username"];
+                                    $authGender = $adminUserDetails["gender"];
+                                    $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $picturesfolder_name . $adminUserDetails["profile_pic"];
+                                    $authLink = "author.php?authDType=".$adminUserDetails["type"]."&authd=".$adminUserDetails["id"];
+
+                                    $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? 'noimage.jpg' : $picturesfolder_name . $post['post_thumbnail'];
+
+                                    $apostImage = "'$postImage'";
+
+                                    $slider .= '
+                                        <div class="swiper-slide slider-item" style="background-image: url('. $apostImage .');">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-xl-7 col-lg-9 col-md-12">
+                                                        <div class="slider-item-inner">
+                                                            <div class="slider-item-content">
+                                                            <div class="entry-cat ">
+                                                                <a class="categorie" href="category.php?dt='.$post["category_name"] .'&catid='. $post["category_id"] .'">'.
+                                                                    $post["category_name"]
+                                                                .'</a>
+                                                            </div>
+                                                            <h1 class="entry-title">
+                                                                <a href="post.php?dt='. $post["post_title"] .'&id='. $postId .'">'.
+                                                                    $post["post_title"]
+                                                                .'</a>
+                                                            </h1>
+                                                            <div class="post-exerpt">
+                                                                <p>'.$sharedComponents->convertHtmltoText($post["post_contents"], 25, "", "") .'</p>
+                                                            </div>
+                                                            <ul class="entry-meta list-inline">
+                                                                <li class="post-author-img">
+                                                                    <a href="'. $authLink .'">
+                                                                        <img src="'. $authProfilePic .'" alt="">
+                                                                    </a>
+                                                                </li>
+                                                                <li class="post-author">
+                                                                    <a href="'. $authLink .'">'.
+                                                                        $authName 
+                                                                    .'</a>
+                                                                </li>
+                                                                <li class="post-date"> <span class="dot"></span>'.
+                                                                    date_format(date_create($post['post_creation_time']), "F d, Y")
+                                                                .'</li>
+                                                                <li class="post-comment">
+                                                                    <span class="dot"></span>'.
+                                                                    $sharedComponents->checkNumofComments($postId, $pdo)." comments"
+                                                                .'</li>
+                                                            </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ';
+
+                                    $sliderControls .= '
+                                        <div class="swiper-slide">
+                                            <div class="post-item">
+                                                <img src="'.$postImage.'" alt="">
+                                                <div class="details">
+                                                    <p class="entry-title"> 
+                                                    <span>'.
+                                                        $post['post_title']
+                                                    .'</span>
+                                                    </p>
+                                                    <ul class="entry-meta list-inline">
+                                                        <li class="post-date"> <i class="fas fa-clock"></i>'.
+                                                            date_format(date_create($post['post_creation_time']), "F d, Y")
+                                                        .'</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ';
                                 endforeach;
                             }
 
@@ -866,9 +948,12 @@
 
                             $blogPost1 = "";
 
+                            $count = 0;
                             if(isset($lastestPostSecond))
                             {
                                 foreach ($lastestPostSecond as $post) : 
+
+                                $count++;
                                 
                                 $postId = $sharedComponents->protect($post['post_id']); 
                                 $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
@@ -889,6 +974,57 @@
                                 $avg_speed = 200;
                                 // Calculate the estimated reading time in minutes
                                 $reading_time = ceil($num_words / $avg_speed);
+
+
+                                if (($count - 2) % 8 == 0)
+                                {
+                                    $adstmt = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(2, ad_position) > 0 AND trans_reference!='' ORDER BY ad_id DESC");
+                                    $adstmt->execute();
+                                    $total_rows = $adstmt->rowCount();
+
+                                    // Generate a random number between 0 and the total number of rows
+                                    $random_number = rand(0, $total_rows - 1);  
+
+                                    if($total_rows > 0)
+                                    {
+                                        $adstmtb = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(2, ad_position) > 0 AND trans_reference!='' ORDER BY ad_id DESC LIMIT $random_number, 1");
+                                        $adstmtb->execute();
+                                        $ad = $adstmtb->fetch();
+
+                                        if ($adstmtb->rowCount() > 0)
+                                        {
+                                            $adImage = $sharedComponents->checkFile2($ad["ad_thumbnail"]) == 0 ? "noimage.jpg" : $adfolder_name . $ad["ad_thumbnail"];
+                                            
+                                            $blogPost1 .= '
+                                                <div class="post-list">
+                                                    <div class="post-list-image">
+                                                        <div class="image-box">
+                                                            <a href="'.$ad["ad_url"].'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">
+                                                                <img src="'. $adImage .'" class="img-fluid " alt="">
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="post-list-content">
+                                                        <div class="entry-cat">
+                                                            <a class="categorie" >Sponsored Post</a>
+                                                        </div>
+                                                        <h4 class="entry-title">
+                                                            <a href="'.$ad["ad_url"].'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">'.
+                                                                $ad["ad_name"]
+                                                            .'</a>
+                                                        </h4>
+                                                        <div class="post-exerpt">
+                                                            <a href="'. $ad["ad_url"].'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">
+                                                                <p class="myText">'.$ad["ad_desc"].'</p>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    </a>
+                                                </div>
+                                            ';
+                                        }
+                                    }
+                                } 
 
                                 $blogPost1 .= '
                                     <div class="post-list">
@@ -944,7 +1080,7 @@
                         }
                         else if($dataType == "sidebar")
                         {
-                            $aabout = $apopularPost = $acategories = $apopularAuthors = "";
+                            $aabout = $apopularPost = $acategories = $apopularAuthors = $arandomAds = "";
                            
                             // Get About Info
                             $stmt = $conn->prepare("SELECT * FROM `admin` WHERE admin_id=1");
@@ -1092,14 +1228,51 @@
                                 ';
                                 endforeach; 
                             }
-                                   
-                            if(isset($aabout) || isset($apopularPost) || isset($acategories) || isset($apopularAuthors))
+                            
+                            $stmt = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(4, ad_position) > 0 AND trans_reference!='' ORDER BY RAND() DESC LIMIT  5");
+                            $stmt->execute();
+                            $randomAds = $stmt->fetchAll();
+                            if(isset($randomAds))
+                            {
+                                $first_iteration = true;
+                                foreach ($randomAds as $ad) : 
+
+                                    $adImage = $sharedComponents->checkFile2($ad["ad_thumbnail"]) == 0 ? "noimage.jpg" : $adfolder_name . $ad["ad_thumbnail"];
+
+                                    if ($first_iteration) 
+                                    {
+                                        $arandomAds .= '
+                                            <a href="'. $ad["ad_url"] .'" class="carousel-item active" data-bs-interval="3000" title="'.$ad["ad_desc"] .'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">
+                                                <img src="'. $adImage .'" class="d-block w-100" alt="...">
+                                                <div class="carousel-caption d-none d-md-block">
+                                                    <b><p>'.$ad["ad_name"].'</p></b>
+                                                </div>
+                                            </a>
+                                        ';
+                                        $first_iteration = false;
+                                    }
+                                    else{
+                                        $arandomAds .= '
+                                            <a href="'. $ad["ad_url"] .'" class="carousel-item" data-bs-interval="3000" title="'.$ad["ad_desc"] .'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">
+                                                <img src="'. $adImage .'" class="d-block w-100" alt="...">
+                                                <div class="carousel-caption d-none d-md-block">
+                                                    <b><p>'.$ad["ad_name"].'</p></b>
+                                                </div>
+                                            </a>
+                                        ';
+                                    }
+
+                                endforeach;
+                            }
+                            
+                            if(isset($aabout) || isset($apopularPost) || isset($acategories) || isset($apopularAuthors) || isset($arandomAds))
                             {
                                 $postJson = new stdClass();
                                 $postJson->about = $aabout;
                                 $postJson->popularPost = $apopularPost;
                                 $postJson->categories = $acategories;
                                 $postJson->popularAuthors = $apopularAuthors;
+                                $postJson->randomAds = $arandomAds.'<script src="assets/js/bootstrap.min.js"></script>';
                                 
                                 echo json_encode($postJson);
                             }
@@ -1205,6 +1378,22 @@
                         echo json_encode( ['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
                     }
                 break;
+                case "storeAdCount":
+                    if(isset($_POST["adId"]))
+                    {
+                        $adId = $sharedComponents->unprotect($_POST["adId"]);
+                        $sql = "UPDATE `ads` SET `clicks`= clicks+1 WHERE ad_id = $adId";
+                        $stmt = $conn->prepare($sql);
+                        if($stmt->execute())
+                        {
+                            echo json_encode( ['response' => true, 'message' => 'Ad Clicks Incremented', 'code' => '1', 'data' => '']);
+                        }
+                        else
+                        {
+                            echo json_encode( ['response' => false, 'message' => 'Ad Clicks - Error occured', 'code' => '0', 'data' => '']);
+                        }
+                    }
+                    break;
                 default:
                     echo json_encode("['response' => false, 'message' => 'System Processing Error!', 'code' => '0', 'data' => '']");
         }

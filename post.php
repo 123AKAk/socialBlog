@@ -223,13 +223,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <input type="email" name="email" id="email" class="form-control" placeholder="Email*" required="required">
+                                                        <input type="email" name="email" id="email" class="form-control" placeholder="Email" required="required">
                                                     </div>
                                                 </div>
                                                 <div class="col-12 mb-20">
-                                                    <div class="form-group">
-                                                        <input type="text" name="website" id="website" class="form-control" placeholder="website">
-                                                    </div>
                                                     <label>
                                                         <input name="name" type="checkbox" value="1" required="required"> 
                                                     <span>save my name , email and website in this browser for the next time I comment.</span>                                   

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2023 at 11:06 AM
+-- Generation Time: Apr 22, 2023 at 09:11 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -56,7 +56,7 @@ INSERT INTO `admin` (`admin_id`, `admin_name`, `email`, `profile_pic`, `admin_de
 
 CREATE TABLE `ads` (
   `ad_id` int(11) NOT NULL,
-  `ad_name` varchar(10) NOT NULL,
+  `ad_name` text NOT NULL,
   `ad_desc` text NOT NULL,
   `ad_url` text NOT NULL,
   `ad_thumbnail` text NOT NULL,
@@ -67,15 +67,18 @@ CREATE TABLE `ads` (
   `ad_category` text NOT NULL,
   `ad_duration` text NOT NULL,
   `ad_target_gender` text NOT NULL,
-  `clicks` int(11) NOT NULL
+  `ad_position` text NOT NULL,
+  `clicks` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `ads`
 --
 
-INSERT INTO `ads` (`ad_id`, `ad_name`, `ad_desc`, `ad_url`, `ad_thumbnail`, `ad_target_Country`, `status`, `date_created`, `date_updated`, `ad_category`, `ad_duration`, `ad_target_gender`, `clicks`) VALUES
-(1, 'eyo', 'dsdfghhgfdsasdfghjhgfdsasfghjjhgfdsZxcvbnm,mnbvcxxcvbnm,.,mnbvcxzxcvbnm,.,mnb', '', 'sasa', '0', 0, '2023-02-06 16:27:51', '2023-03-15 09:06:46', '', '', '', 0);
+INSERT INTO `ads` (`ad_id`, `ad_name`, `ad_desc`, `ad_url`, `ad_thumbnail`, `ad_target_Country`, `status`, `date_created`, `date_updated`, `ad_category`, `ad_duration`, `ad_target_gender`, `ad_position`, `clicks`) VALUES
+(1, 'Introducing ChatGPT', 'ChatGPT is an artificial intelligence chatbot developed by OpenAI and released in November 2022. It is built on top of OpenAI\'s GPT-3.5 and GPT-4', 'https://google.com', 'sasa.jpg', 'Nigeria', 2, '2023-02-06 16:27:51', '2023-03-15 09:06:46', '', '', '', '1,4', 0),
+(2, 'What is Google Pay', 'Google Pay is available in the Mobile Banking app YOU BRD for BRD Visa, Mastercard or Maestro cards.', 'https://twitter.com/', 'sasa.jpg', 'Nigeria', 2, '2023-02-06 16:27:51', '2023-03-15 09:06:46', '', '', '', '2,3,4', 0),
+(3, 'Virtual Static Account', 'Welcome to the first section of Kuda’s Open API Documentation. You will find all API calls, properties, and requirements', 'https://kuda.com/', 'madd.jpg', 'Nigeria', 2, '2023-02-06 16:27:51', '2023-03-15 09:06:46', '', '', '', '1', 0);
 
 -- --------------------------------------------------------
 
@@ -177,17 +180,6 @@ CREATE TABLE `dblog` (
   `status` int(11) NOT NULL DEFAULT 0,
   `event_desc` text NOT NULL,
   `date_logged` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `positions`
---
-
-CREATE TABLE `positions` (
-  `position_id` int(11) NOT NULL,
-  `point` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -297,8 +289,17 @@ CREATE TABLE `siteinfo` (
   `pageLogo` text NOT NULL,
   `logoDesc` text NOT NULL,
   `siteImage` text NOT NULL,
-  `siteDesc` text NOT NULL
+  `siteDesc` text NOT NULL,
+  `sliderSize_post` int(11) NOT NULL DEFAULT 0,
+  `sliderSize_ads` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `siteinfo`
+--
+
+INSERT INTO `siteinfo` (`id`, `siteName`, `siteEmail`, `siteEmailPassword`, `siteEmailHost`, `siteEmailPort`, `siteMsg`, `siteHashTag`, `pageTitleDefault`, `pageDescDefault`, `siteURL`, `pageLogo`, `logoDesc`, `siteImage`, `siteDesc`, `sliderSize_post`, `sliderSize_ads`) VALUES
+(1, 'MACAE', 'info@macae.com', '12344', 'mail.macae.com', '934', 'Welcome to Macae', '#MACAE, #Blogging', 'MACAE BLOG', 'This is Macae Blog', 'macae.com', 'macae.com/logo.jpg', 'Macae Logo', 'macae.com/logo.jpg', 'This is Macae Blogging Site', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -333,6 +334,30 @@ CREATE TABLE `subscribed_emails` (
 
 INSERT INTO `subscribed_emails` (`id`, `name`, `email`, `verified_status`, `date_created`) VALUES
 (1, 'James', 'james@gmail.com', 0, '2023-02-06 16:49:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transactions`
+--
+
+CREATE TABLE `transactions` (
+  `trans_id` int(11) NOT NULL,
+  `trans_amount` int(11) NOT NULL,
+  `trans_reference` text NOT NULL,
+  `userId` int(11) NOT NULL,
+  `adId` int(11) NOT NULL,
+  `date_paid` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`trans_id`, `trans_amount`, `trans_reference`, `userId`, `adId`, `date_paid`) VALUES
+(1, 5000, '32382932', 3, 1, '2023-04-21 07:35:22'),
+(2, 7000, 'PA483232324', 3, 2, '2023-04-21 07:35:22'),
+(3, 7000, 'PA483232824', 2, 3, '2023-04-21 07:35:22');
 
 -- --------------------------------------------------------
 
@@ -416,12 +441,6 @@ ALTER TABLE `dblog`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `positions`
---
-ALTER TABLE `positions`
-  ADD PRIMARY KEY (`position_id`);
-
---
 -- Indexes for table `postdetails`
 --
 ALTER TABLE `postdetails`
@@ -458,6 +477,12 @@ ALTER TABLE `subscribed_emails`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD PRIMARY KEY (`trans_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -477,7 +502,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `ads`
 --
 ALTER TABLE `ads`
-  MODIFY `ad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -510,12 +535,6 @@ ALTER TABLE `dblog`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `positions`
---
-ALTER TABLE `positions`
-  MODIFY `position_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `postdetails`
 --
 ALTER TABLE `postdetails`
@@ -537,7 +556,7 @@ ALTER TABLE `rssfeed`
 -- AUTO_INCREMENT for table `siteinfo`
 --
 ALTER TABLE `siteinfo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sociallinks`
@@ -550,6 +569,12 @@ ALTER TABLE `sociallinks`
 --
 ALTER TABLE `subscribed_emails`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `transactions`
+--
+ALTER TABLE `transactions`
+  MODIFY `trans_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `user`

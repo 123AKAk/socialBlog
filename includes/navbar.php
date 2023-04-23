@@ -35,7 +35,7 @@
                     
                                     <li class="nav-item">
                                         <!-- add "active" to show page is active -->
-                                        <a class="nav-link" href="authorlist.php"> Authors </a>
+                                        <a class="nav-link" href="authorslist.php"> Authors </a>
                                     </li>
 
                                     <li class="nav-item">

@@ -24,7 +24,7 @@
                                                     <h5>Popular Posts</h5>
                                                 </div>
                                                 <ul class="widget-latest-posts" id="popularPost">
-                    
+
                                                     <li class="post-item dwrapper-cell">
                                                         <div class="image dwrapper-image animated-background">
                                                         </div>
@@ -37,53 +37,53 @@
                                                             </small>
                                                         </div>
                                                     </li>
-                                                    
+
                                                 </ul>
                                             </div>
                                             <!--/-->
-                                            
+
                                             <!--widget-categories-->
                                             <div class="widget">
                                                 <div class="section-title">
                                                     <h5>Categories</h5>
                                                 </div>
                                                 <ul class="widget-categories" id="categories">
-                                                
+
                                                     <li>
                                                         <a href="#" class="categorie ewrapper-text-line1 animated-background">
                                                         </a>
                                                         <span class="ml-auto ewrapper-text-line1 animated-background"></span>
                                                     </li>
-                                                    
+
                                                 </ul>
                                             </div>
-                                            
-                    
+
+
                                             <!--widget-tags-->
                                             <div class="widget">
                                                 <div class="section-title">
                                                     <h5>Popular Authors</h5>
                                                 </div>
                                                 <div class="">
-                                                <ul class="widget-latest-posts" id="popularAuthors">
-                                                    
-                                                    
-                                                    <li class="post-item dwrapper-cell">
-                                                        <div class="image">
-                                                            <div class="image dwrapper-image animated-background">
+                                                    <ul class="widget-latest-posts" id="popularAuthors">
+
+
+                                                        <li class="post-item dwrapper-cell">
+                                                            <div class="image">
+                                                                <div class="image dwrapper-image animated-background">
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="content">
-                                                            <p class="entry-title dwrapper-text-line1 animated-background">
-                                                            </p>
-                                                            <p class="entry-title dwrapper-text-line1 animated-background">
-                                                            </p>
-                                                            <small class="post-date dwrapper-text-line1 animated-background">
-                                                            </small>
-                                                        </div>
-                                                    </li>
-                                                    
-                                                </ul>
+                                                            <div class="content">
+                                                                <p class="entry-title dwrapper-text-line1 animated-background">
+                                                                </p>
+                                                                <p class="entry-title dwrapper-text-line1 animated-background">
+                                                                </p>
+                                                                <small class="post-date dwrapper-text-line1 animated-background">
+                                                                </small>
+                                                            </div>
+                                                        </li>
+
+                                                    </ul>
                                                 </div>
                                             </div>
                                             <!--/-->
@@ -95,25 +95,8 @@
                                                 </div>
                                                 <div>
                                                     <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-                                                        <div class="carousel-inner">
-                                                            <a href="adlink.php" class="carousel-item active" data-bs-interval="10000" title="Ad Description here">
-                                                                <img src="noimage.jpg" class="d-block w-100" alt="...">
-                                                                <div class="carousel-caption d-none d-md-block">
-                                                                    <b><p>First slide label</p></b>
-                                                                </div>
-                                                            </a>
-                                                            <a href="adlink.php" class="carousel-item" data-bs-interval="2000" title="Ad Description here">
-                                                                <img src="noimage.jpg" class="d-block w-100" alt="...">
-                                                                <div class="carousel-caption d-none d-md-block">
-                                                                    <b><p>First slide label</p></b>
-                                                                </div>
-                                                            </a>
-                                                            <a href="adlink.php" class="carousel-item" title="Ad Description here">
-                                                                <img src="noimage.jpg" class="d-block w-100" alt="...">
-                                                                <div class="carousel-caption d-none d-md-block">
-                                                                    <b><p>First slide label</p></b>
-                                                                </div>
-                                                            </a>
+                                                        <div class="carousel-inner" id="randomAds">
+                                                            <!-- ads to show here -->
                                                         </div>
                                                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
                                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>

@@ -196,6 +196,15 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        function getLimitSize($pdo)
+        {
+            $stmt = $pdo->prepare("SELECT * FROM siteinfo WHERE id = 1");
+            $stmt->execute();
+            $siteInfo = $stmt->fetch();
+            $arryLimitSize = array($siteInfo['sliderSize_post'], $siteInfo['sliderSize_ads']);
+            return $arryLimitSize;
+        }
+
         function getAdminUser_Post($adminId, $userId, $pdo)
         {
             $systemJson = [];
@@ -208,7 +217,7 @@ use PHPMailer\PHPMailer\Exception;
                     $astmt->execute();
                     if ($astmt->rowCount() == 1) 
                     {
-                        if ($user = $astmt->fetch()) 
+                        if ($user = $astmt->fetch())
                         {   
                             if($user['status'] == 1)
                             {
@@ -338,6 +347,39 @@ use PHPMailer\PHPMailer\Exception;
             }
         }
 
+        function checkFile2($filename)
+        {
+            // Define file path 
+            $dir = "filesUpload/ads/";
+            $pathtofile = $dir.$filename; 
+
+            // Clear cache to remove result from previous run 
+            clearstatcache(); 
+
+            if(!empty($filename))
+            {
+                if(is_dir($dir))
+                {
+                    if (file_exists($pathtofile))
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         //encrypt the datastring
         function protect($routeValue)
         {
@@ -414,4 +456,3 @@ use PHPMailer\PHPMailer\Exception;
             return implode(", ", $array);
         }
     }
-?>
