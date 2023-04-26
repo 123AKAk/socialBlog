@@ -744,6 +744,8 @@
 
                         $picturesfolder_name = "classes/components/filesUpload/";
 
+                        $noOfPostToDisplayAds = $sharedComponents->getNoOfPostToDisplayAds($pdo);
+
                         if($dataType == "slider")
                         {
                             $limitSize = $sharedComponents->getLimitSize($conn);
@@ -768,7 +770,7 @@
                                 $b = 0;
                             }
                             
-                            $adstmtb = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=2 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(1, ad_position) > 0 AND trans_reference!='' ORDER BY RAND() LIMIT $a");
+                            $adstmtb = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(1, ad_position) > 0 AND trans_reference!='' ORDER BY RAND() LIMIT $a");
                             $adstmtb->execute();
                             $ads = $adstmtb->fetchAll();
 
@@ -976,7 +978,7 @@
                                 $reading_time = ceil($num_words / $avg_speed);
 
 
-                                if (($count - 2) % 8 == 0)
+                                if (($count - 2) % $noOfPostToDisplayAds[0] == 0)
                                 {
                                     $adstmt = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(2, ad_position) > 0 AND trans_reference!='' ORDER BY ad_id DESC");
                                     $adstmt->execute();
@@ -1290,10 +1292,13 @@
 
                             $postSlider2 = "";
 
+                            $count = 0;
                             if(isset($postSlider2data))
                             {
                                 foreach ($postSlider2data as $post) : 
-                                
+                             
+                                $count++;
+                                    
                                 $postId = $sharedComponents->protect($post['post_id']); 
                                 $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
 
@@ -1315,6 +1320,48 @@
                                 $avg_speed = 200;
                                 // Calculate the estimated reading time in minutes
                                 $reading_time = ceil($num_words / $avg_speed);
+
+                                if (($count - 2) % $noOfPostToDisplayAds[1] == 0)
+                                {
+                                    $adstmt = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(2, ad_position) > 0 AND trans_reference!='' ORDER BY ad_id DESC");
+                                    $adstmt->execute();
+                                    $total_rows = $adstmt->rowCount();
+                                    
+                                    // Generate a random number between 0 and the total number of rows
+                                    $random_number = rand(0, $total_rows-1);
+                                    
+                                    if($total_rows > 0)
+                                    {
+                                        $adstmtb = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(2, ad_position) > 0 AND trans_reference!='' ORDER BY ad_id DESC LIMIT $random_number, 1");
+                                        $adstmtb->execute();
+                                        $ad = $adstmtb->fetch();
+
+                                        if ($adstmtb->rowCount() > 0)
+                                        {
+                                            $adImage = $sharedComponents->checkFile2($ad["ad_thumbnail"]) == 0 ? "noimage.jpg" : $adfolder_name . $ad["ad_thumbnail"];
+                                            
+                                            
+                                            $postSlider2 .= '
+                                                <div class="slider-item  swiper-slide" style="background-image: url('. $adImage .');"> 
+                                                    <div class="slider-item-content">
+                                                        <div class="entry-cat ">
+                                                            <a class="categorie" >Sponsored Post</a>
+                                                        </div>
+                                                        <h4 class="entry-title">
+                                                            <a href="'.$ad["ad_url"].'" onclick="adClickCount("'.$sharedComponents->protect($ad["ad_id"]).'")" target="_blank">'.
+                                                                $ad["ad_name"]
+                                                            .'</a>
+                                                        </h4>
+
+                                                        <ul class="entry-meta list-inline">
+                                                            
+                                                        </ul>
+                                                    </div>       
+                                                </div>
+                                            ';
+                                        }
+                                    }
+                                } 
 
                                 $postSlider2 .= '
                                     <div class="slider-item  swiper-slide" style="background-image: url('. $apostImage .');"> 

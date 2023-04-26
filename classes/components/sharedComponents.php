@@ -205,6 +205,15 @@ use PHPMailer\PHPMailer\Exception;
             return $arryLimitSize;
         }
 
+        function getNoOfPostToDisplayAds($pdo)
+        {
+            $stmt = $pdo->prepare("SELECT * FROM siteinfo WHERE id = 1");
+            $stmt->execute();
+            $siteInfo = $stmt->fetch();
+            $arry = array($siteInfo['noOfPostToDisplayAds_bodyPost'], $siteInfo['noOfPostToDisplayAds_bodySlider']);
+            return $arry;
+        }
+
         function getAdminUser_Post($adminId, $userId, $pdo)
         {
             $systemJson = [];
