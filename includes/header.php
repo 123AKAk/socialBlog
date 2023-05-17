@@ -80,6 +80,9 @@
     <!-- dropzonejs -->
     <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
 
+    <!-- share this plugin -->
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=64656163d427210019483966&product=sop' async='async'></script>
+
     <?php
       if(isset($style_refrences))
       {

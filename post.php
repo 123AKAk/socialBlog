@@ -104,7 +104,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                     </div>
                                     <div class="social-media">
                                         <!-- share to diffrent social media -->
-                                        <ul class="list-inline">
+                                        <!-- <ul class="list-inline">
                                             <li>
                                                 <a href="#" class="color-facebook">
                                                     <i class="fab fa-facebook"></i>
@@ -131,6 +131,12 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                                 </a>
                                             </li>
                                         </ul>
+                                     -->
+
+                                     <!-- ShareThis BEGIN -->
+                                     <div class="sharethis-inline-share-buttons"></div>
+                                     <!-- ShareThis END -->
+
                                     </div>
                                 </div>
                             </div> <!--/-->
@@ -224,6 +230,9 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
 
                                                 $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
                                                 $authLink = "author.php?authDType=" . $adminUserDetails["type"] . "&authd=" . $adminUserDetails["id"];
+
+                                                $timestamp = strtotime($rows["date_added"]);
+                                                $formattedDate = date("jS F, Y H:i", $timestamp);
                                             ?>
                                                 <a href="<?= $authLink ?>">
                                                     <img src="<?= $authProfilePic ?>" alt="<?= $rows["name"] ?>" title="Site User - <?= $rows["name"] ?>">
@@ -232,7 +241,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                                     <ul class="info list-inline">
                                                         <li><?= $rows["name"] ?></li>
                                                         <li class="dot"></li>
-                                                        <li><?= $rows["date_added"] ?></li>
+                                                        <li><?= $formattedDate ?></li>
                                                     </ul>
                                                     <p><?= $rows["comment"] ?></p>
                                                     <!-- <div>
@@ -242,13 +251,16 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                                 </div>
                                             <?php
                                             } else {
+
+                                                $timestamp = strtotime($rows["date_added"]);
+                                                $formattedDate = date("jS F, Y H:i", $timestamp);
                                             ?>
                                                 <img src="avatar.jpg" alt="<?= $rows["name"] ?>" title="<?= $rows["name"] ?> (Gender Netural)">
                                                 <div class="content">
                                                     <ul class="info list-inline">
                                                         <li><?= $rows["name"] ?></li>
                                                         <li class="dot"></li>
-                                                        <li><?= $rows["date_added"] ?></li>
+                                                        <li><?= $formattedDate ?></li>
                                                     </ul>
                                                     <p><?= $rows["comment"] ?></p>
                                                 </div>
@@ -401,7 +413,7 @@ include 'includes/scripts.php';
                         reloadObj("bcomments");
 
                         name = email = comment = "";
-                        
+
                     } else {
                         alertify.error(result.message);
                     }
