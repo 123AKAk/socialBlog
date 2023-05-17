@@ -235,7 +235,7 @@ tagsWithAlt.forEach(tag => {
       ipaddress = myIP;
       //console.log(myIP);
       pc.onicecandidate = noop;
-	};    
+	  };    
     
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition);
@@ -358,6 +358,11 @@ tagsWithAlt.forEach(tag => {
   {
       console.log(userCountry);
 
+      let name = "/socialBlog";
+    
+      if (window.location.pathname === name+'/' || window.location.pathname === name+'/index.php' || window.location.pathname === name+'/index.html')
+      {
+
         let formdata1 = new FormData();
         formdata1.append("dataType", "slider");
         formdata1.append("userCountry", userCountry);
@@ -413,6 +418,27 @@ tagsWithAlt.forEach(tag => {
             console.log(error)
         );
 
+        let formdata3 = new FormData();
+        formdata3.append("dataType", "postSlider2");
+        formdata3.append("userCountry", userCountry);
+        fetch("classes/components/userComponents.php?dataPurpose=loadData",
+        {
+                method: "POST",
+                body: formdata3,
+            })
+            .then(res => res.text())
+            .then(data => {
+                //console.log(data);
+                if(data != 0)
+                {
+                    $("#postSlider2").html(data);
+                }
+        })
+        .catch(error => 
+            // handle the error
+            console.log(error)
+        );
+      }
 
         let formdata4 = new FormData();
         formdata4.append("dataType", "sidebar");
@@ -435,28 +461,6 @@ tagsWithAlt.forEach(tag => {
                 }
         })
         .catch(error => 
-            // handle the error
-            console.log(error)
-        );
-
-        let formdata3 = new FormData();
-        formdata3.append("dataType", "postSlider2");
-        formdata3.append("userCountry", userCountry);
-        fetch("classes/components/userComponents.php?dataPurpose=loadData",
-        {
-                method: "POST",
-                body: formdata3,
-            })
-            .then(res => res.text())
-            .then(data => {
-                //console.log(data);
-                if(data != 0)
-                {
-                    $("#postSlider2").html(data);
-                }
-        })
-        .catch(error => 
-            // handle the error
             console.log(error)
         );
 
@@ -482,28 +486,26 @@ tagsWithAlt.forEach(tag => {
         //     console.log(error)
         // );
 
-        return;
-
-        let formdata7 = new FormData();
-        formdata7.append("dataType", "ads1")
-        formdata7.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
-        {
-                method: "POST",
-                body: formdata7,
-            })
-            .then(res => res.text())
-            .then(data => {
-                console.log(data);
-                if(data != 0)
-                {
-                    // $("#ads1").html(data);
-                }
-        })
-        .catch(error => 
-            // handle the error
-            console.log(error)
-        );
+        // let formdata7 = new FormData();
+        // formdata7.append("dataType", "ads1")
+        // formdata7.append("userCountry", userCountry)
+        // fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+        // {
+        //         method: "POST",
+        //         body: formdata7,
+        //     })
+        //     .then(res => res.text())
+        //     .then(data => {
+        //         console.log(data);
+        //         if(data != 0)
+        //         {
+        //             // $("#ads1").html(data);
+        //         }
+        // })
+        // .catch(error => 
+        //     // handle the error
+        //     console.log(error)
+        // );
   }
 
   function loadMore()

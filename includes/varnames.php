@@ -1,6 +1,5 @@
 <?php
 
-
 $stmt = $conn->prepare("SELECT * FROM `siteInfo` WHERE id=1");
 $stmt->execute();
 $siteInfo = $stmt->fetch();

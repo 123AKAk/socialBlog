@@ -4,7 +4,7 @@
     <script src="assets/js/bootstrap.min.js"></script>
     
     <script src="assets/js/popper.min.js"></script>
-    <!-- <script src="assets/js/swiper.min.js"></script> -->
+    <script src="assets/js/swiper.min.js"></script>
     <script src="assets/js/masonry.min.js"></script>
     <script src="assets/js/theia-sticky-sidebar.min.js"></script>
     <script src="assets/js/ajax-contact.js"></script>
@@ -16,11 +16,25 @@
     <script src="assets/alertify/alertify.js"></script>
 
     <!-- JS main  -->
-    <!-- <script src="assets/js/main.js"></script> -->
+    <script src="assets/js/main.js"></script>
     <script src="scripts/code.js"></script>
 
     <script>
-        
+        function reloadObj(idName)
+        {
+            let section = document.getElementById(idName);
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                let parser = new DOMParser();
+                let newDocument = parser.parseFromString(html, 'text/html');
+                let newSection = newDocument.getElementById(idName);
+                    section.innerHTML = newSection.innerHTML;
+                })
+                .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 
     </body>
