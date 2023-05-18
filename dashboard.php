@@ -87,7 +87,7 @@ $categorieslist = $stmt->fetchAll();
                                 <div class="accordion accordion-flush" id="accordionFlushExample">
                                     <div class="">
                                         <h2 class="accordion-header" id="flush-headingOne">
-                                            <a href="javascript:void(0); " class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color: whitesmoke; color:black;">
+                                            <a href="javascript:void(0);" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color: whitesmoke; color:black;">
                                                 Create a Post
                                             </a>
                                         </h2>

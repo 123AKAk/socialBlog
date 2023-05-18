@@ -15,10 +15,10 @@
                         <!-- logo -->
                         <div class="site-branding">
                             <a class="dark-logo" href="index.php">
-                                <img src="assets/img/logo/logo-dark.png" alt="">
+                                <img src="assets/img/logo/logo-dark.png" alt="" style="height:35px;">
                             </a>
                             <a class="light-logo" href="index.php">
-                                <img src="assets/img/logo/logo-white.png" alt="">
+                                <img src="assets/img/logo/logo-white.png" alt="" style="height:35px;">
                             </a>
                         </div><!--/-->
                         

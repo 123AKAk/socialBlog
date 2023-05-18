@@ -69,25 +69,53 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                         <div class="social-media">
                                             <!-- share to diffrent social media -->
                                             <ul class="list-inline">
+                                                <?php
+                                                if ($loggedin == true) 
+                                                {
+                                                    $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]); 
+                                                ?>
                                                 <li>
-                                                    <a href="#" class="color-icons" title="Like Post">
-                                                        <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Like Post">
+                                                        <i onclick="like_dislikePost(<?= $postId ?>, <?= $userId ?>, 1)" class="fa fa-thumbs-up"></i>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" class="color-icons" title="Dislike Post">
-                                                        <i onclick="myFunction(this)" class="fa fa-thumbs-down"></i>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Dislike Post">
+                                                        <i onclick="like_dislikePost(<?= $postId ?>, <?= $userId ?>, 0)" class="fa fa-thumbs-down"></i>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" class="color-icons" title="Follow Author">
-                                                        <i onclick="myFunctionUn_Follow(this)" class="fas fa-user-plus"></i>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Follow Author">
+                                                        <i onclick="Un_FollowPost(<?= $postId ?>, <?= $userId ?>)" class="fas fa-user-plus"></i>
                                                     </a>
                                                 </li>
+                                                <?php
+                                                }
+                                                else
+                                                {
+                                                ?>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Like Post">
+                                                        <i onclick="makelogin()" class="fa fa-thumbs-up"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Dislike Post">
+                                                        <i onclick="makelogin()" class="fa fa-thumbs-down"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Follow Author">
+                                                        <i onclick="makelogin()" class="fas fa-user-plus"></i>
+                                                    </a>
+                                                </li>
+                                                <?php
+                                                }
+                                                ?>
                                             </ul>
                                         </div>
                                     </div>
-                                    <h3 class="title"><?= $post['post_title'] ?></h3>
+                                    <h3 class="title mt-4"><?= $post['post_title'] ?></h3>
                                     <ul class="entry-meta list-inline">
                                         <li class="post-author-img">
                                             <a href="<?= $authLink ?>">
