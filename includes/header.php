@@ -49,6 +49,9 @@
     <!-- Title -->
     <title> MACAE </title>
 
+    <!-- share this plugin -->
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=64656163d427210019483966&product=sop' async='async'></script>
+
     <!--Stylesheets -->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/all.min.css">
@@ -77,9 +80,6 @@
     <link rel="stylesheet" type="text/css" href="assets/dropzone/dropzone.min.css">
     <!-- dropzonejs -->
     <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
-
-    <!-- share this plugin -->
-    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=64656163d427210019483966&product=sop' async='async'></script>
 
     <?php
       if(isset($style_refrences))
