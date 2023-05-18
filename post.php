@@ -42,6 +42,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
     $reading_time = ceil($num_words / $avg_speed);
 }
 
+
 ?>
 <main class="main">
     <!--post-default-->
@@ -59,9 +60,33 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                     <img src="<?= $postImage; ?>" alt="">
                                 </div>
                                 <div class="post-single-content">
-                                    <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
-                                        <?= $post['category_name'] ?>
-                                    </a>
+                                    <div class="post-single-footer">
+                                        <div class="tags">
+                                            <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
+                                                <?= $post['category_name'] ?>
+                                            </a>
+                                        </div>
+                                        <div class="social-media">
+                                            <!-- share to diffrent social media -->
+                                            <ul class="list-inline">
+                                                <li>
+                                                    <a href="#" class="color-icons" title="Like Post">
+                                                        <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" class="color-icons" title="Dislike Post">
+                                                        <i onclick="myFunction(this)" class="fa fa-thumbs-down"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" class="color-icons" title="Follow Author">
+                                                        <i onclick="myFunctionUn_Follow(this)" class="fas fa-user-plus"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <h3 class="title"><?= $post['post_title'] ?></h3>
                                     <ul class="entry-meta list-inline">
                                         <li class="post-author-img">
@@ -93,32 +118,9 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                 </div>
 
                                 <div class="post-single-footer">
-                                    <div class="tags">
-                                        <!-- ShareThis BEGIN -->
-                                        <div class="sharethis-inline-share-buttons"></div>
-                                        <!-- ShareThis END -->
-                                        
-                                    </div>
-                                    <div class="social-media">
-                                        <!-- share to diffrent social media -->
-                                        <ul class="list-inline">
-                                            <li>
-                                                <a href="#" class="color-facebook" title="Like Post">
-                                                    <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="color-facebook" title="Dislike Post">
-                                                    <i onclick="myFunction(this)" class="fa fa-thumbs-down"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="color-facebook" title="Follow Author">
-                                                    <i class="fas fa-user-plus"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <!-- ShareThis BEGIN -->
+                                    <div class="sharethis-inline-share-buttons"></div>
+                                    <!-- ShareThis END -->
                                 </div>
                             </div> <!--/-->
                         <?php
@@ -402,9 +404,5 @@ include 'includes/scripts.php';
         }
         event.preventDefault();
     });
-
-    function myFunction(x) {
-        x.classList.toggle("fa-thumbs-down");
-    }
 
 </script>

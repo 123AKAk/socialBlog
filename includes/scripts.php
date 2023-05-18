@@ -35,6 +35,15 @@
                 console.error('Error:', error);
             });
         }
+
+        function myFunction(x) {
+            x.classList.toggle("fa-thumbs-down");
+        }
+        
+        function myFunctionUn_Follow(x)
+        {
+            alert("Eeasds");
+        }
     </script>
 
     </body>
