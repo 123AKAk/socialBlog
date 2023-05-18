@@ -132,12 +132,12 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                             </li>
                                         </ul>
                                      -->
-
-                                     <!-- ShareThis BEGIN -->
-                                     <div class="sharethis-inline-share-buttons"></div>
-                                     <!-- ShareThis END -->
-
                                     </div>
+                                </div>
+                                <div class="col">
+                                    <!-- ShareThis BEGIN -->
+                                    <div class="sharethis-inline-share-buttons"></div>
+                                     <!-- ShareThis END -->
                                 </div>
                             </div> <!--/-->
                         <?php
