@@ -81,6 +81,8 @@
     <!-- dropzonejs -->
     <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
 
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <?php
       if(isset($style_refrences))
       {

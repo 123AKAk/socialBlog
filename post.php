@@ -104,34 +104,23 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                     </div>
                                     <div class="social-media">
                                         <!-- share to diffrent social media -->
-                                        <!-- <ul class="list-inline">
+                                        <ul class="list-inline">
                                             <li>
-                                                <a href="#" class="color-facebook">
-                                                    <i class="fab fa-facebook"></i>
+                                                <a href="#" class="color-facebook" title="Like Post">
+                                                    <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#" class="color-instagram">
-                                                    <i class="fab fa-instagram"></i>
+                                                <a href="#" class="color-facebook" title="Dislike Post">
+                                                    <i onclick="myFunction(this)" class="fa fa-thumbs-down"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#" class="color-twitter">
-                                                    <i class="fab fa-twitter"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="color-youtube">
-                                                    <i class="fab fa-youtube"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="color-pinterest">
-                                                    <i class="fab fa-pinterest"></i>
+                                                <a href="#" class="color-facebook" title="Follow Author">
+                                                    <i class="fas fa-user-plus"></i>
                                                 </a>
                                             </li>
                                         </ul>
-                                     -->
                                     </div>
                                 </div>
                                 <div class="col">
@@ -421,5 +410,9 @@ include 'includes/scripts.php';
         }
         event.preventDefault();
     });
+
+    function myFunction(x) {
+        x.classList.toggle("fa-thumbs-down");
+    }
 
 </script>
