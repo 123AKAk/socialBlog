@@ -94,13 +94,10 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
 
                                 <div class="post-single-footer">
                                     <div class="tags">
-                                        <ul class="list-inline">
-                                            <li>
-                                                <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
-                                                    <?= $post['category_name'] ?>
-                                                </a>
-                                            </li>
-                                        </ul>
+                                        <!-- ShareThis BEGIN -->
+                                        <div class="sharethis-inline-share-buttons"></div>
+                                        <!-- ShareThis END -->
+                                        
                                     </div>
                                     <div class="social-media">
                                         <!-- share to diffrent social media -->
@@ -122,11 +119,6 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                             </li>
                                         </ul>
                                     </div>
-                                </div>
-                                <div class="col">
-                                    <!-- ShareThis BEGIN -->
-                                    <div class="sharethis-inline-share-buttons"></div>
-                                     <!-- ShareThis END -->
                                 </div>
                             </div> <!--/-->
                         <?php
