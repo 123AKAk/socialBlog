@@ -2,8 +2,6 @@
     require "classes/components/db.php";
     require "classes/components/sharedComponents.php";
     $sharedComponents = new sharedComponents();
-    
-    require "includes/varnames.php";
 
     //validates logged in session ID
     $loggedin = false;

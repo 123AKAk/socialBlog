@@ -38,7 +38,9 @@ class sharedComponents
 
     function sendUsersMail($username, $subject, $message, $toEmail, $altBody)
     {
-        require SITE_ROOT . "/../../includes/varnames.php";
+
+        $siteDetails = $this->siteDetails();
+
         require 'mailers/autoload.php';
 
         $mail = new PHPMailer(true);
@@ -47,16 +49,16 @@ class sharedComponents
             //only to be used on Localhost
             //$mail->IsSMTP();
 
-            $mail->Host = $siteEmailHost;
+            $mail->Host = $siteDetails["siteEmailHost"];
             $mail->SMTPAuth = true;
-            $mail->Username = $siteEmail;
-            $mail->Password = $siteEmailPassword;
+            $mail->Username = $siteDetails["siteEmail"];
+            $mail->Password = $siteDetails["siteEmailPassword"];
             $mail->SMTPSecure = 'SSL';
-            $mail->Port = $siteEmailPort;
+            $mail->Port = $siteDetails["siteEmailPort"];
 
-            $mail->setFrom($siteEmail, $siteName);
+            $mail->setFrom($siteDetails["siteEmail"], $siteDetails["siteName"]);
             $mail->addAddress($toEmail);
-            $mail->addReplyTo($siteEmail, 'For any Information');
+            $mail->addReplyTo($siteDetails["siteEmail"], 'For any Information');
             $mail->isHTML(true);
             $mail->Subject = $subject;
             $mail->Body    = $message;
@@ -250,17 +252,17 @@ class sharedComponents
 
     function useSystemDetails($conn)
     {
-        require "includes/varnames.php";
+        $siteDetails = $this->siteDetails();
 
         $systemDetails = [];
         $systemJson = new stdClass();
         $systemJson->id = $this->protect(0);
-        $systemJson->username = $siteName;
-        $systemJson->email = $siteEmail;
+        $systemJson->username = $siteDetails["siteName"];
+        $systemJson->email = $siteDetails["siteEmail"];
         $systemJson->gender = "Male";
-        $systemJson->profile_pic = $siteImage;
+        $systemJson->profile_pic = $siteDetails["siteImage"];
         $systemJson->type = "Admin";
-        $systemJson->desc = $siteDesc;
+        $systemJson->desc = $siteDetails["siteDesc"];
 
         return $systemJson;
     }
@@ -328,6 +330,44 @@ class sharedComponents
             }
         } else {
             return 0;
+        }
+    }
+    
+    function siteDetails()
+    {
+        require 'db.php';
+
+        $siteName = $globalName = $siteEmail = $siteEmailPassword = $siteEmailHost = $siteEmailPort = $siteMsg = $siteHashTag = $pageTitleDefault = $pageDescDefault = $siteURL = $pageLogo = $logoDesc = $siteImage = $siteDesc = "";
+
+        $sql = "SELECT * FROM siteInfo WHERE id=:id";
+        if ($stmt = $conn->prepare($sql)) {
+            // Bind variables to the prepared statement as parameters
+            $stmt->bindParam(":id", 1, PDO::PARAM_INT);
+            // Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // Check if id exists
+                if ($stmt->rowCount() > 1) {
+                    if ($row = $stmt->fetch()) {
+                        $siteName = "Macae Blog";
+                        $globalName = "Macae";
+                        $siteEmail = "admin@donnapoodles.com";
+                        $siteEmailPassword = "5a51EZbK9jKj";
+                        $siteEmailHost = "mail.donnapoodles.com";
+                        $siteEmailPort = 465;
+                        $siteMsg = "Check out this Post on ";
+                        $siteHashTag = "BLUNT BLOGGING NIGERIA";
+                        $pageTitleDefault = "BLUNT BLOG";
+                        $pageDescDefault = "BLOGGING FOR EVERYONE";
+                        $siteURL = "http://bluntechnology.com/";
+                        $pageLogo = "http://bluntechnology.com/assets/img/logo.png";
+                        $logoDesc = "Nice Color";
+                        $siteImage = "siteImage.jpg";
+                        $siteDesc = "This is from Macae";
+                    }
+                } else {
+                }
+            } else {
+            }
         }
     }
 
