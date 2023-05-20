@@ -140,7 +140,7 @@ if ($conn) {
             }
             break;
         case "forgotpassword":
-            echo "3";
+            
             break;
         case "comment":
             if (isset($_POST["postId"]) && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["comment"])) {
@@ -168,23 +168,237 @@ if ($conn) {
                 echo json_encode(['response' => false, 'message' => 'Fill all fields', 'code' => '0', 'data' => '']);
             }
             break;
-        case "like":
-            echo "5";
+        case "postDetails":
+            if (!empty($_POST["postId"]) && !empty($_POST['userId']) && !empty($_POST['action'])) {
+                
+                $postId = $sharedComponents->unprotect($_POST['postId']);
+                $userId = $sharedComponents->unprotect($_POST['userId']);
+                $action = $_POST['action'];
+
+                $data = array(
+                    "likes" => 0,
+                    "dislikes" => 0
+                );
+
+                try {
+                    // Check if the user has already performed the action for the post
+                    $stmt = $conn->prepare("SELECT * FROM postDetails WHERE postId = :postId AND userId = :userId");
+                    $stmt->bindParam(':postId', $postId);
+                    $stmt->bindParam(':userId', $userId);
+                    $stmt->execute();
+                    $existingPost = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($existingPost) {
+                        // User has already performed an action, handle accordingly
+                        if ($action == 'like') {
+                            // User wants to like the post
+                            if ($existingPost['dislikes'] == 1) {
+                                // User had previously disliked, so set dislikes to 0 and set likes to 1
+                                $stmt = $conn->prepare("UPDATE postDetails SET dislikes = 0, likes = 1 WHERE postId = :postId AND userId = :userId");
+
+                                $data["dislikes"] = 0;
+                                $data["likes"] = 1;
+                            } else {
+                                if ($existingPost['likes'] == 1) {
+                                    // User had previously liked, so set likes to 0
+                                    $stmt = $conn->prepare("UPDATE postDetails SET likes = 0 WHERE postId = :postId AND userId = :userId");
+
+                                    $data["dislikes"] = 0;
+                                    $data["likes"] = 0;
+                                }
+                                else
+                                {
+                                    $stmt = $conn->prepare("UPDATE postDetails SET likes = 1 WHERE postId = :postId AND userId = :userId");
+
+                                    $data["dislikes"] = 0;
+                                    $data["likes"] = 1;
+                                }
+                            }
+                        } else if ($action == 'dislike') {
+                            // User wants to dislike the post
+                            if ($existingPost['likes'] == 1) {
+                                // User had previously liked, so set likes to 0 and set dislikes to 1
+                                $stmt = $conn->prepare("UPDATE postDetails SET likes = 0, dislikes = 1 WHERE postId = :postId AND userId = :userId");
+
+                                $data["dislikes"] = 1;
+                                $data["likes"] = 0;
+                            } else {
+                                if ($existingPost['dislikes'] == 1) {
+                                    // User had previously disliked, so set dislikes to 0
+                                    $stmt = $conn->prepare("UPDATE postDetails SET dislikes = 0 WHERE postId = :postId AND userId = :userId");
+
+                                    $data["dislikes"] = 0;
+                                    $data["likes"] = 0;
+                                }
+                                else
+                                {
+                                    $stmt = $conn->prepare("UPDATE postDetails SET dislikes = 1 WHERE postId = :postId AND userId = :userId");
+
+                                    $data["dislikes"] = 1;
+                                    $data["likes"] = 0;
+                                }
+                            }
+                        } else if ($action == 'view' && $existingPost['views'] == 0) {
+                            // User wants to update the view action
+                            $stmt = $conn->prepare("UPDATE postDetails SET views = 1 WHERE postId = :postId AND userId = :userId");
+                        }
+                        
+                        $stmt->bindParam(':postId', $postId);
+                        $stmt->bindParam(':userId', $userId);
+                        $stmt->execute();
+                        
+                        echo json_encode(['response' => true, 'message' => 'Post details updated successfully', 'code' => '1', 'data' => json_encode($data)]);
+                    } else {
+                        // Insert a new row for the post and user
+                        if ($action == 'like') {
+                            $stmt = $conn->prepare("INSERT INTO postDetails (postId, userId, likes) VALUES (:postId, :userId, 1)");
+
+                            $data["dislikes"] = 0;
+                            $data["likes"] = 1;
+                        } else if ($action == 'dislike') {
+                            $stmt = $conn->prepare("INSERT INTO postDetails (postId, userId, dislikes) VALUES (:postId, :userId, 1)");
+
+                            $data["dislikes"] = 1;
+                            $data["likes"] = 0;
+                        } else if ($action == 'view') {
+                            $stmt = $conn->prepare("INSERT INTO postDetails (postId, userId, views) VALUES (:postId, :userId, 1)");
+                        }
+
+                        $stmt->bindParam(':postId', $postId);
+                        $stmt->bindParam(':userId', $userId);
+                        $stmt->execute();
+                        
+                        echo json_encode(['response' => true, 'message' => 'Success Post Details Updated', 'code' => '1', 'data' => json_encode($data)]);
+                    }
+                } catch (PDOException $e) {
+                    echo json_encode(['response' => false, 'message' => 'Error updating post details: '.$e->getMessage(), 'code' => '0', 'data' => json_encode($data)]);
+                }
+            } else {
+                echo json_encode(['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => '']);
+            }
             break;
-        case "unlike":
-            echo "6";
+        case "bookmark_unbookmark_Post":
+            if (isset($_POST["postId"]) && isset($_POST['userId']) && isset($_POST['action'])) {
+
+                $postId = $sharedComponents->unprotect($_POST['postId']);
+                $userId = $sharedComponents->unprotect($_POST['userId']);
+                // Action to perform: add or remove
+                $action = $_POST['action'];
+
+                $data = 0;
+
+                try {
+
+                    // Retrieve the current saved_posts value for the user from the database
+                    $stmt = $conn->prepare("SELECT saved_posts FROM user WHERE user_id = :user_id");
+                    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    $saved_posts = $row['saved_posts'];
+                    
+                    // Convert the retrieved saved_posts string to an array using json_decode
+                    $post_ids = $saved_posts ? json_decode($saved_posts, true) : [];
+                    
+                    // Check if the post ID is already present in the array
+                    $index = array_search($postId, $post_ids);
+                    
+                    if ($action === 'add') {
+                        // Add the post ID if it's not already present
+                        if ($index === false) {
+                            array_push($post_ids, $postId);
+                            //$post_ids[] = $postId;
+
+                            $data = 1;
+                        }
+                    } else if ($action === 'remove') {
+                        // Remove the post ID if it's present in the array
+                        if ($index !== false) {
+                            unset($post_ids[$index]);
+
+                            $data = 0;
+                        }
+                    }
+                    
+                    // Convert the modified array back to a JSON string
+                    $saved_posts = json_encode($post_ids);
+                    
+                    // Update the saved_posts column for the user in the database
+                    $stmt = $conn->prepare("UPDATE user SET saved_posts = :saved_posts WHERE user_id = :user_id");
+                    $stmt->bindParam(':saved_posts', $saved_posts, PDO::PARAM_STR);
+                    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    echo json_encode(['response' => true, 'message' => 'Success, Saved Post Updated', 'code' => '1', 'data' => $data]);
+
+                } catch (PDOException $e) {
+                    echo json_encode(['response' => false, 'message' => 'Error updating saved posts: '.$e->getMessage(), 'code' => '0', 'data' => json_encode($data)]);
+                }
+            }
+            else {
+                echo json_encode(['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => 0]);
+            }
             break;
-        case "savePost":
-            echo "7";
-            break;
-        case "unsavePost":
-            echo "7";
-            break;
-        case "followAuthor":
-            echo "8";
-            break;
-        case "unfollowAuthor":
-            echo "8";
+        case "follow_unfollow_Author":
+            if (isset($_POST["authorId"]) && isset($_POST['userId']) && isset($_POST['action'])) {
+
+                $authorId = $sharedComponents->unprotect($_POST['authorId']);
+                $userId = $sharedComponents->unprotect($_POST['userId']);
+                $action = $_POST['action'];
+
+                $data = 0;
+
+                try {
+
+                    // Retrieve the current authors_followed value for the user from the database
+                    $stmt = $conn->prepare("SELECT authors_followed FROM user WHERE user_id = :user_id");
+                    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    $authors_followed = $row['authors_followed'];
+                    
+                    // Convert the retrieved authors_followed string to an array using json_decode
+                    $allAuthors_followed = $authors_followed ? json_decode($authors_followed, true) : [];
+                    
+                    // Check if the author ID is already present in the array
+                    $index = array_search($authorId, $allAuthors_followed);
+                    
+                    if ($action === 'add') {
+                        // Add the author ID if it's not already present
+                        if ($index === false) {
+                            array_push($allAuthors_followed, $authorId);
+                            //$allAuthors_followed[] = $authorId;
+
+                            $data = 1;
+                        }
+                    } else if ($action === 'remove') {
+                        // Remove the author ID if it's present in the array
+                        if ($index !== false) {
+                            unset($allAuthors_followed[$index]);
+
+                            $data = 0;
+                        }
+                    }
+                    
+                    // Convert the modified array back to a JSON string
+                    $authors_followed = json_encode($allAuthors_followed);
+                    
+                    // Update the authors_followed column for the user in the database
+                    $stmt = $conn->prepare("UPDATE user SET authors_followed = :authors_followed WHERE user_id = :user_id");
+                    $stmt->bindParam(':authors_followed', $authors_followed, PDO::PARAM_STR);
+                    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    echo json_encode(['response' => true, 'message' => 'Success, followed Authors Updated', 'code' => '1', 'data' => $data]);
+
+                } catch (PDOException $e) {
+                    echo json_encode(['response' => false, 'message' => 'Error updating followed Authors: '.$e->getMessage(), 'code' => '0', 'data' => json_encode($data)]);
+                }
+            }
+            else {
+                echo json_encode(['response' => false, 'message' => 'Authentication Error', 'code' => '0', 'data' => 0]);
+            }
             break;
         case "createPost":
             //uploading files into the server
@@ -501,6 +715,12 @@ if ($conn) {
 
             if (isset($_POST["adName"])) {
             }
+            break;
+        case "editAd":
+            break;
+        case "publishAd":
+            break;
+        case "deleteAd":
             break;
         case "updateProfile":
             //uploading files into the server

@@ -317,7 +317,7 @@ tagsWithAlt.forEach(tag => {
     })
     .catch(error => {
         console.error(error);
-        alertify.error("Error authenticating Client Machine");
+        alertify.error("Error authenticating Client Machine, Internet connection lost");
     });
   }
 

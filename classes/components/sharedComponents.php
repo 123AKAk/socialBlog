@@ -269,9 +269,9 @@ class sharedComponents
 
     function checkComments($postId, $pdo)
     {
-        $asql = "SELECT * FROM comments WHERE status = 1 AND postid = :postid ORDER BY comments_id DESC";
-        if ($astmt = $pdo->prepare($asql)) {
-            $astmt->bindParam(":postid", $postId, PDO::PARAM_STR);
+        $sql = "SELECT * FROM comments WHERE status = 1 AND postid = :postid ORDER BY comments_id DESC";
+        if ($astmt = $pdo->prepare($sql)) {
+            $astmt->bindParam(":postid", $postId, PDO::PARAM_INT);
             $astmt->execute();
             $comments = $astmt->fetchAll();
             $number_of_rows = $astmt->rowCount();
@@ -281,6 +281,112 @@ class sharedComponents
                 'comments' => $comments,
             );
             return $commentResults;
+        }
+    }
+
+    //gets the post details
+    function getPostDetails($postId, $userId, $pdo)
+    {
+        $postId = $this->unprotect($postId);
+        $userId = $this->unprotect($userId);
+
+        $stmt = $pdo->prepare("SELECT * FROM postDetails WHERE postId = :postId AND userId = :userId");
+        $stmt->bindParam(':postId', $postId);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        if($row = $stmt->fetch())
+        {
+            $postDetails = array(
+                'likes' => $row["likes"],
+                'dislikes' => $row["dislikes"],
+                'views' => $row["views"]
+            );
+            return $postDetails;
+        }
+    }
+    
+    function getBookmarkDetails($postId, $userId, $pdo)
+    {
+        $postId = $this->unprotect($postId);
+        $userId = $this->unprotect($userId);
+
+        // Retrieve the current saved_posts value for the user from the database
+        $stmt = $pdo->prepare("SELECT saved_posts FROM user WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        if($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $saved_posts = $row['saved_posts'];
+            
+            // Convert the retrieved saved_posts string to an array using json_decode
+            $post_ids = $saved_posts ? json_decode($saved_posts, true) : [];
+            
+            // Check if the post ID is already present in the array
+            $index = array_search($postId, $post_ids);
+    
+            if ($index === false)
+                return 0;
+            else
+                return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    function getAuthorFollowDetails($authorId, $userId, $pdo)
+    {
+        $authorId = $this->unprotect($authorId);
+        $userId = $this->unprotect($userId);
+
+        // Retrieve the current authors_followed value for the user from the database
+        $stmt = $pdo->prepare("SELECT authors_followed FROM user WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+        
+            $authors_followed = $row['authors_followed'];
+            
+            // Convert the retrieved authors_followed string to an array using json_decode
+            $allAuthors_followed = $authors_followed ? json_decode($authors_followed, true) : [];
+            
+            // Check if the author ID is already present in the array
+            $index = array_search($authorId, $allAuthors_followed);
+            
+            if ($index === false)
+                return 0;
+            else
+                return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    function getViewsPostDetails($postId, $pdo)
+    {
+        $sql = "SELECT SUM(views) AS totalViews FROM postDetails WHERE postId = :postId";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":postId", $postId);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            if($result = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                return $result['totalViews'];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 3;
         }
     }
 

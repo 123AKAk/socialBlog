@@ -3268,7 +3268,7 @@ input:checked + .slider:before {
   height: 45px;
   background-color: #ebe846;
   position: fixed;
-  bottom: 15px;
+  bottom: 40px;
   right: 30px;
   border-radius: 50%;
   z-index: 9;

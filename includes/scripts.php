@@ -35,17 +35,121 @@
                 });
         }
 
-        function like_dislikePost(x) {
+        function like_dislikePost(postId, userId, action, element) {
+            let formdata = new FormData();
+            formdata.append("userId", userId);
+            formdata.append("postId", postId);
+            formdata.append("action", action);
+            fetch("classes/components/userComponents.php?dataPurpose=postDetails", {
+                    method: "POST",
+                    body: formdata,
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    let result = (data);
+                    if(element != "")
+                    {
+                        if (result.response == true) {
+                            objData = JSON.parse(result.data);
+                            if (objData.likes == 1 && objData.dislikes == 0) {
+                                let element2 = document.getElementById("dislikePost");
 
+                                element2.style.background = "#ebe846";
+
+                                element.style.background = "#0e100fbf";
+                            } else if (objData.likes == 0 && objData.dislikes == 1) {
+                                let element2 = document.getElementById("likePost");
+
+                                element2.style.backgroundColor = "#ebe846";
+
+                                element.style.backgroundColor = "#0e100fbf";
+                            } else {
+                                element.style.backgroundColor = "#ebe846";
+                            }
+                        } else {
+                            alertify.error(result.message);
+                        }
+                    }
+                })
+                .catch(error =>
+                    console.log(error)
+                );
         }
 
-        function Un_FollowPost(x) {
-            alert("Eeasds");
+        function Un_FollowAuthor(authorId, userId, action, element) {
+            let formdata = new FormData();
+            formdata.append("userId", userId);
+            formdata.append("authorId", authorId);
+            formdata.append("action", action);
+            fetch("classes/components/userComponents.php?dataPurpose=follow_unfollow_Author", {
+                    method: "POST",
+                    body: formdata,
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    let result = (data);
+                    if (result.response == true) {
+                        //change icon style
+                        if (result.data == 1) {
+                            element.style.backgroundColor = "#0e100fbf";
+                            element.innerHTML = '<i class="fas fa-user-minus"></i>';
+                            element.setAttribute("onclick", `Un_FollowAuthor('${authorId}', '${userId}', 'remove', this)`)
+                        } else if (result.data == 0) {
+                            element.style.backgroundColor = "#ebe846";
+                            element.innerHTML = '<i class="fas fa-user-plus"></i>';
+                            element.setAttribute("onclick", `Un_FollowAuthor('${authorId}', '${userId}', 'add', this)`)
+                        } else {
+                            element.style.backgroundColor = "#ebe846";
+                            element.innerHTML = '<i class="fas fa-user-plus"></i>';
+                            element.setAttribute("onclick", Un_FollowAuthor(authorId, userId, 'add', this))
+                        }
+                    } else {
+                        alertify.error(result.message);
+                    }
+                })
+                .catch(error =>
+                    console.log(error)
+                );
         }
 
-        function makelogin()
-        {
-            alertify.message("Log in to use user previleages.");
+        function Un_BookmarkPost(postId, userId, action, element) {
+            let formdata = new FormData();
+            formdata.append("userId", userId);
+            formdata.append("postId", postId);
+            formdata.append("action", action);
+            fetch("classes/components/userComponents.php?dataPurpose=bookmark_unbookmark_Post", {
+                    method: "POST",
+                    body: formdata,
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    let result = (data);
+                    if (result.response == true) {
+                        //change icon style
+                        if (result.data == 1) {
+                            element.style.backgroundColor = "#0e100fbf";
+                            element.setAttribute("onclick", `Un_BookmarkPost('${postId}', '${userId}', 'remove', this)`)
+                        } else if (result.data == 0) {
+                            element.style.backgroundColor = "#ebe846";
+                            element.setAttribute("onclick", `Un_BookmarkPost('${postId}', '${userId}', 'add', this)`)
+                        } else {
+                            element.style.backgroundColor = "#ebe846";
+                            element.setAttribute("onclick", `Un_BookmarkPost('${postId}', '${userId}', 'add', this)`)
+                        }
+                    } else {
+                        alertify.error(result.message);
+                    }
+                })
+                .catch(error =>
+                    console.log(error)
+                );
+        }
+
+        function makelogin() {
+            alertify.message("Log in to use user Privileges.");
         }
     </script>
 

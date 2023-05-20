@@ -59,7 +59,16 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                 <div class="post-single-image">
                                     <img src="<?= $postImage; ?>" alt="">
                                 </div>
-                                <div class="post-single-content">
+                                <div class="post-single-content" id="post-contents">
+                                    <p class="">
+                                        <?php
+                                            $viewsPostDetails = $sharedComponents->getViewsPostDetails($postId, $conn);
+                                            if(isset($viewsPostDetails))
+                                            {
+                                                echo $viewsPostDetails;
+                                            }
+                                        ?> Unique Post View(s)
+                                    </p>
                                     <div class="post-single-footer">
                                         <div class="tags">
                                             <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
@@ -72,41 +81,103 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                                 <?php
                                                 if ($loggedin == true) 
                                                 {
-                                                    $userId = $sharedComponents->unprotect($_SESSION["macae_blog_user_loggedin_"]); 
+                                                    $DuserId = $_SESSION["macae_blog_user_loggedin_"];
+                                                    $DpostId = $sharedComponents->protect($postId);
+                                                    
+                                                    $postDetails = $sharedComponents->getPostDetails($DpostId, $DuserId, $conn);
+
+                                                    $bookmarkDetails = $sharedComponents->getBookmarkDetails($DpostId, $DuserId, $conn);
+
+                                                    $authorFollowDetails = $sharedComponents->getAuthorFollowDetails($authId, $DuserId, $conn);
+                                                    
+                                                    if(isset($postDetails))
+                                                    {
+                                                        $likes = $postDetails['likes'];
+                                                        $dislikes = $postDetails['dislikes'];
                                                 ?>
-                                                <li>
-                                                    <a href="javascript:void(0);" class="color-icons" title="Like Post">
-                                                        <i onclick="like_dislikePost(<?= $postId ?>, <?= $userId ?>, 1)" class="fa fa-thumbs-up"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:void(0);" class="color-icons" title="Dislike Post">
-                                                        <i onclick="like_dislikePost(<?= $postId ?>, <?= $userId ?>, 0)" class="fa fa-thumbs-down"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:void(0);" class="color-icons" title="Follow Author">
-                                                        <i onclick="Un_FollowPost(<?= $postId ?>, <?= $userId ?>)" class="fas fa-user-plus"></i>
-                                                    </a>
-                                                </li>
+                                                    <li>
+                                                        <a id="likePost" href="javascript:void(0);" class="color-icons" title="Like Post" onclick="like_dislikePost('<?= $DpostId ?>', '<?= $DuserId ?>', 'like', this)" style="<?= ($likes == 1) ? "background:#0e100fbf;" : ""; ?>">
+                                                            <i class="fa fa-thumbs-up"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a id="dislikePost" href="javascript:void(0);" class="color-icons" title="Dislike Post" onclick="like_dislikePost('<?= $DpostId ?>', '<?= $DuserId ?>', 'dislike', this)" style="<?= ($dislikes == 1) ? "background:#0e100fbf;" : ""; ?>">
+                                                            <i class="fa fa-thumbs-down"></i>
+                                                        </a>
+                                                    </li>
                                                 <?php
+                                                    } else {
+                                                ?>
+                                                    <li>
+                                                        <a id="likePost" href="javascript:void(0);" class="color-icons" title="Like Post" onclick="like_dislikePost('<?= $DpostId ?>', '<?= $DuserId ?>', 'like', this)">
+                                                            <i class="fa fa-thumbs-up"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a id="dislikePost" href="javascript:void(0);" class="color-icons" title="Dislike Post" onclick="like_dislikePost('<?= $DpostId ?>', '<?= $DuserId ?>', 'dislike', this)">
+                                                            <i class="fa fa-thumbs-down"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php
+                                                    }
+                                                    if(isset($bookmarkDetails) && $bookmarkDetails == 1)
+                                                    {
+                                                ?>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="color-icons" title="Bookmark Post" onclick="Un_BookmarkPost('<?= $DpostId ?>', '<?= $DuserId ?>', 'remove', this)" style="background:#0e100fbf;">
+                                                            <i class="fas fa-bookmark"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php
+                                                    } else {
+                                                ?>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="color-icons" title="Bookmark Post" onclick="Un_BookmarkPost('<?= $DpostId ?>', '<?= $DuserId ?>', 'add', this)">
+                                                            <i class="fas fa-bookmark"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php
+                                                    }
+                                                    if(isset($authorFollowDetails) && $authorFollowDetails == 1)
+                                                    {
+                                                ?>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="color-icons" title="Follow Author" onclick="Un_FollowAuthor('<?= $authId ?>', '<?= $DuserId ?>', 'remove', this)" style="background:#0e100fbf;">
+                                                            <i class="fas fa-user-plus"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php
+                                                    } else {
+                                                ?>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="color-icons" title="Follow Author" onclick="Un_FollowAuthor('<?= $authId ?>', '<?= $DuserId ?>', 'add', this)">
+                                                            <i class="fas fa-user-plus"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php
+                                                    }
                                                 }
                                                 else
                                                 {
                                                 ?>
                                                 <li>
-                                                    <a href="javascript:void(0);" class="color-icons" title="Like Post">
-                                                        <i onclick="makelogin()" class="fa fa-thumbs-up"></i>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Like Post" onclick="makelogin()">
+                                                        <i class="fa fa-thumbs-up"></i>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="javascript:void(0);" class="color-icons" title="Dislike Post">
-                                                        <i onclick="makelogin()" class="fa fa-thumbs-down"></i>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Dislike Post" onclick="makelogin()">
+                                                        <i class="fa fa-thumbs-down"></i>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="javascript:void(0);" class="color-icons" title="Follow Author">
-                                                        <i onclick="makelogin()" class="fas fa-user-plus"></i>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Bookmark Post" onclick="makelogin()">
+                                                        <i class="fas fa-bookmark"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="color-icons" title="Follow Author" onclick="makelogin()">
+                                                        <i class="fas fa-user-plus"></i>
                                                     </a>
                                                 </li>
                                                 <?php
@@ -386,6 +457,24 @@ include 'includes/footer.php';
 include 'includes/scripts.php';
 ?>
 <script>
+    //this sets the view count for the post when a unique user views the post for the first time
+    // Get the section element by its ID
+    var section = document.getElementById("post-contents");
+
+    // Flag variable to track if the function has already been executed
+    var isFunctionExecuted = false;
+
+    // Register the view function to be executed on scroll
+    window.addEventListener("scroll", function() {
+        var sectionPosition = section.getBoundingClientRect();
+
+        // Check if the top of the section is in the viewport
+        if (!isFunctionExecuted && sectionPosition.top >= 0 && sectionPosition.top <= window.innerHeight) {
+            like_dislikePost('<?= $DpostId ?>', '<?= $DuserId ?>', 'view', "")
+            isFunctionExecuted = true;
+        }
+    });
+
     // signup form
     $("#comment-form").submit(function(event) {
         var name = $("#name").val();
