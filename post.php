@@ -26,6 +26,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
     $authId = $adminUserDetails["id"];
     $authEmail = $adminUserDetails["email"];
     $authName = $adminUserDetails["username"];
+    $authType = $adminUserDetails["type"];
     $authGender = $adminUserDetails["gender"];
     $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
     $authLink = "author.php?authDType=" . $adminUserDetails["type"] . "&authd=" . $adminUserDetails["id"];
@@ -88,7 +89,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
 
                                                     $bookmarkDetails = $sharedComponents->getBookmarkDetails($DpostId, $DuserId, $conn);
 
-                                                    $authorFollowDetails = $sharedComponents->getAuthorFollowDetails($authId, $DuserId, $conn);
+                                                    $authorFollowDetails = $sharedComponents->getAuthorFollowDetails($authId, $authType, $DuserId, $conn);
                                                     
                                                     if(isset($postDetails))
                                                     {
@@ -124,7 +125,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                                     {
                                                 ?>
                                                     <li>
-                                                        <a href="javascript:void(0);" class="color-icons" title="Bookmark Post" onclick="Un_BookmarkPost('<?= $DpostId ?>', '<?= $DuserId ?>', 'remove', this)" style="background:#0e100fbf;">
+                                                        <a href="javascript:void(0);" class="color-icons" title="Remove Bookmarked Post" onclick="Un_BookmarkPost('<?= $DpostId ?>', '<?= $DuserId ?>', 'remove', this)" style="background:#0e100fbf;">
                                                             <i class="fas fa-bookmark"></i>
                                                         </a>
                                                     </li>
@@ -142,15 +143,15 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                                     {
                                                 ?>
                                                     <li>
-                                                        <a href="javascript:void(0);" class="color-icons" title="Follow Author" onclick="Un_FollowAuthor('<?= $authId ?>', '<?= $DuserId ?>', 'remove', this)" style="background:#0e100fbf;">
-                                                            <i class="fas fa-user-plus"></i>
+                                                        <a href="javascript:void(0);" class="color-icons" title="UnFollow Author" onclick="Un_FollowAuthor('<?= $authId ?>', '<?= $authType ?>', '<?= $DuserId ?>', 'remove', this)" style="background:#0e100fbf;">
+                                                            <i class="fas fa-user-minus"></i>
                                                         </a>
                                                     </li>
                                                 <?php
                                                     } else {
                                                 ?>
                                                     <li>
-                                                        <a href="javascript:void(0);" class="color-icons" title="Follow Author" onclick="Un_FollowAuthor('<?= $authId ?>', '<?= $DuserId ?>', 'add', this)">
+                                                        <a href="javascript:void(0);" class="color-icons" title="Follow Author" onclick="Un_FollowAuthor('<?= $authId ?>', '<?= $authType ?>', '<?= $DuserId ?>', 'add', this)">
                                                             <i class="fas fa-user-plus"></i>
                                                         </a>
                                                     </li>

@@ -77,10 +77,11 @@
                 );
         }
 
-        function Un_FollowAuthor(authorId, userId, action, element) {
+        function Un_FollowAuthor(authorId, authorType, userId, action, element) {
             let formdata = new FormData();
-            formdata.append("userId", userId);
             formdata.append("authorId", authorId);
+            formdata.append("authorType", authorType);
+            formdata.append("userId", userId);
             formdata.append("action", action);
             fetch("classes/components/userComponents.php?dataPurpose=follow_unfollow_Author", {
                     method: "POST",
@@ -95,11 +96,11 @@
                         if (result.data == 1) {
                             element.style.backgroundColor = "#0e100fbf";
                             element.innerHTML = '<i class="fas fa-user-minus"></i>';
-                            element.setAttribute("onclick", `Un_FollowAuthor('${authorId}', '${userId}', 'remove', this)`)
+                            element.setAttribute("onclick", `Un_FollowAuthor('${authorId}', '${authorType}', '${userId}', 'remove', this)`)
                         } else if (result.data == 0) {
                             element.style.backgroundColor = "#ebe846";
                             element.innerHTML = '<i class="fas fa-user-plus"></i>';
-                            element.setAttribute("onclick", `Un_FollowAuthor('${authorId}', '${userId}', 'add', this)`)
+                            element.setAttribute("onclick", `Un_FollowAuthor('${authorId}', '${authorType}', '${userId}', 'add', this)`)
                         } else {
                             element.style.backgroundColor = "#ebe846";
                             element.innerHTML = '<i class="fas fa-user-plus"></i>';

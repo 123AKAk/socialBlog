@@ -336,7 +336,7 @@ class sharedComponents
         }
     }
 
-    function getAuthorFollowDetails($authorId, $userId, $pdo)
+    function getAuthorFollowDetails($authorId, $authorType, $userId, $pdo)
     {
         $authorId = $this->unprotect($authorId);
         $userId = $this->unprotect($userId);
@@ -355,12 +355,25 @@ class sharedComponents
             $allAuthors_followed = $authors_followed ? json_decode($authors_followed, true) : [];
             
             // Check if the author ID is already present in the array
-            $index = array_search($authorId, $allAuthors_followed);
+            //$index = array_search($authorId, $allAuthors_followed);
             
-            if ($index === false)
+            // if ($index === false)
+            //     return 0;
+            // else
+            //     return 1;
+
+            $index = null;
+            // Loop through the post IDs array and find the index of the ID and type combination
+            foreach ($allAuthors_followed as $key => $author) {
+                if ($author['id'] === $authorId && $author['type'] === $authorType) {
+                    $index = $key;
+                    return 1;
+                    break;
+                }
+            }
+
+            if ($index == null)
                 return 0;
-            else
-                return 1;
         }
         else
         {

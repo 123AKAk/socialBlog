@@ -62,7 +62,7 @@
                                             <!--widget-tags-->
                                             <div class="widget">
                                                 <div class="section-title">
-                                                    <h5>Popular Authors</h5>
+                                                    <h5>Change to most followed Authors (Popular Authors)</h5>
                                                 </div>
                                                 <div class="">
                                                     <ul class="widget-latest-posts" id="popularAuthors">

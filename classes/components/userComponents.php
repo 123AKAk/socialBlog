@@ -340,10 +340,11 @@ if ($conn) {
             }
             break;
         case "follow_unfollow_Author":
-            if (isset($_POST["authorId"]) && isset($_POST['userId']) && isset($_POST['action'])) {
+            if (isset($_POST["authorId"]) && isset($_POST['authorType']) && isset($_POST['userId']) && isset($_POST['action'])) {
 
                 $authorId = $sharedComponents->unprotect($_POST['authorId']);
                 $userId = $sharedComponents->unprotect($_POST['userId']);
+                $authorType = $_POST['authorType'];
                 $action = $_POST['action'];
 
                 $data = 0;
@@ -362,20 +363,34 @@ if ($conn) {
                     $allAuthors_followed = $authors_followed ? json_decode($authors_followed, true) : [];
                     
                     // Check if the author ID is already present in the array
-                    $index = array_search($authorId, $allAuthors_followed);
+                    //$index = array_search($authorId, $allAuthors_followed);
+                    $index = null;
+                    // Loop through the post IDs array and find the index of the ID and type combination
+                    foreach ($allAuthors_followed as $key => $author) {
+                        if ($author['id'] === $authorId && $author['type'] === $authorType) {
+                            $index = $key;
+                            break;
+                        }
+                    }
                     
                     if ($action === 'add') {
                         // Add the author ID if it's not already present
-                        if ($index === false) {
-                            array_push($allAuthors_followed, $authorId);
+                        if ($index == null) {
+                            $authorArr = array(
+                                'id' => $authorId,
+                                'type' => $authorType
+                            );
+                            array_push($allAuthors_followed, $authorArr);
                             //$allAuthors_followed[] = $authorId;
 
                             $data = 1;
                         }
                     } else if ($action === 'remove') {
                         // Remove the author ID if it's present in the array
-                        if ($index !== false) {
+                        if ($index !== null) {
                             unset($allAuthors_followed[$index]);
+
+                            $allAuthors_followed = array_values($allAuthors_followed);
 
                             $data = 0;
                         }
@@ -1267,6 +1282,7 @@ if ($conn) {
                         endforeach;
                     }
 
+                    //authors with the most post
                     $stmt = $conn->prepare("SELECT *, COUNT(*) as post_count FROM `posts` WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' GROUP BY id_user  ORDER BY COUNT(*) DESC LIMIT 5");
                     $stmt->execute();
                     $most_read_authors = $stmt->fetchAll();
