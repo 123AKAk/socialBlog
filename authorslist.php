@@ -53,18 +53,28 @@ try {
                                 <!-- //admin authors -->
                                 <?php
                                 if (isset($admins)) {
+
+                                    // // Select user that follows authors most
+                                    // $stmt = $conn->prepare("SELECT MAX(authors_followed) AS highest_followed FROM user WHERE authors_followed LIKE '%\"type\":\"User\"%' GROUP BY JSON_EXTRACT(authors_followed, '$[*].id') HAVING COUNT(*) = 1");
+                                    // $stmt->execute();
+                                    // $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                    // // Display the highest value
+                                    // $highestFollowed = $result['highest_followed'];
+                                    // echo "Highest authors_followed: " . $highestFollowed;
+
+
                                     // Display the admins who have published posts
                                     foreach ($admins as $admin) {
                                         $authLink = "author.php?authDType=Admin&authd=" . $sharedComponents->protect($admin["admin_id"]);
 
                                         $stmt = $conn->prepare("SELECT COUNT(*) AS count FROM user WHERE authors_followed LIKE :criteria");
-                                        $criteria = '%"id":"' . $userId . '","type":"Admin"%';
+                                        $criteria = '%"id":"' . $admin['admin_id'] . '","type":"Admin"%';
                                         $stmt->bindParam(':criteria', $criteria, PDO::PARAM_STR);
                                         $stmt->execute();
                                         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
                                         $adminAuthorNoFollowercount = $result['count'];
-                                        echo $admin['profile_pic'];
                                 ?>
                                         <!--widget-author-->
                                         <div class="col-lg-4 col-md-4 masonry-item">
@@ -77,7 +87,7 @@ try {
                                                     </div>
                                                     <div class="author-content">
                                                         <a href="<?= $authLink ?>">
-                                                            <h6 class="name"> Hi, I'm <?= $admin['admin_name'] ?></h6>
+                                                            <h6 class="name"><?= $admin['admin_name'] ?></h6>
                                                         </a>
                                                         <p class="bio">
                                                             <?= $admin['admin_desc'] ?>
@@ -113,8 +123,6 @@ try {
                                     foreach ($users as $user) {
                                         $authLink = "author.php?authDType=User&authd=" . $sharedComponents->protect($user["user_id"]);
 
-                                        $userId = $user["user_id"];
-
                                         // Count the number of user_id values with type 'user' and ID
                                         // $sstmt = $conn->prepare("SELECT COUNT(*) AS count FROM user WHERE JSON_CONTAINS(authors_followed, :criteria, '$[*]')");
                                         // $sstmt->bindValue(':criteria', json_encode(["id" => ".$userId.", "type" => "User"]), PDO::PARAM_STR);
@@ -125,7 +133,7 @@ try {
 
                                         // Count the number of user_id values with type 'user' and ID
                                         $stmt = $conn->prepare("SELECT COUNT(*) AS count FROM user WHERE authors_followed LIKE :criteria");
-                                        $criteria = '%"id":"' . $userId . '","type":"User"%';
+                                        $criteria = '%"id":"' . $user["user_id"] . '","type":"User"%';
                                         $stmt->bindParam(':criteria', $criteria, PDO::PARAM_STR);
                                         $stmt->execute();
                                         $result = $stmt->fetch(PDO::FETCH_ASSOC);

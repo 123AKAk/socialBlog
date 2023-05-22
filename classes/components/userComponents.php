@@ -1230,35 +1230,43 @@ if ($conn) {
                     }
 
                     //Get popular Post
-                    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id INNER JOIN postdetails ON post_id=postid WHERE post_status=1 AND delete_status=0  AND post_country='$userCountry' ORDER BY `views` DESC LIMIT 5");
+                    $sql = "SELECT postId, SUM(views) AS totalViews FROM postDetails GROUP BY postId ORDER BY totalViews DESC";
+                    $stmt = $pdo->prepare($sql);
                     $stmt->execute();
-                    $most_read_posts = $stmt->fetchAll();
+                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if (isset($most_read_posts)) {
-                        foreach ($most_read_posts as $post) :
+                    if ($stmt->rowCount() > 0) {
+                        foreach ($results as $row) {
+                            $postId = $row['postId'];
+                            $totalViews = $row['totalViews'];
 
-                            $views = !isset($post["views"]) ? 0 : $post["views"];
+                            // use the post id and get post details
+                            $stmt = $conn->prepare("SELECT * FROM `posts` WHERE post_id = :post_id AND delete_status=0 AND post_country='$userCountry'");
+                            $stmt->bindParam(":post_id", $postId);
+                            $stmt->execute();
+                            $post = $stmt->fetch();
+
                             $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $picturesfolder_name . $post['post_thumbnail'];
 
                             $apopularPost .= '
-                                    <li class="post-item">
-                                        <div class="image">
-                                            <a href="post.php?dt=' . $post["post_title"] . '&id=' . $sharedComponents->protect($post["post_id"]) . '"> <img src="' . $postImage . '" alt="..."></a>
-                                        </div>
-                                        <div class="count">' . $views . '</div>
-                                        <div class="content">
-                                            <p class="entry-title">
-                                                <a href="post.php?dt=' . $post["post_title"] . '&id=' . $sharedComponents->protect($post["post_id"]) . '">' .
-                                $post["post_title"]
-                                . '</a>
-                                            </p>
-                                            <small class="post-date"><i class="fas fa-clock"></i>' .
-                                date_format(date_create($post["post_creation_time"]), "F d, Y")
-                                . '</small>
-                                        </div>
-                                    </li>
-                                ';
-                        endforeach;
+                                <li class="post-item">
+                                    <div class="image">
+                                        <a href="post.php?dt=' . $post["post_title"] . '&id=' . $sharedComponents->protect($post["post_id"]) . '"> <img src="' . $postImage . '" alt="..."></a>
+                                    </div>
+                                    <div class="count">' . $totalViews . '</div>
+                                    <div class="content">
+                                        <p class="entry-title">
+                                            <a href="post.php?dt=' . $post["post_title"] . '&id=' . $sharedComponents->protect($post["post_id"]) . '">' .
+                                        $post["post_title"]
+                                        . '</a>
+                                        </p>
+                                        <small class="post-date"><i class="fas fa-clock"></i>' .
+                                        date_format(date_create($post["post_creation_time"]), "F d, Y")
+                                        . '</small>
+                                    </div>
+                                </li>
+                            ';
+                        }
                     }
 
                     // Get Categories
@@ -1283,68 +1291,152 @@ if ($conn) {
                     }
 
                     //authors with the most post
-                    $stmt = $conn->prepare("SELECT *, COUNT(*) as post_count FROM `posts` WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' GROUP BY id_user  ORDER BY COUNT(*) DESC LIMIT 5");
+                    // Select the ID and type values with their occurrence within the column
+                    $stmt = $conn->prepare("SELECT JSON_EXTRACT(authors_followed, '$[*].id') AS ids, JSON_EXTRACT(authors_followed, '$[*].type') AS types, COUNT(*) AS occurrence FROM user WHERE JSON_SEARCH(authors_followed, 'one', 'User', NULL, '$[*].type') IS NOT NULL GROUP BY ids, types ORDER BY occurrence DESC, ids ASC");
                     $stmt->execute();
-                    $most_read_authors = $stmt->fetchAll();
+                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if (isset($most_read_authors)) {
-                        foreach ($most_read_authors as $authors) :
+                    // Create an associative array to store the occurrence count for each ID and type combination
+                    $occurrences = array();
 
-                            $authorId = $authLink = $authorName = $authorImage = $authorDesc = "";
+                    // Iterate over the results and store the occurrence count
+                    foreach ($results as $row) {
+                        $ids = json_decode($row['ids']);
+                        $types = json_decode($row['types']);
+                        $occurrence = $row['occurrence'];
 
-                            if ($authors['id_user'] != 0 && $authors['id_admin'] == 0) {
-                                $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = :user_id");
-                                $stmt->bindParam(":user_id", $authors['id_user'], PDO::PARAM_STR);
-                                $stmt->execute();
-                                $users_authors = $stmt->fetchAll();
+                        // Iterate over the ID and type arrays simultaneously
+                        for ($i = 0; $i < count($ids); $i++) {
+                            $id = $ids[$i];
+                            $type = $types[$i];
 
-                                foreach ($users_authors as $authors_u) :
-
-                                    $authorId = $sharedComponents->protect($authors_u['user_id']);
-                                    $authLink = "author.php?authDType=User&authd=" . $authorId;
-                                    $authorName = $authors_u['username'];
-                                    $authorDesc = $authors_u['user_desc'];
-                                    $authorImage = $sharedComponents->checkFile($authors_u['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $authors_u['profile_pic'];
-
-                                endforeach;
-                            } else if ($authors['id_admin'] != 0 && $authors['id_user'] == 0) {
-                                $stmt = $conn->prepare("SELECT * FROM admin WHERE admin_id = :admin_id");
-                                $stmt->bindParam(":admin_id",  $authors['id_admin'], PDO::PARAM_STR);
-                                $stmt->execute();
-                                $admins_authors = $stmt->fetchAll();
-
-                                foreach ($admins_authors as $authors_a) :
-
-                                    $authorId = $sharedComponents->protect($authors['id_admin']);
-                                    $authLink = "author.php?authDType=Admin&authd=" . $authorId;
-                                    $authorName = $authors_a['admin_name'];
-                                    $authorDesc = $authors_a['admin_desc'];
-                                    $authorImage = $sharedComponents->checkFile($authors_a['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $authors_a['profile_pic'];
-
-                                endforeach;
+                            // If the ID and type combination already exists in the occurrences array, increment the count
+                            if (isset($occurrences[$id][$type])) {
+                                $occurrences[$id][$type] += $occurrence;
+                            } else {
+                                // Otherwise, initialize the count for the ID and type combination
+                                $occurrences[$id][$type] = $occurrence;
                             }
+                        }
+                    }
 
-                            $apopularAuthors = '
+                    // Sort the occurrences array based on the occurrence count in descending order
+                    arsort($occurrences);
+
+                    $authorId = $authLink = $authorName = $authorImage = $authorDesc = "";
+                    // Display the sorted results
+                    foreach ($occurrences as $id => $types) {
+                        foreach ($types as $type => $occurrence) {
+                            if($type == "User")
+                            {
+                                $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = :user_id");
+                                $stmt->bindParam(":user_id", $id, PDO::PARAM_INT);
+                                $stmt->execute();
+                                $user_author = $stmt->fetch();
+
+                                $authorId = $sharedComponents->protect($id);
+                                $authLink = "author.php?authDType=User&authd=" . $authorId;
+                                $authorName = $user_author['username'];
+                                $authorDesc = $user_author['user_desc'];
+                                $authorImage = $sharedComponents->checkFile($user_author['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $user_author['profile_pic'];
+                            }
+                            else if($type == "Admin")
+                            {
+                                $stmt = $conn->prepare("SELECT * FROM admin WHERE admin_id = :admin_id");
+                                $stmt->bindParam(":admin_id",  $id, PDO::PARAM_INT);
+                                $stmt->execute();
+                                $admin_author = $stmt->fetch();
+                                
+                                $authorId = $sharedComponents->protect($id);
+                                $authLink = "author.php?authDType=Admin&authd=" . $authorId;
+                                $authorName = $admin_author['admin_name'];
+                                $authorDesc = $admin_author['admin_desc'];
+                                $authorImage = $sharedComponents->checkFile($admin_author['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $admin_author['profile_pic'];
+                            }
+                            $apopularAuthors .= '
                                     <li class="post-item">
                                         <div class="image">
                                             <a href="' . $authLink . '"> <img src="' . $authorImage . '" alt="."></a>
                                         </div>
-                                        <div class="count">' . $authors['post_count'] . '</div>
+                                        <div class="count">' . $occurrence . '</div>
                                         <div class="content">
                                             <p class="entry-title">
                                                 <a href="' . $authLink . '">' .
-                                $authorName
-                                . '</a>
+                                                $authorName
+                                                . '</a>
                                             </p>
                                             <small class="post-date">' .
-                                $authorDesc
-                                . '</small>
+                                                $authorDesc
+                                            . '</small>
                                         </div>
                                     </li>
                                 ';
-                        endforeach;
+                        }
                     }
+                    // $stmt = $conn->prepare("SELECT *, COUNT(*) as post_count FROM `posts` WHERE post_status=1 AND delete_status=0 AND post_country='$userCountry' GROUP BY id_user  ORDER BY COUNT(*) DESC LIMIT 5");
+                    // $stmt->execute();
+                    // $most_read_authors = $stmt->fetchAll();
 
+                    // if (isset($most_read_authors)) {
+                    //     foreach ($most_read_authors as $authors) :
+
+                    //         $authorId = $authLink = $authorName = $authorImage = $authorDesc = "";
+
+                    //         if ($authors['id_user'] != 0 && $authors['id_admin'] == 0) {
+                    //             $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = :user_id");
+                    //             $stmt->bindParam(":user_id", $authors['id_user'], PDO::PARAM_STR);
+                    //             $stmt->execute();
+                    //             $users_authors = $stmt->fetchAll();
+
+                    //             foreach ($users_authors as $authors_u) :
+
+                    //                 $authorId = $sharedComponents->protect($authors_u['user_id']);
+                    //                 $authLink = "author.php?authDType=User&authd=" . $authorId;
+                    //                 $authorName = $authors_u['username'];
+                    //                 $authorDesc = $authors_u['user_desc'];
+                    //                 $authorImage = $sharedComponents->checkFile($authors_u['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $authors_u['profile_pic'];
+
+                    //             endforeach;
+                    //         } else if ($authors['id_admin'] != 0 && $authors['id_user'] == 0) {
+                    //             $stmt = $conn->prepare("SELECT * FROM admin WHERE admin_id = :admin_id");
+                    //             $stmt->bindParam(":admin_id",  $authors['id_admin'], PDO::PARAM_STR);
+                    //             $stmt->execute();
+                    //             $admins_authors = $stmt->fetchAll();
+
+                    //             foreach ($admins_authors as $authors_a) :
+
+                    //                 $authorId = $sharedComponents->protect($authors['id_admin']);
+                    //                 $authLink = "author.php?authDType=Admin&authd=" . $authorId;
+                    //                 $authorName = $authors_a['admin_name'];
+                    //                 $authorDesc = $authors_a['admin_desc'];
+                    //                 $authorImage = $sharedComponents->checkFile($authors_a['profile_pic']) == 0 ? "noimage.jpg" : $picturesfolder_name . $authors_a['profile_pic'];
+
+                    //             endforeach;
+                    //         }
+
+                    //         $apopularAuthors = '
+                    //                 <li class="post-item">
+                    //                     <div class="image">
+                    //                         <a href="' . $authLink . '"> <img src="' . $authorImage . '" alt="."></a>
+                    //                     </div>
+                    //                     <div class="count">' . $authors['post_count'] . '</div>
+                    //                     <div class="content">
+                    //                         <p class="entry-title">
+                    //                             <a href="' . $authLink . '">' .
+                    //             $authorName
+                    //             . '</a>
+                    //                         </p>
+                    //                         <small class="post-date">' .
+                    //             $authorDesc
+                    //             . '</small>
+                    //                     </div>
+                    //                 </li>
+                    //             ';
+                    //     endforeach;
+                    // }
+
+
+                    //sidebar ads
                     $stmt = $conn->prepare("SELECT * FROM `ads` INNER JOIN transactions ON adId=ad_id WHERE status=1 AND ad_target_Country = '$userCountry' AND FIND_IN_SET(4, ad_position) > 0 AND trans_reference!='' ORDER BY RAND() DESC LIMIT  5");
                     $stmt->execute();
                     $randomAds = $stmt->fetchAll();
