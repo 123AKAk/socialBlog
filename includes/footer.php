@@ -23,6 +23,9 @@
     </div>
     <!-- startUp modal -->
 
+    <select class="form-control" id="country" style="display:none;">
+    </select>
+
     <!--footer-->
     <footer class="footer">
         

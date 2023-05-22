@@ -50,7 +50,9 @@ Table of Content
     $('.close').on('click', function () {
         $('.search').removeClass('search-open');
     });
-
+    $('.country-icon').on('click', function () {
+        $('#startUpToogle').modal('toggle')
+    });
 
     /* -----------------------------------
            Back-top

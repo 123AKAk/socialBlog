@@ -2,8 +2,6 @@
     require "classes/components/db.php";
     require "classes/components/sharedComponents.php";
     $sharedComponents = new sharedComponents();
-    
-    require "includes/varnames.php";
 
     //validates logged in session ID
     $loggedin = false;
@@ -51,6 +49,9 @@
     <!-- Title -->
     <title> MACAE </title>
 
+    <!-- share this plugin -->
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=64656163d427210019483966&product=sop' async='async'></script>
+
     <!--Stylesheets -->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/all.min.css">
@@ -80,6 +81,8 @@
     <!-- dropzonejs -->
     <script src="assets/dropzone/dropzone.min.js" type="text/javascript"></script>
 
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <?php
       if(isset($style_refrences))
       {
@@ -140,14 +143,14 @@
 
       /* for slider child */
       .cwrapper-cell {
-        display: flex;
+        /* display: flex; */
       }
       .cwrapper-image {
         height: 100px;
         width: 100px;
         border-radius: 15px;
-        margin-right: 5px;  
-        @extend .animated-background;
+        /* margin-right: 5px;   */
+        
       }
       .cwrapper-text-line1 {
         margin-left: 5px;

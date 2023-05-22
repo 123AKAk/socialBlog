@@ -77,9 +77,7 @@ $categorieslist = $stmt->fetchAll();
                                 <button class="nav-link" id="nav-savedposts-tab" data-bs-toggle="tab" data-bs-target="#nav-savedposts" type="button" role="tab" aria-controls="nav-savedposts" aria-selected="false" style="color:gray">
                                     Saved Posts
                                 </button>
-
-                                <a class="nav-link" data-bs-toggle="modal" href="#exampleModalToggle" role="button" style="color:gray">Ads Managements</a>
-
+                                
                                 <a class="nav-link" href="logout.php" style="color:gray">Logout</a>
                             </div>
                         </nav>
@@ -89,7 +87,7 @@ $categorieslist = $stmt->fetchAll();
                                 <div class="accordion accordion-flush" id="accordionFlushExample">
                                     <div class="">
                                         <h2 class="accordion-header" id="flush-headingOne">
-                                            <a href="javascript:void(0); " class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color: whitesmoke; color:black;">
+                                            <a href="javascript:void(0);" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color: whitesmoke; color:black;">
                                                 Create a Post
                                             </a>
                                         </h2>
@@ -107,17 +105,18 @@ $categorieslist = $stmt->fetchAll();
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-6 col-md-6">
+                                                    <div class="col-12 col-md-12">
                                                         <div class="form-group">
                                                             <label for="post_category" class="col-form-label">Post Category</label>
                                                             <input class="form-control" type="text" name="post_category" list="category" value="" placeholder="Select Category" id="post_category" autocomplete="off" />
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-6 col-md-6">
+                                                    <div class="col-12 col-md-12">
                                                         <div class="form-group">
                                                             <label for="post_country" class="col-form-label">Post Country</label>
-                                                            <input class="form-control" type="text" placeholder="Enter Post Country" name="post_country" id="post_country" />
+                                                            <select class="form-control select2bs4" name="post_country" id="post_country">
+                                                            </select>
                                                         </div>
                                                     </div>
 
@@ -328,120 +327,19 @@ $categorieslist = $stmt->fetchAll();
 
 </main>
 
-<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalToggleLabel">Ads Management</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class=" row text-center justify-content-center">
-                <div class="col-md-6">
-                    <a href="adsmanagements.php" class="btn btn-outline-default">
-                        View Exsiting Ad(s) stats
-                    </a>
-                </div>
-                <div class="col-md-6">
-                    <button type="button" class="btn btn-outline-default" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal" data-backdrop="static" data-keyboard="false">
-                        Create new Ad
-                    </button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ad modal -->
-<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalToggleLabel2">Create new Ad</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <form class="sign-form widget-form contact_form " id="createAd-form">
-                        <div class="form-group">
-                            <label for="ad_name" class="pl-2">Ad Name</label>
-                            <input type="text" class="form-control" placeholder="" name="ad_name" value="" id="ad_name">
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_description" class="pl-2">Ad Description</label>
-                            <textarea class="form-control" placeholder="" name="ad_description" id="ad_description" value=""></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_url" class="pl-2">Ad URL</label>
-                            <input type="text" class="form-control" placeholder="" name="ad_url" value="" id="ad_url">
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_duration" class="pl-2">Duration of Ad</label>
-                            <input type="text" class="form-control" name="ad_duration" id="ad_duration">
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_category" class="pl-2">Ad Category</label>
-                            <select name="ad_category" id="ad_category" class="form-control">
-                                <option value=""></option>
-                                <option value="">Bussiness</option>
-                                <option value="">Health</option>
-                                <option value="">Food</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_target_Country" class="pl-2">Ad Target Country</label>
-                            <select name="ad_target_Country" id="ad_target_Country" class="form-control">
-                                <option value=""></option>
-                                <option value="Nigeria">Nigeria</option>
-                                <option value="UK">United Kingdom</option>
-                                <option value="Ghana">Ghana</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_target_gender" class="pl-2">Ad Target Gender</label>
-                            <select name="ad_target_gender" id="ad_target_gender" class="form-control">
-                                <option value=""></option>
-                                <option value="Male">Males</option>
-                                <option value="Female">Females</option>
-                                <option value="All">All</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="ad_thumbnail" class="pl-2">Upload Ad Thumbnail ↓</label>
-                            <div action="classes/components/userComponents.php?dataPurpose=createAd" class="dropzone" id="dropzoneForm3">
-                            </div>
-                        </div>
-                        <div class="sign-controls form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="agreed">
-                                <label class="custom-control-label" for="agreed">Agree to the<a href="adstermandconditions.php" class="btn-link">terms of our Ad Service</a> </label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
-                <button type="submit" class="btn-custom">Next</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- edit post modal  -->
 <div class="modal fade" id="exampleModalToggle3" aria-hidden="true" aria-labelledby="exampleModalToggleLabel3" tabindex="-1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content" id="loadModal">
-            <!-- contents displayed here is coming from editPostPh in includes folder -->
+            <!-- contents displayed here is coming from editPostPg in includes folder -->
         </div>
     </div>
 </div>
 
 
 <?php
-include 'includes/footer.php';
-include 'includes/scripts.php';
+    include 'includes/footer.php';
+    include 'includes/scripts.php';
 ?>
 <!-- Summernote -->
 <script src="assets/summernote/summernote-lite.js"></script>
@@ -456,7 +354,9 @@ include 'includes/scripts.php';
 
 <!-- Page specific script -->
 <!-- Script -->
-<script type='text/javascript'>
+<script>
+    window.onload = loadFunctions;
+    
     //file name to be uploaded
     let fileNameUploaded1 = "";
     //createPost form
@@ -468,7 +368,6 @@ include 'includes/scripts.php';
         var post_country = document.getElementById("post_country").value;
 
         if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
-            alertify.set('notifier', 'position', 'top-right');
             alertify.error("Fill all Feilds");
         } else {
             if (fileNameUploaded1 != "") {
@@ -504,7 +403,6 @@ include 'includes/scripts.php';
         var confrimPassword = document.getElementById("confrimPassword").value;
 
         if (username == "" || email == "" || gender == "" || user_country == "") {
-            alertify.set('notifier', 'position', 'top-right');
             alertify.error("Fill all Feilds");
         } else {
             if (password != "" && password != confrimPassword) {
@@ -531,9 +429,6 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            alertify.set({
-                                delay: 15000
-                            });
                             alertify.error(result.message);
                         }
                     })
@@ -549,97 +444,18 @@ include 'includes/scripts.php';
         }
         fileNameUploaded2 = "";
     }
-
-    //file name to be uploaded
-    let fileNameUploaded3 = "";
-    //createAd-form
-    $('#createAd-form').submit(function(event) {
-
-        var ad_name = $('#ad_name').val();
-        var ad_description = $("#ad_description").val();
-        var ad_target_Country = $("#ad_target_Country").val();
-        var ad_duration = $("#ad_duration").val();
-        var ad_category = $("#ad_category").val();
-        var ad_target_gender = $("#ad_target_gender").val();
-        var agreed = $("#agreed").val();
-
-        //compare date
-        const parts = ad_duration.split(" - ");
-        const date1 = new Date(parts[0]);
-        const date2 = new Date(parts[1]);
-
-        if (ad_name == "" || ad_description == "" || ad_target_Country == "" || ad_duration == "" || ad_category == "" || ad_target_gender == "") {
-            alertify.set('notifier', 'position', 'top-right');
-            alertify.error("Fill all Feilds");
-        } else if (date1 == date2) {
-            alertify.error("Duration cannot be the same Date");
-        } else {
-            if ($("#agreed").is(":checked")) {
-                //uploads file to server
-                alertify.message("Ad thumbnail upload started");
-                myDropzone3.processQueue();
-            } else {
-                alertify.error("Accpet Terms of Ad Service to continue");
-            }
-        }
-
-        fileNameUploaded3 = "";
-        event.preventDefault();
-    });
-
-    // forgotPassword-form
-    $("#forgotPassword-form").submit(function(event) {
-        var email = $("#email").val();
-        if (email == "") {
-            alertify.error("Enter Registered Email to continue");
-        } else {
-            let formdata = new FormData();
-            formdata.append("email", email);
-
-            let loca = "classes/components/userComponents.php?dataPurpose=forgotPassword";
-            fetch(loca, {
-                    method: "POST",
-                    body: formdata
-                })
-                .then((res) => res.json())
-                .then((data) => {
-                    // console.log(data);
-                    var result = (data);
-                    if (result.response == true) {
-                        alertify.success(result.message);
-                        alertify.message("Redirecting...");
-                        setTimeout(function() {
-                            window.location.replace("ureset.php?" + email);
-                        }, 3000);
-
-                    } else {
-                        alertify.set({
-                            delay: 15000
-                        });
-                        alertify.error(result.message);
-                    }
-                })
-            .catch(error => 
-                // handle the error
-                console.log(error)
-            );
-        }
-        event.preventDefault();
-    });
-
+ 
     //file name to be uploaded
     let afileNameUploaded1 = "";
     //edit form submit
     function saveEdits()
     {
-
         var post_title = document.getElementById("apost_title").value;
         var post_category = document.getElementById("apost_category").value;
         var post_contents = $("#apost_contents").summernote("code");
         var post_country = document.getElementById("apost_country").value;
 
         if (post_title == "" || post_category == "" || post_contents == "" || post_country == "") {
-            alertify.set("notifier", "position", "top-right");
             alertify.error("Fill all Feilds");
         }
         else
@@ -672,9 +488,6 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            alertify.set({
-                                delay: 15000
-                            });
                             alertify.error(result.message);
                         }
                     })
@@ -740,9 +553,6 @@ include 'includes/scripts.php';
                 // console.log(result);
                 alertify.success(result.message);
             } else {
-                alertify.set({
-                    delay: 15000
-                });
                 alertify.error(result.message);
             }
             refreshPostDiv();
@@ -813,60 +623,6 @@ include 'includes/scripts.php';
                 // console.log(result);
                 alertify.success(result.message);
             } else {
-                alertify.set({
-                    delay: 15000
-                });
-                alertify.error(result.message);
-            }
-        }
-    });
-
-    $("#dropzoneForm3").dropzone({
-        autoProcessQueue: false,
-        acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
-        dictDefaultMessage: 'Drop Picture files here!',
-        paramName: "file",
-        maxFilesize: 2, // MB
-        addRemoveLinks: true,
-        init: function() {
-            myDropzone3 = this;
-            this.on("complete", function() {
-                if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
-                    var _this = this;
-                    _this.removeAllFiles();
-                }
-                list_image();
-            });
-            this.on('addedfile', function(file) {
-                if (this.files.length > 3) {
-                    this.removeFile(this.files[0]);
-                    alertify.error("You cannot upload more than three files");
-                }
-                else
-                {
-                    fileNameUploaded3 = file.name;
-                }
-            });
-            this.on("sending", function(data, xhr, formData) {
-                //send all the form data along with the files:
-                formData.append("ad_name", document.getElementById("ad_name").value);
-                formData.append("ad_description", document.getElementById("ad_description").value);
-                formData.append("ad_url", document.getElementById("ad_url").value);
-                formData.append("ad_target_Country", document.getElementById("ad_target_Country").value);
-                formData.append("ad_duration", document.getElementById("ad_duration").value);
-                formData.append("ad_category", document.getElementById("ad_category").value);
-                formData.append("ad_target_gender", document.getElementById("ad_target_gender").value);
-            });
-        },
-        success: function(file, response) {
-            result = JSON.parse(response);
-            if (result.response == true) {
-                // console.log(result);
-                alertify.success(result.message);
-            } else {
-                alertify.set({
-                    delay: 15000
-                });
                 alertify.error(result.message);
             }
         }
@@ -993,9 +749,6 @@ include 'includes/scripts.php';
                     // console.log(result);
                     alertify.success(result.message);
                 } else {
-                    alertify.set({
-                        delay: 15000
-                    });
                     alertify.error(result.message);
                 }
                 refreshPostDiv();
@@ -1011,14 +764,11 @@ include 'includes/scripts.php';
 
     //deletePost
     function deletePost(postid) {
-        alertify.set({
-            labels: {
-                ok: "Accept",
-                cancel: "Deny"
-            }
-        });
-        alertify.confirm("Are you sure you want to Delete this post?", function(e) {
-            if (e) {
+      
+        alertify.confirm(
+            'Confirm Delete', 'Are you sure you want to Delete this post?', 
+            function()
+            {
                 $.ajax({
                     url: `classes/components/userComponents.php?dataPurpose=deletePost`,
                     method: "POST",
@@ -1032,30 +782,27 @@ include 'includes/scripts.php';
                         if (result.response == true) {
                             alertify.success(result.message);
                         } else {
-                            alertify.set({
-                                delay: 15000
-                            });
                             alertify.error(result.message);
                         }
                     }
-                });
-            } else {
-                alertify.message("Cancelled");
+                });                
+            },
+            function()
+            {
+                alertify.message('Cancelled')
             }
-        });
+        );
+        
         refreshPostDiv();
     }
 
     //publishPost
     function publishPost(postid) {
-        alertify.set({
-            labels: {
-                ok: "Accept",
-                cancel: "Deny"
-            }
-        });
-        alertify.confirm("Are you sure you want to Publish this post?", function(e) {
-            if (e) {
+
+        alertify.confirm(
+            'Confirm Publish', 'Are you sure you want to Publish this post?', 
+            function()
+            {
                 $.ajax({
                     url: `classes/components/userComponents.php?dataPurpose=publishPost`,
                     method: "POST",
@@ -1071,18 +818,17 @@ include 'includes/scripts.php';
                             if (result.code == 2) {
                                 alertify.message(result.message);
                             } else {
-                                alertify.set({
-                                    delay: 15000
-                                });
                                 alertify.error(result.message);
                             }
                         }
                     }
                 });
-            } else {
-                alertify.message("Cancelled");
+            },
+            function()
+            {
+                alertify.message('Cancelled')
             }
-        });
+        );
         refreshPostDiv();
     }
 
@@ -1329,16 +1075,6 @@ include 'includes/scripts.php';
 
     function loadFunctions() {
         autocomplete(document.getElementById("post_category"), postCategories);
-
-        $('#exampleModalToggle').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-        $('#exampleModalToggle2').modal({
-            backdrop: 'static',
-            keyboard: false
-        })
-
         // Summernote
         $('.post_contents').summernote({
             airMode: false, // removes the tool bar, but when text is highlited it shows
@@ -1400,9 +1136,26 @@ include 'includes/scripts.php';
                 multiple: true
             }
         });
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4',
+            placeholder: 'Select your Country'
+        });
+
+        var aselect = document.getElementById("post_country");
+        for (let country of aarrCountry) {
+            var aoptionN = document.createElement("option");
+            aoptionN.text = country;
+            aoptionN.value = country;
+            aselect.appendChild(aoptionN);
+        }
     }
 
-    window.onload = loadFunctions;
+    const anextText = "South Korea, South Sudan, Spain, Sri Lanka, Sudan, Suriname, Svalbard and Jan Mayen, Sweden, Switzerland, Syria, São Tomé and Príncipe, Taiwan, Tajikistan, Tanzania, Thailand, Timor-Leste, Togo, Tokelau, Tonga, Trinidad and Tobago, Tunisia, Turkey, Turkmenistan, Turks and Caicos Islands, Tuvalu, Uganda, Ukraine, United Arab Emirates, United Kingdom, United States, United States Minor Outlying Islands, United States Virgin Islands, Uruguay, Uzbekistan, Vanuatu, Vatican City, Venezuela, Vietnam, Wallis and Futuna, Western Sahara, Yemen, Zambia, Zimbabwe, Åland Islands";
+  
+    const atext = "Afghanistan, Albania, Algeria, American Samoa, Andorra, Angola, Anguilla, Antarctica, Antigua and Barbuda, Argentina, Armenia, Aruba, Australia, Austria, Azerbaijan, Bahamas, Bahrain, Bangladesh, Barbados, Belarus, Belgium, Belize, Benin, Bermuda, Bhutan, Bolivia, Bosnia and Herzegovina, Botswana, Bouvet Island, Brazil, British Indian Ocean Territory, British Virgin Islands, Brunei, Bulgaria, Burkina Faso, Burundi, Cambodia, Cameroon, Canada, Cape Verde, Caribbean Netherlands, Cayman Islands, Central African Republic, Chad, Chile, China, Christmas Island, Cocos (Keeling) Islands, Colombia, Comoros, Cook Islands, Costa Rica, Croatia, Cuba, Curaçao, Cyprus, Czechia, DR Congo, Denmark, Djibouti, Dominica, Dominican Republic, Ecuador, Egypt, El Salvador, Equatorial Guinea, Eritrea, Estonia, Eswatini, Ethiopia, Falkland Islands, Faroe Islands, Fiji, Finland, France, French Guiana, French Polynesia, French Southern and Antarctic Lands, Gabon, Gambia, Georgia, Germany, Ghana, Gibraltar, Greece, Greenland, Grenada, Guadeloupe, Guam, Guatemala, Guernsey, Guinea, Guinea-Bissau, Guyana, Haiti, Heard Island and McDonald Islands, Honduras, Hong Kong, Hungary, Iceland, India, Indonesia, Iran, Iraq, Ireland, Isle of Man, Israel, Italy, Ivory Coast, Jamaica, Japan, Jersey, Jordan, Kazakhstan, Kenya, Kiribati, Kosovo, Kuwait, Kyrgyzstan, Laos, Latvia, Lebanon, Lesotho, Liberia, Libya, Liechtenstein, Lithuania, Luxembourg, Macau, Madagascar, Malawi, Malaysia, Maldives, Mali, Malta, Marshall Islands, Martinique, Mauritania, Mauritius, Mayotte, Mexico, Micronesia, Moldova, Monaco, Mongolia, Montenegro, Montserrat, Morocco, Mozambique, Myanmar, Namibia, Nauru, Nepal, Netherlands, New Caledonia, New Zealand, Nicaragua, Niger, Nigeria, Niue, Norfolk Island, North Korea, North Macedonia, Northern Mariana Islands, Norway, Oman, Pakistan, Palau, Palestine, Panama, Papua New Guinea, Paraguay, Peru, Philippines, Pitcairn Islands, Poland, Portugal, Puerto Rico, Qatar, Republic of the Congo, Romania, Russia, Rwanda, Réunion, Saint Barthélemy, Saint Helena, Ascension and Tristan da Cunha, Saint Kitts and Nevis, Saint Lucia, Saint Martin, Saint Pierre and Miquelon, Saint Vincent and the Grenadines, Samoa, San Marino, Saudi Arabia, Senegal, Serbia, Seychelles, Sierra Leone, Singapore, Sint Maarten, Slovakia, Slovenia, Solomon Islands, Somalia, South Africa, South Georgia,"+anextText;
+    const aarrCountry = atext.split(",");
 
 
 </script>

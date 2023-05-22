@@ -1,6 +1,28 @@
 <?php
     include 'includes/header.php';
     include 'includes/navbar.php';
+
+    // shows author details based on their Id
+    if (!isset($_GET['catd'])) {
+        echo "<script>window.location.replace('404.php?err=Error Getting Category Details');</script>";
+    }
+
+    echo $catId = $sharedComponents->unprotect($_GET['catd']);
+
+    // Get Category Info
+    $stmt = $conn->prepare("SELECT * FROM `category` WHERE category_id = ?");
+    $stmt->execute([$catId]);
+    $category = $stmt->fetch();
+
+    // Get category post
+    $stmt = $conn->prepare("SELECT * FROM `posts` INNER JOIN category ON id_category=category_id WHERE id_category = ?");
+    $stmt->execute([$catId]);
+    $posts = $stmt->fetchAll();
+
+    if (!isset($category)) {
+        echo "<script>window.location.replace('404.php?err=Error Getting Category Details');</script>";
+    }
+
 ?>
 
         <main class="main">
@@ -12,12 +34,10 @@
                             <div class="categorie-title">
                                 <small>
                                     <a href="./">Home</a>
-                                   <i class="fas fa-angle-right"></i>Livestyle
+                                   <i class="fas fa-angle-right"></i><?= $category["category_name"] ?>
                                 </small>
-                                <h3>Category : <span>livestyle</span> </h3>
-                                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                    Incidunt quae explicabo, ducimus necessitatibus eum aut enim modi
-                                    saepe perspiciatis fugit
+                                <h3>Category : <span><?= $category["category_name"] ?></span> </h3>
+                                <p> <?= $category["category_desc"] ?>
                                 </p>
                             </div>
                         </div>
@@ -32,42 +52,77 @@
                         <div class="col-xl-9 mt-30 side-content">
                             <div class="theiaStickySidebar">
                                 <div class="row masonry-items">
-                                    
+                                
+                                <?php 
+                                    foreach ($posts as $post) : 
+
+                                    $postId = $sharedComponents->protect($post['post_id']);
+                        
+                                    $postImage = $sharedComponents->checkFile($post['post_thumbnail']) == 0 ? "noimage.jpg" : $folder_name . $post['post_thumbnail'];
+
+                                    $adminUserDetails = json_decode($sharedComponents->getAdminUser_Post($post['id_admin'], $post['id_user'], $pdo), true);
+
+                                    $authId = $adminUserDetails["id"];
+                                    $authEmail = $adminUserDetails["email"];
+                                    $authName = $adminUserDetails["username"];
+                                    $authGender = $adminUserDetails["gender"];
+                                    $authProfilePic = $sharedComponents->checkFile($adminUserDetails["profile_pic"]) == 0 ? "noimage.jpg" : $folder_name . $adminUserDetails["profile_pic"];
+                                    $authLink = "author.php?authDType=" . $adminUserDetails["type"] . "&authd=" . $adminUserDetails["id"];
+                                ?>
+
                                     <!--Post-1-->
                                     <div class="col-lg-6 col-md-6 masonry-item">
                                         <div class="post-card ">
                                             <div class="post-card-image">
-                                                <a href="post.php">
-                                                    <img src="assets/img/blog/7.jpg" alt="">
+                                                <a href="post.php?dt=<?= $post['post_title']?>&id=<?= $postId ?>">
+                                                    <img src="<?= $postImage ?>" alt="" width="100%">
                                                 </a>
                                             </div>
                                             <div class="post-card-content">
                                                 <div class="entry-cat">
-                                                    <a href="blog-grid.php" class="categorie"> food</a>
+                                                    <a class="categorie" href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $sharedComponents->protect($post['category_id']) ?>">
+                                                        <?= $post['category_name'] ?>
+                                                    </a>
                                                 </div>
             
                                                 <h5 class="entry-title">
-                                                    <a href="post.php">What Are Your Tips for Hosting an Easy Birthday Party?</a>
+                                                    <a href="post.php?dt=<?= $post['post_title']?>&id=<?= $postId ?>">
+                                                        <?= $post['post_title'] ?>
+                                                    </a>
                                                 </h5>
             
                                                 <div class="post-exerpt">
-                                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit quam atque ipsa laborum sunt distinctio... </p>
+                                                    <p>
+                                                    <?= $sharedComponents->convertHtmltoText($post['post_contents'], 25, '', '') ?>
+                                                    </p>
                                                 </div>
             
                                                 <ul class="entry-meta list-inline">
-                                                    <li class="post-author-img"><a href="author.php"> <img src="assets/img/author/1.jpg" alt=""></a></li>
-                                                    <li class="post-author"><a href="author.php">David Smith</a> </li>
-                                                    <li class="post-date"> <span class="dot"></span>  February 10, 2022</li>
+                                                <li class="post-author-img">
+                                                    <a href="<?= $authLink ?>">
+                                                        <img src="<?= $authProfilePic ?>" alt="">
+                                                    </a>
+                                                </li>
+                                                <li class="post-author">
+                                                    <a href="<?= $authLink ?>">
+                                                        <?= $authName ?> 
+                                                    </a> 
+                                                </li>
+                                                    <li class="post-date"> <span class="dot"></span>  
+                                                        <?= date_format(date_create($post["post_creation_time"]), "F d, Y") ?>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
                                     <!--/-->
+
+                                <?php endforeach; ?>
                     
                                 </div>
             
                                 <!--pagination-->
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-lg-12">
                                         <div class="pagination ">
                                             <ul class="list-inline">
@@ -79,7 +134,7 @@
                                             </ul>
                                         </div>   
                                     </div>
-                                </div>
+                                </div> -->
 
                             </div>
                         </div>

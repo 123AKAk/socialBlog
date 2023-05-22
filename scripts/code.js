@@ -1,4 +1,13 @@
-  window.onload = getLocation;
+window.onload = getLocation;
+
+
+// Get all HTML tags with an alt attribute
+const tagsWithAlt = document.querySelectorAll('[alt]');
+
+// Loop through the tags and add alt text
+tagsWithAlt.forEach(tag => {
+  tag.alt = "MACAE Images";
+});
 
 
   //to get complete data about countries 
@@ -34,20 +43,18 @@
   // signup form
   $("#signup-form").submit(function (event)
   {
-    alert(ipaddress+" | "+alluserInfo);
-    return;
       var username = $("#username").val();
       var email = $("#email").val();
-      var country = $("#country").val();
       var gender = $("#gender").val();
       var password = $("#password").val();
       var confrimpassword = $("#confrimpassword").val();
-      var agreed = $("#agreed").val();
+      var country = selectedCountry;
+
+      var mainUserinfo = alluserInfo["latitude"]+","+alluserInfo["longitude"]+","+alluserInfo["continent"]+","+alluserInfo["locality"]+","+alluserInfo["principalSubdivision"]
 
       if (
           username == "" ||
           email == "" ||
-          country == "" ||
           gender == "" ||
           password == "" ||
           confrimpassword == ""
@@ -61,37 +68,42 @@
               alertify.error("Passwords are not the same");
           } else {
               if ($("#agreed").is(":checked")) {
-              let formdata = new FormData();
-              formdata.append("username", username);
-              formdata.append("email", email);
-              formdata.append("gender", gender);
-              formdata.append("password", password);
-              formdata.append("user_ip_address", ipaddress);
-              formdata.append("user_country", country);
-              formdata.append("userInfo", alluserInfo);
 
-              let loca = "classes/components/userComponents.php?dataPurpose=signup";
-              fetch(loca, { method: "POST", body: formdata })
-                  .then((res) => res.json())
-                  .then((data) => {
-                  console.log(data);
-                  var result = (data);
-                  if (result.response == true) 
-                  {
-                      alertify.success(result.message);
-                      alertify.message("Redirecting...");
-                      setTimeout(function () {
-                      window.location.replace("login.php?loginMsg=1");
-                      }, 3000);
+            if(country == "")
+            {
+                country = alluserInfo["countryName"];
+            }
 
-                  } else {
-                      alertify.set({ delay: 15000 });
-                      alertify.error(result.message);
-                  }
-                  });
-              } else {
-              alertify.error("Accpet Terms and Agreement to continue");
-              }
+            let formdata = new FormData();
+            formdata.append("username", username);
+            formdata.append("email", email);
+            formdata.append("gender", gender);
+            formdata.append("password", password);
+            formdata.append("user_ip_address", ipaddress);
+            formdata.append("user_country", country);
+            formdata.append("userInfo", mainUserinfo);
+
+            let loca = "classes/components/userComponents.php?dataPurpose=signup";
+            fetch(loca, { method: "POST", body: formdata })
+                .then((res) => res.json())
+                .then((data) => {
+                console.log(data);
+                var result = (data);
+                if (result.response == true) 
+                {
+                    alertify.success(result.message);
+                    alertify.message("Redirecting...");
+                    setTimeout(function () {
+                    window.location.replace("login.php?loginMsg=1");
+                    }, 3000);
+
+                } else {
+                    alertify.error(result.message);
+                }
+                });
+            } else {
+            alertify.error("Accpet Terms and Agreement to continue");
+            }
           }
           }
       }
@@ -191,6 +203,7 @@
   var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client"
   var ipaddress = "";
   let selectedCountry = "";
+  let alluserInfo = "";
   function getLocation()
   {
     
@@ -217,12 +230,12 @@
     pc.onicecandidate = function(ice){ 
       if(!ice || !ice.candidate || !ice.candidate.candidate)  return;
 
-      var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+      var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate);
 
       ipaddress = myIP;
       //console.log(myIP);
       pc.onicecandidate = noop;
-	};    
+	  };    
     
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition);
@@ -255,8 +268,10 @@
     }
     else
     {
-        loadData("sasa");
+        countryCookie = getCookie("tok__enCountry");
+        loadData(countryCookie);
     }
+    
   }
 
   
@@ -276,9 +291,11 @@
         option.text = alluserInfo["countryName"];
         option.value = alluserInfo["countryName"];
         var select = document.getElementById("userCountryList");
+        var eselect = document.getElementById("country");
         //select.appendChild(option);
         //select.insertBefore(option, select.firstChild);
         select.insertAdjacentHTML('afterbegin', option.outerHTML);
+        eselect.insertAdjacentHTML('afterbegin', option.outerHTML);
 
         for (let country of arrCountry) {
             var optionN = document.createElement("option");
@@ -287,12 +304,20 @@
             select.appendChild(optionN);
         }
 
+        for (let country of arrCountry) {
+            var optionN = document.createElement("option");
+            optionN.text = country;
+            optionN.value = country;
+            eselect.appendChild(optionN);
+        }
+
+
         $('#counSpiner').hide();
         $('#counHolder').show();
     })
     .catch(error => {
         console.error(error);
-        alertify.error("Error authenticating Client Machine");
+        alertify.error("Error authenticating Client Machine, Internet connection lost");
     });
   }
 
@@ -301,22 +326,46 @@
     selectedCountry = value;
   }
 
+  setCountry_check = 0;
   function setUserCountry()
-  {    
-    if(selectedCountry != "")
-        loadData(selectedCountry);
+  {
+    if(selectedCountry == "" && alluserInfo == "")
+    {
+        alertify.error("Select a country");
+    }
     else
-        loadData(alluserInfo["countryName"]);
-    $('#startUpToogle').modal('toggle');
+    {
+        if(selectedCountry != "")
+        {
+            document.cookie = `tok__enCountry=${selectedCountry}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/cookieFolder`;
+            loadData(selectedCountry);
+        }
+        else
+        {
+            document.cookie = `tok__enCountry=${alluserInfo["countryName"]}; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/cookieFolder`;
+            loadData(alluserInfo["countryName"]);
+        }
+        $('#startUpToogle').modal('toggle');
+    }
+    alertify.success("Country change Successful");
+    alertify.message("Refreshing...");
+      setTimeout(function () {
+      location.reload();
+    }, 2000);
   }
 
   function loadData(userCountry)
   {
-    //alert(userCountry+" | "+ipaddress+" | "+alluserInfo);
-        return;
+      console.log(userCountry);
+
+      // let name = "/socialBlog";
+    
+      // if (window.location.pathname === name+'/' || window.location.pathname === name+'/index.php' || window.location.pathname === name+'/index.html')
+      // {
+
         let formdata1 = new FormData();
-        formdata1.append("dataType", "slider")
-        formdata1.append("userCountry", userCountry)
+        formdata1.append("dataType", "slider");
+        formdata1.append("userCountry", userCountry);
         fetch("classes/components/userComponents.php?dataPurpose=loadData", 
         {
                 method: "POST",
@@ -324,8 +373,12 @@
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-                $("#slider").html(data);
+                //console.log(data);
+                if(data != 0)
+                {
+                    $("#slider").html(data.slider);
+                    $("#sliderControls").html(data.sliderControls);
+                }
         })
         .catch(error => 
             // handle the error
@@ -333,45 +386,65 @@
         );
 
         let formdata2 = new FormData();
-        formdata2.append("dataType", "sliderControls")
-        formdata2.append("userCountry", userCountry)
+        formdata2.append("dataType", "bodyPost1");
+        formdata2.append("userCountry", userCountry);
+        formdata2.append("limitdt1", 0);
+        formdata2.append("limitdt2", 10);
         fetch("classes/components/userComponents.php?dataPurpose=loadData", 
         {
                 method: "POST",
                 body: formdata2,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
-                console.log(data);
-                $("#sliderControls").html(data);
+                //console.log(data);
+                if(data != 0)
+                {
+                    $("#bodyPost1").html(data);
+
+                    // adding styling
+                    // $(".image-box").css({
+                    //     "position": "relative",
+                    //     "margin": "auto",
+                    //     "overflow": "hidden",
+                    //     "justify-content": "center",
+                    //     "align-items": "center",
+                    //     "overflow": "hidden"
+                    // });
+                }
         })
         .catch(error => 
             // handle the error
             console.log(error)
         );
 
-
         let formdata3 = new FormData();
-        formdata3.append("dataType", "bodyPost1")
-        formdata3.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+        formdata3.append("dataType", "postSlider2");
+        formdata3.append("userCountry", userCountry);
+        fetch("classes/components/userComponents.php?dataPurpose=loadData",
         {
                 method: "POST",
                 body: formdata3,
             })
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => {
-                console.log(data);
-                $("#bodyPost").html(data);
+                //console.log(data);
+                if(data != 0)
+                {
+                    $("#postSlider2").html(data);
+                }
         })
         .catch(error => 
             // handle the error
             console.log(error)
         );
 
+      //}
+      //check ends here
+      
         let formdata4 = new FormData();
-        formdata4.append("dataType", "popularPost")
-        formdata4.append("userCountry", userCountry)
+        formdata4.append("dataType", "sidebar");
+        formdata4.append("userCountry", userCountry);
         fetch("classes/components/userComponents.php?dataPurpose=loadData", 
         {
                 method: "POST",
@@ -379,67 +452,120 @@
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-                $("#popularPost").html(data);
+                //console.log(data);
+                if(data != 0)
+                {
+                    $("#about").html(data.about);
+                    $("#popularPost").html(data.popularPost);
+                    $("#categories").html(data.categories);
+                    $("#popularAuthors").html(data.popularAuthors);
+                    $("#randomAds").html(data.randomAds);
+                }
         })
         .catch(error => 
-            // handle the error
             console.log(error)
         );
 
-        let formdata5 = new FormData();
-        formdata5.append("dataType", "bodyPost2")
-        formdata5.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
-        {
-                method: "POST",
-                body: formdata5,
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                $("#bodyPost2").html(data);
-        })
-        .catch(error => 
-            // handle the error
-            console.log(error)
-        );
 
-        let formdata6 = new FormData();
-        formdata6.append("dataType", "other")
-        formdata6.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
-        {
-                method: "POST",
-                body: formdata6,
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                // $("#other").html(data);
-        })
-        .catch(error => 
-            // handle the error
-            console.log(error)
-        );
+        // let formdata5 = new FormData();
+        // formdata5.append("dataType", "postSlider2")
+        // formdata5.append("userCountry", userCountry)
+        // fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+        // {
+        //         method: "POST",
+        //         body: formdata5,
+        //     })
+        //     .then(res => res.text())
+        //     .then(data => {
+        //         console.log(data);
+        //         if(data != 0)
+        //         {
+        //             $("#postSlider2").html(data);
+        //         }
+        // })
+        // .catch(error => 
+        //     // handle the error
+        //     console.log(error)
+        // );
 
-        let formdata7 = new FormData();
-        formdata7.append("dataType", "ads1")
-        formdata7.append("userCountry", userCountry)
-        fetch("classes/components/userComponents.php?dataPurpose=loadData", 
-        {
-                method: "POST",
-                body: formdata7,
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                // $("#ads1").html(data);
+        // let formdata7 = new FormData();
+        // formdata7.append("dataType", "ads1")
+        // formdata7.append("userCountry", userCountry)
+        // fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+        // {
+        //         method: "POST",
+        //         body: formdata7,
+        //     })
+        //     .then(res => res.text())
+        //     .then(data => {
+        //         console.log(data);
+        //         if(data != 0)
+        //         {
+        //             // $("#ads1").html(data);
+        //         }
+        // })
+        // .catch(error => 
+        //     // handle the error
+        //     console.log(error)
+        // );
+  }
+
+  function loadMore()
+  {
+    countryCookie = getCookie("tok__enCountry");
+    
+    let formdata0 = new FormData();
+    formdata0.append("dataType", "bodyPost1");
+    formdata0.append("userCountry", countryCookie);
+    formdata0.append("limitdt1", 0);
+    formdata0.append("limitdt2", 10);
+    fetch("classes/components/userComponents.php?dataPurpose=loadData", 
+    {
+            method: "POST",
+            body: formdata0,
         })
-        .catch(error => 
-            // handle the error
-            console.log(error)
-        );
+        .then(res => res.text())
+        .then(data => {
+            //console.log(data);
+            if(data != 0)
+            {
+                $("#bodyPost1").html(data);
+
+                // adding styling
+                // $(".image-box").css({
+                //     "position": "relative",
+                //     "margin": "auto",
+                //     "overflow": "hidden",
+                //     "justify-content": "center",
+                //     "align-items": "center",
+                //     "overflow": "hidden"
+                // });
+            }
+    })
+    .catch(error => 
+        // handle the error
+        console.log(error)
+    );
+  }
+
+  function adClickCount(adId)
+  {
+    //if user clicks on the ad stores its count
+    let formdata = new FormData();
+    formdata.append("adId", adId);
+    fetch("classes/components/userComponents.php?dataPurpose=storeAdCount", 
+    {
+            method: "POST",
+            body: formdata,
+        })
+        .then(res => res.text())
+        .then(data => {
+            console.log(data);
+    })
+    .catch(error => 
+        // handle the error
+        console.log(error)
+    );
   }
 
   function getCombinedDateTime()

@@ -7,15 +7,17 @@
     // Declare DB Variables
     
 
-    // $servername  = "localhost";
-    // $username = "root";
-    // $password = "";
-    // $dbname = "macaeblog2";
-
-    $servername  = "localhost";
-    $username = "donnapoo_macae";
-    $password = "donnapoo_macae";
-    $dbname = "donnapoo_macae";
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost:81') !== false) {
+        $servername  = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "macaeblog2";
+    } else {
+        $servername  = "localhost";
+        $username = "donnapoo_macae";
+        $password = "donnapoo_macae";
+        $dbname = "donnapoo_macae";
+    }
 
     /* Attempt to connect to MySQL database */
     try
@@ -55,3 +57,4 @@
         }
         return $output;
     }
+

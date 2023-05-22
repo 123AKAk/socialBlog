@@ -17,7 +17,10 @@
                                     </div>
                                 </form>
                                 <div class="social-icones">
-                                    <ul class="list-inline">
+                                    <!-- ShareThis BEGIN -->
+                                    <div class="sharethis-inline-share-buttons"></div>
+                                    <!-- ShareThis END -->
+                                    <!-- <ul class="list-inline">
                                         <li>
                                             <a href="#">
                                                 <i class="fab fa-facebook-f"></i>Facebook</a>
@@ -34,7 +37,7 @@
                                             <a href="#">
                                                 <i class="fab fa-youtube"></i>Youtube</a>
                                         </li>
-                                    </ul>
+                                    </ul> -->
                                 </div>
                             </div>
                         </div>
