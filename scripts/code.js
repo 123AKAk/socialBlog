@@ -358,10 +358,10 @@ tagsWithAlt.forEach(tag => {
   {
       console.log(userCountry);
 
-      let name = "/socialBlog";
+      // let name = "/socialBlog";
     
-      if (window.location.pathname === name+'/' || window.location.pathname === name+'/index.php' || window.location.pathname === name+'/index.html')
-      {
+      // if (window.location.pathname === name+'/' || window.location.pathname === name+'/index.php' || window.location.pathname === name+'/index.html')
+      // {
 
         let formdata1 = new FormData();
         formdata1.append("dataType", "slider");
@@ -438,8 +438,10 @@ tagsWithAlt.forEach(tag => {
             // handle the error
             console.log(error)
         );
-      }
 
+      //}
+      //check ends here
+      
         let formdata4 = new FormData();
         formdata4.append("dataType", "sidebar");
         formdata4.append("userCountry", userCountry);
