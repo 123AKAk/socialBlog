@@ -40,7 +40,7 @@
 
                                     <li class="nav-item">
                                         <!-- add "active" to show page is active -->
-                                        <a class="nav-link" href="categorylist.php"> Categories </a>
+                                        <a class="nav-link" href="category.php"> Categories </a>
                                     </li>
                                     
                                     <!-- <li class="nav-item">

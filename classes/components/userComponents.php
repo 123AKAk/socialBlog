@@ -1161,7 +1161,7 @@ if ($conn) {
                                         </div>
                                         <div class="post-list-content">
                                             <div class="entry-cat">
-                                                <a class="categorie" href="category.php?dt=' . $post['category_name'] . '&catid=' . $post['category_id'] . '">' .
+                                                <a class="categorie" href="category.php?dt=' . $post['category_name'] . '&catid=' . $sharedComponents->protect($post['category_id']) . '">' .
                                 $post['category_name']
                                 . '</a>
                                             </div>
@@ -1215,7 +1215,7 @@ if ($conn) {
                         $aabout .= '
                                     <div class="widget-author">
                                         <div class="author-img">
-                                            <a href="author.php?authDType=Admin&authd=' . $about['admin_id'] . '" class="image">
+                                            <a href="author.php?authDType=Admin&authd=' . $sharedComponents->protect($about['admin_id']) . '" class="image">
                                                 <img src="' . $aboutImage . '" alt="">
                                             </a>
                                         </div>
@@ -1561,7 +1561,7 @@ if ($conn) {
                                     <div class="slider-item  swiper-slide" style="background-image: url(' . $apostImage . ');"> 
                                         <div class="slider-item-content">
                                             <div class="entry-cat ">
-                                                <a class="categorie " href="category.php?dt=' . $post['category_name'] . '&catid=' . $post['category_id'] . '">' .
+                                                <a class="categorie " href="category.php?dt=' . $post['category_name'] . '&catid=' . $sharedComponents->protect($post['category_id']) . '">' .
                                 $post['category_name']
                                 . '</a>
                                             </div>

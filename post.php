@@ -72,7 +72,7 @@ if (isset($_COOKIE["tok__enCountry"]) && !empty($_COOKIE["tok__enCountry"])) {
                                     </p>
                                     <div class="post-single-footer">
                                         <div class="tags">
-                                            <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $post['category_id'] ?>" class="categorie">
+                                            <a href="category.php?dt=<?= $post['category_name'] ?>&catid=<?= $sharedComponents->protect($post['category_id']) ?>" class="categorie">
                                                 <?= $post['category_name'] ?>
                                             </a>
                                         </div>
