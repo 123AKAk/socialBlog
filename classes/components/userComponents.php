@@ -182,7 +182,7 @@ if ($conn) {
 
                 try {
                     // Check if the user has already performed the action for the post
-                    $stmt = $conn->prepare("SELECT * FROM postDetails WHERE postId = :postId AND userId = :userId");
+                    $stmt = $conn->prepare("SELECT * FROM postdetails WHERE postId = :postId AND userId = :userId");
                     $stmt->bindParam(':postId', $postId);
                     $stmt->bindParam(':userId', $userId);
                     $stmt->execute();
@@ -194,21 +194,21 @@ if ($conn) {
                             // User wants to like the post
                             if ($existingPost['dislikes'] == 1) {
                                 // User had previously disliked, so set dislikes to 0 and set likes to 1
-                                $stmt = $conn->prepare("UPDATE postDetails SET dislikes = 0, likes = 1 WHERE postId = :postId AND userId = :userId");
+                                $stmt = $conn->prepare("UPDATE postdetails SET dislikes = 0, likes = 1 WHERE postId = :postId AND userId = :userId");
 
                                 $data["dislikes"] = 0;
                                 $data["likes"] = 1;
                             } else {
                                 if ($existingPost['likes'] == 1) {
                                     // User had previously liked, so set likes to 0
-                                    $stmt = $conn->prepare("UPDATE postDetails SET likes = 0 WHERE postId = :postId AND userId = :userId");
+                                    $stmt = $conn->prepare("UPDATE postdetails SET likes = 0 WHERE postId = :postId AND userId = :userId");
 
                                     $data["dislikes"] = 0;
                                     $data["likes"] = 0;
                                 }
                                 else
                                 {
-                                    $stmt = $conn->prepare("UPDATE postDetails SET likes = 1 WHERE postId = :postId AND userId = :userId");
+                                    $stmt = $conn->prepare("UPDATE postdetails SET likes = 1 WHERE postId = :postId AND userId = :userId");
 
                                     $data["dislikes"] = 0;
                                     $data["likes"] = 1;
@@ -218,21 +218,21 @@ if ($conn) {
                             // User wants to dislike the post
                             if ($existingPost['likes'] == 1) {
                                 // User had previously liked, so set likes to 0 and set dislikes to 1
-                                $stmt = $conn->prepare("UPDATE postDetails SET likes = 0, dislikes = 1 WHERE postId = :postId AND userId = :userId");
+                                $stmt = $conn->prepare("UPDATE postdetails SET likes = 0, dislikes = 1 WHERE postId = :postId AND userId = :userId");
 
                                 $data["dislikes"] = 1;
                                 $data["likes"] = 0;
                             } else {
                                 if ($existingPost['dislikes'] == 1) {
                                     // User had previously disliked, so set dislikes to 0
-                                    $stmt = $conn->prepare("UPDATE postDetails SET dislikes = 0 WHERE postId = :postId AND userId = :userId");
+                                    $stmt = $conn->prepare("UPDATE postdetails SET dislikes = 0 WHERE postId = :postId AND userId = :userId");
 
                                     $data["dislikes"] = 0;
                                     $data["likes"] = 0;
                                 }
                                 else
                                 {
-                                    $stmt = $conn->prepare("UPDATE postDetails SET dislikes = 1 WHERE postId = :postId AND userId = :userId");
+                                    $stmt = $conn->prepare("UPDATE postdetails SET dislikes = 1 WHERE postId = :postId AND userId = :userId");
 
                                     $data["dislikes"] = 1;
                                     $data["likes"] = 0;
@@ -240,7 +240,7 @@ if ($conn) {
                             }
                         } else if ($action == 'view' && $existingPost['views'] == 0) {
                             // User wants to update the view action
-                            $stmt = $conn->prepare("UPDATE postDetails SET views = 1 WHERE postId = :postId AND userId = :userId");
+                            $stmt = $conn->prepare("UPDATE postdetails SET views = 1 WHERE postId = :postId AND userId = :userId");
                         }
                         
                         $stmt->bindParam(':postId', $postId);
@@ -251,17 +251,17 @@ if ($conn) {
                     } else {
                         // Insert a new row for the post and user
                         if ($action == 'like') {
-                            $stmt = $conn->prepare("INSERT INTO postDetails (postId, userId, likes) VALUES (:postId, :userId, 1)");
+                            $stmt = $conn->prepare("INSERT INTO postdetails (postId, userId, likes) VALUES (:postId, :userId, 1)");
 
                             $data["dislikes"] = 0;
                             $data["likes"] = 1;
                         } else if ($action == 'dislike') {
-                            $stmt = $conn->prepare("INSERT INTO postDetails (postId, userId, dislikes) VALUES (:postId, :userId, 1)");
+                            $stmt = $conn->prepare("INSERT INTO postdetails (postId, userId, dislikes) VALUES (:postId, :userId, 1)");
 
                             $data["dislikes"] = 1;
                             $data["likes"] = 0;
                         } else if ($action == 'view') {
-                            $stmt = $conn->prepare("INSERT INTO postDetails (postId, userId, views) VALUES (:postId, :userId, 1)");
+                            $stmt = $conn->prepare("INSERT INTO postdetails (postId, userId, views) VALUES (:postId, :userId, 1)");
                         }
 
                         $stmt->bindParam(':postId', $postId);
@@ -1230,7 +1230,7 @@ if ($conn) {
                     }
 
                     //Get popular Post
-                    $sql = "SELECT postId, SUM(views) AS totalViews FROM postDetails GROUP BY postId ORDER BY totalViews DESC";
+                    $sql = "SELECT postId, SUM(views) AS totalViews FROM postdetails GROUP BY postId ORDER BY totalViews DESC";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute();
                     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
