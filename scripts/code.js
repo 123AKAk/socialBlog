@@ -466,6 +466,7 @@ tagsWithAlt.forEach(tag => {
             console.log(error)
         );
 
+        // this should work
 
         // let formdata5 = new FormData();
         // formdata5.append("dataType", "postSlider2")
