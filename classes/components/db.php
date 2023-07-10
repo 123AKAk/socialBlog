@@ -7,11 +7,11 @@
     // Declare DB Variables
     
 
-    if (strpos($_SERVER['HTTP_HOST'], 'localhost:81') !== false) {
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
         $servername  = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "macaeblog2";
+        $dbname = "macaeblog";
     } else {
         $servername  = "localhost";
         $username = "donnapoo_macae";
