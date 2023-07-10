@@ -53,7 +53,7 @@
                             $id = $row["admin_id"];
                             $adminname = $row["admin_name"];
                             $hashed_password = $row["password"];
-                            $status = $row["status"];
+                            $status = $row["admin_status"];
                             $verified = $row["verified"];
 
                             if (password_verify($password, $hashed_password)) 

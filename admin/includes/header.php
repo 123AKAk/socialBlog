@@ -1,5 +1,5 @@
 <?php
-    require "../includes/varnames.php";
+    //require "../includes/varnames.php";
     require "../classes/components/db.php";
     require '../classes/components/sharedComponents.php';
 
@@ -46,7 +46,7 @@
 <!-- Begin Head -->
 
 <head>
-    <title><?= $sitename ?> | Admin</title>
+    <title><?php //$sitename ?> | Admin</title>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="description" content="">
